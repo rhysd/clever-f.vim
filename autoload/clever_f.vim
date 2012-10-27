@@ -3,8 +3,10 @@ if exists('g:clever_f_loaded')
 endif
 let g:clever_f_loaded = 1
 
-let s:pos_f = [-1, -1, -1, -1]
-let s:pos_F = [-1, -1, -1, -1]
+function! clever_f#reset()
+    let s:pos_f = [-1, -1, -1, -1]
+    let s:pos_F = [-1, -1, -1, -1]
+endfunction
 
 function! clever_f#find_with(map)
     let pos = getpos('.')
@@ -19,3 +21,5 @@ function! clever_f#find_with(map)
         let s:pos_{a:map} = getpos('.')
     endtry
 endfunction
+
+call clever_f#reset()

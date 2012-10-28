@@ -5,5 +5,4 @@ nnoremap <silent><Plug>(clever-reset) :<C-u>call clever_f#reset()<CR>
 if ! exists('g:clever_f_not_overwrites_standard_mappings')
     nmap f <Plug>(clever-f)
     nmap F <Plug>(clever-F)
-    nmap ; <Plug>(clever-reset)
 endif

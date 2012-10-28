@@ -19,6 +19,9 @@ function! clever_f#find_with(map)
         endif
     finally
         let s:pos_{a:map} = getpos('.')
+        if s:pos_{a:map} == pos
+            call clever_f#reset()
+        endif
     endtry
 endfunction
 

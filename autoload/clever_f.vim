@@ -30,7 +30,6 @@ endfunction
 function! clever_f#find_with(map)
     let current_pos = getpos('.')
     if s:should_reset_position(current_pos, a:map)
-        " if cursor didn't move
         call clever_f#reset()
     endif
     let s:previous_pos = current_pos

@@ -1,8 +1,8 @@
-nnoremap <silent><Plug>(clever-f)     :<C-u>call clever_f#find_with('f')<CR>
-nnoremap <silent><Plug>(clever-F)     :<C-u>call clever_f#find_with('F')<CR>
-nnoremap <silent><Plug>(clever-f-reset) :<C-u>call clever_f#reset()<CR>
+noremap <silent><expr><Plug>(clever-f)       clever_f#find_with('f')
+noremap <silent><expr><Plug>(clever-F)       clever_f#find_with('F')
+noremap <silent><expr><Plug>(clever-f-reset) clever_f#reset()
 
 if ! exists('g:clever_f_not_overwrites_standard_mappings')
-    nmap f <Plug>(clever-f)
-    nmap F <Plug>(clever-F)
+    map f <Plug>(clever-f)
+    map F <Plug>(clever-F)
 endif

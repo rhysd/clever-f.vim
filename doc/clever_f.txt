@@ -23,9 +23,9 @@ USAGE                                                     *clever-f.vim-usage*
 I'll show an example of usage. _ is the place of cursor, -> is a move of
 cursor, alphabets above -> is input by keyboard.
 
-input:       fh              f           e         fo         f
-move :  _---------->_------------------>_->_---------------->_->_
-text :  hoge        huga                hugu                ponyo
+input:       fh         f         f      e         fo         f
+move :  _---------->_------>_---------->_->_---------------->_->_
+text :  hoge        huga    hoo         hugu                ponyo
 
 
 ==============================================================================

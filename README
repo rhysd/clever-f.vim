@@ -1,0 +1,17 @@
+*INTRODUCTION*
+
+clever-f.vim extends |f| mapping for more convenience.
+You may be able to forget the existence of |;|.
+clever-f.vim is distributed under MIT license.
+See doc/clever_f.txt to get more information.
+
+
+
+*USAGE*
+
+I'll show an example of usage. _ is the place of cursor, -> is a move of
+cursor, alphabets above -> is input by keyboard.
+
+input:       fh              f           e         fo         f
+move :  _---------->_------------------>_->_---------------->_->_
+text :  hoge        huga                hugu                ponyo

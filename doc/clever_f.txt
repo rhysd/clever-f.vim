@@ -43,9 +43,9 @@ default mappings.
 ==============================================================================
 LICENSE                                                 *clever-f.vim-license*
 
-|open-pdf.vim| is distributed under MIT license.
+|clever-f.vim| is distributed under MIT license.
 
-  Copyright (c) 2012 rhysd
+  Copyright (c) 2013 rhysd
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the

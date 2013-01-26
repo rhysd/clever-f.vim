@@ -24,3 +24,49 @@ describe 'must exist default mappings and autoload functions.'
     end
 
 end
+
+function! AddLine(str)
+    execute 'put!' '='''.a:str.''''
+endfunction
+
+function! Cmd(f, char)
+    call feedkeys(a:char) | execute 'normal!' clever_f#find_with(a:f)
+endfunction
+
+function! CursorChar()
+    return getline('.')[col('.')-1]
+endfunction
+
+describe 'must move cursor with f{char}'
+
+    before
+        call AddLine('poge huga hiyo poyo')
+    end
+
+    it 'provides f mapping to search forward'
+        normal! 0
+        Expect col('.') == 1
+
+        call Cmd('f', 'h')
+        Expect CursorChar() == 'h'
+        Expect col('.') == 6
+
+        normal f
+        Expect CursorChar() == 'h'
+        Expect col('.') == 11
+
+        normal! e
+        Expect CursorChar() == 'o'
+        Expect col('.') == 14
+
+        call Cmd('f', 'o')
+        Expect CursorChar() == 'o'
+        Expect col('.') == 17
+
+        normal f
+        Expect CursorChar() == 'o'
+        Expect col('.') == 19
+    end
+
+end
+

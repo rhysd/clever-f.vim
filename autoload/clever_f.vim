@@ -4,8 +4,8 @@ endif
 let g:clever_f_loaded = 1
 
 function! clever_f#reset()
-    "                     line  map  char
-    let s:previous_info = [ -1, '',  '' ]
+    "                       map  char
+    let s:previous_info = [ '',  '' ]
 
     let s:previous_pos = [ -1, -1, -1, -1 ]
     return ''
@@ -35,11 +35,11 @@ function! clever_f#find_with(map)
     let s:previous_pos = current_pos
 
     if s:previous_info ==#
-                \ [line('.'), a:map, getline('.')[col('.')-1]]
+                \ [a:map, getline('.')[col('.')-1]]
         return ';'
     else
         let char = nr2char(getchar())
-        let s:previous_info = [line('.'), a:map, char]
+        let s:previous_info = [a:map, char]
         return a:map.char
     endif
 endfunction

@@ -37,7 +37,7 @@ function! CursorChar()
     return getline('.')[col('.')-1]
 endfunction
 
-describe 'must move cursor forward with f{char}'
+describe 'must move cursor forward and backward within single line in normal mode'
 
     before
         call AddLine('poge huga hiyo poyo')
@@ -68,15 +68,7 @@ describe 'must move cursor forward with f{char}'
         Expect col('.') == 19
     end
 
-end
-
-describe 'must move cursor backward with F{char}'
-
-    before
-        call AddLine('poge huga hiyo poyo')
-    end
-
-    it 'provides f mapping to search forward'
+    it 'provides F mapping to search backward'
         normal! $
         Expect col('.') == 19
 
@@ -100,5 +92,3 @@ describe 'must move cursor backward with F{char}'
     end
 
 end
-
-

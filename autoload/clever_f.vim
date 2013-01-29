@@ -6,13 +6,10 @@ let g:clever_f_loaded = 1
 function! clever_f#reset()
     "                      map  char
     let s:previous_info = [ '',  '' ]
-
-    let s:previous_pos = [ -1, -1, -1, -1 ]
     return ''
 endfunction
 
-
-function! clever_f#find_with(map)
+function! s:get_move_string(map)
     let current_pos = getpos('.')
     let line_num = line('.')
     let col_num = col('.')
@@ -40,11 +37,11 @@ function! clever_f#find_with(map)
         endif
     elseif a:map ==# 'F'
         while 1
-          if col_num - 2 > 0
-            let idx = strridx(getline(line_num)[: col_num-2 ],s:previous_info[1])
-          else
-            let idx = -1
-          endif
+            if col_num - 2 > 0
+                let idx = strridx(getline(line_num)[: col_num-2 ],s:previous_info[1])
+            else
+                let idx = -1
+            endif
             if -1 == idx && 0 < line_num
                 let line_num -= 1
             else
@@ -62,14 +59,25 @@ function! clever_f#find_with(map)
         else
             let move_str = ''
         endif
+    else
+        let move_str = ''
     endif
+    return [move_str,is_side]
+endfunction
 
+function! clever_f#find_with(map)
+    let [move_str,is_side] = s:get_move_string(a:map)
     if s:previous_info ==# [a:map, getline('.')[col('.')-1]]
         " echo move_str.(is_side?'':';')
         return move_str.(is_side?'':';')
     else
         let char = nr2char(getchar())
-        let s:previous_info = [a:map, char]
+        if s:previous_info == [ '',  '' ]
+            let s:previous_info = [a:map, char]
+            let [move_str,is_side] = s:get_move_string(a:map)
+        else
+            let s:previous_info = [a:map, char]
+        endif
         " echo move_str.(is_side?'':a:map.char)
         return move_str.(is_side?'':a:map.char)
     endif

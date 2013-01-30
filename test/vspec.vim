@@ -92,7 +92,7 @@ describe 'must move cursor forward and backward within single line in normal mod
     end
 
     after
-        normal! 2dd
+        normal! 3dd
         normal! dd
     end
 end
@@ -127,7 +127,6 @@ describe 'must move across multipul lines'
     end
 
     it 'provides F mapping to search backward across lines'
-        echo getbufline('', 1, '$')
         normal! Gk$
         let start_line = line('.')
         Expect col('.') == 11
@@ -144,7 +143,7 @@ describe 'must move across multipul lines'
 
         normal F
         Expect CursorChar() == 'a'
-        Expect col('.') == 10
+        Expect col('.') == 9
         Expect line('.') == start_line - 1
     end
 

@@ -41,6 +41,7 @@ describe 'must move cursor forward and backward within single line in normal mod
 
     before
         call AddLine('poge huga hiyo poyo')
+        call clever_f#reset()
     end
 
     it 'provides f mapping to search forward'
@@ -102,6 +103,7 @@ describe 'must move across multipul lines'
     before
         call AddLine('foo bar baz')
         call AddLine('poge huga hiyo poyo')
+        call clever_f#reset()
         normal! gg
     end
 

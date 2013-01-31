@@ -8,7 +8,7 @@ function! clever_f#reset()
 
     "                    line col
     let s:previous_pos = [ 0, 0 ]
-    return "\<Esc>"
+    return ""
 endfunction
 
 function! clever_f#find_with(map)
@@ -30,7 +30,7 @@ function! clever_f#find_with(map)
 
     if next_pos == [0, 0]
         call clever_f#reset()
-        return "\<Esc>"
+        return ""
     endif
 
     let s:previous_pos = next_pos

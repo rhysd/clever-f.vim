@@ -37,7 +37,7 @@ function! CursorChar()
     return getline('.')[col('.')-1]
 endfunction
 
-describe 'must move cursor forward with f{char}'
+describe 'must move cursor forward and backward within single line in normal mode'
 
     before
         call AddLine('poge huga hiyo poyo')
@@ -68,15 +68,7 @@ describe 'must move cursor forward with f{char}'
         Expect col('.') == 19
     end
 
-end
-
-describe 'must move cursor backward with F{char}'
-
-    before
-        call AddLine('poge huga hiyo poyo')
-    end
-
-    it 'provides f mapping to search forward'
+    it 'provides F mapping to search backward'
         normal! $
         Expect col('.') == 19
 
@@ -99,6 +91,64 @@ describe 'must move cursor backward with F{char}'
         Expect col('.') == 6
     end
 
+    after
+        normal! 3dd
+        normal! dd
+    end
 end
 
+describe 'must move across multipul lines'
 
+    before
+        call AddLine('foo bar baz')
+        call AddLine('poge huga hiyo poyo')
+        normal! gg
+    end
+
+    it 'provides f mapping to search forward across lines'
+        normal! 0
+        let start_line = line('.')
+        Expect col('.') == 1
+
+        call Cmd('f', 'a')
+        Expect CursorChar() == 'a'
+        Expect col('.') == 9
+        Expect line('.') == start_line
+
+        normal f
+        Expect CursorChar() == 'a'
+        Expect col('.') == 6
+        Expect line('.') == start_line + 1
+
+        normal f
+        Expect CursorChar() == 'a'
+        Expect col('.') == 10
+        Expect line('.') == start_line + 1
+    end
+
+    it 'provides F mapping to search backward across lines'
+        normal! Gk$
+        let start_line = line('.')
+        Expect col('.') == 11
+
+        call Cmd('F', 'a')
+        Expect CursorChar() == 'a'
+        Expect col('.') == 10
+        Expect line('.') == start_line
+
+        normal F
+        Expect CursorChar() == 'a'
+        Expect col('.') == 6
+        Expect line('.') == start_line
+
+        normal F
+        Expect CursorChar() == 'a'
+        Expect col('.') == 9
+        Expect line('.') == start_line - 1
+    end
+
+    after
+        normal! 3dd
+        normal! dd
+    end
+end

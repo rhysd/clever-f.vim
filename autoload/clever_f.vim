@@ -5,7 +5,6 @@ let g:clever_f_loaded = 1
 
 function! clever_f#reset()
     let s:previous_char = ""
-
     "                    line col
     let s:previous_pos = [ 0, 0 ]
     return ""
@@ -13,8 +12,7 @@ endfunction
 
 function! clever_f#find_with(map)
     if a:map !=? 'f'
-        echoerr 'invalid mapping: '.a:map
-        return
+        echoerr 'invalid mapping: '.a:map | return
     endif
 
     let current_pos = getpos('.')[1:2]

@@ -4,49 +4,34 @@ endif
 let g:clever_f_loaded = 1
 
 function! clever_f#reset()
-    "                       map  char
-    let s:previous_info = [ '',  '' ]
+    let s:previous_char = ""
 
-    let s:previous_pos = [ -1, -1, -1, -1 ]
-    return ''
-endfunction
-
-" TODO : this function's name should be refactored.
-function! s:should_reset_position(current_pos, map)
-    if s:previous_pos == a:current_pos
-        " cursor should move
-        return 1
-    endif
-
-    if s:previous_pos[0:1] != a:current_pos[0:1]
-        " in other buffers or lines
-        return 1
-    endif
-
-    return (a:map ==# 'f' && a:current_pos[2] <= s:previous_pos[2]) ||
-            \ (a:map ==# 'F' && a:current_pos[2] >= s:previous_pos[2])
+    "                    line col
+    let s:previous_pos = [ 0, 0 ]
+    return "\<Esc>"
 endfunction
 
 function! clever_f#find_with(map)
-    let current_pos = getpos('.')
-    if s:should_reset_position(current_pos, a:map)
+    if a:map !=? 'f'
+        echoerr 'invalid mapping: '.a:map
+        return
+    endif
+
+    let current_pos = getpos('.')[1:2]
+    if current_pos != s:previous_pos
+        let s:previous_char = nr2char(getchar())
+    endif
+
+    let search_flag = a:map ==# 'f' ? 'nW' : 'nbW'
+    let next_pos = searchpos('\V'.s:previous_char, search_flag)
+
+    if next_pos == [0, 0]
         call clever_f#reset()
+        return "\<Esc>"
     endif
-    let s:previous_pos = current_pos
 
-    " searchpos('\V^', 'nW') を使って現在位置からの差分を取得し，
-    " hjkl で移動する
-    " [2, 3] でターゲットポジションが [3, 5] なら 1l2j を生成する
-    " 移動後の位置が分かるため，ポジションチェックも厳密に出来る
-
-    if s:previous_info ==#
-                \ [a:map, getline('.')[col('.')-1]]
-        return ';'
-    else
-        let char = nr2char(getchar())
-        let s:previous_info = [a:map, char]
-        return a:map.char
-    endif
+    let s:previous_pos = next_pos
+    return next_pos[0].'gg0'.(next_pos[1]-1).'l'
 endfunction
 
 call clever_f#reset()

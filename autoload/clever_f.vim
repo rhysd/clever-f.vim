@@ -10,10 +10,6 @@ function! clever_f#reset()
     return ""
 endfunction
 
-function! s:goto(vert, hori)
-    return a:vert.'gg0'.(a:hori <= 0 ? '' : a:hori.'l')
-endfunction
-
 function! clever_f#find_with(map)
     if a:map !=? 'f'
         echoerr 'invalid mapping: '.a:map | return
@@ -36,7 +32,7 @@ function! clever_f#find_with(map)
     endif
 
     let s:previous_pos = next_pos
-    return s:goto(next_pos[0], next_pos[1]-1)
+    return next_pos[0].'gg'.next_pos[1].'|'
 endfunction
 
 call clever_f#reset()

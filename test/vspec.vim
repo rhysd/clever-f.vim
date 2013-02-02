@@ -37,6 +37,11 @@ function! CursorChar()
     return getline('.')[col('.')-1]
 endfunction
 
+function! VspecToBeAtCursor(args)
+    return line('.') == a:args[0] && col('.') == a:args[1] && getline('.')[col('.')-1] == a:args[2]
+endfunction
+call vspec#customize_matcher('to_be_at_cursor', function('VspecToBeAtCursor'))
+
 describe 'must move cursor forward and backward within single line in normal mode'
 
     before
@@ -46,50 +51,43 @@ describe 'must move cursor forward and backward within single line in normal mod
 
     it 'provides f mapping to search forward'
         normal! 0
-        Expect col('.') == 1
+        let l = line('.')
+        Expect [l,1,'p'] to_be_at_cursor
 
         call Cmd('f', 'h')
-        Expect CursorChar() == 'h'
-        Expect col('.') == 6
+        Expect [l,6,'h'] to_be_at_cursor
 
         normal f
-        Expect CursorChar() == 'h'
-        Expect col('.') == 11
+        Expect [l,11,'h'] to_be_at_cursor
 
         normal! e
-        Expect CursorChar() == 'o'
-        Expect col('.') == 14
+        Expect [l,14,'o'] to_be_at_cursor
 
         call Cmd('f', 'o')
-        Expect CursorChar() == 'o'
-        Expect col('.') == 17
+        Expect [l,17,'o'] to_be_at_cursor
 
         normal f
-        Expect CursorChar() == 'o'
-        Expect col('.') == 19
+        Expect [l,19,'o'] to_be_at_cursor
     end
 
     it 'provides F mapping to search backward'
         normal! $
-        Expect col('.') == 19
+        let l = line('.')
+        Expect [l,19,'o'] to_be_at_cursor
 
         call Cmd('F', 'o')
-        Expect CursorChar() == 'o'
-        Expect col('.') == 17
+        Expect [l,17,'o'] to_be_at_cursor
 
         normal F
-        Expect CursorChar() == 'o'
-        Expect col('.') == 14
+        Expect [l,14,'o'] to_be_at_cursor
 
         normal! h
 
         call Cmd('F', 'h')
-        Expect CursorChar() == 'h'
-        Expect col('.') == 11
+        Expect [l,11,'h'] to_be_at_cursor
 
         normal F
-        Expect CursorChar() == 'h'
-        Expect col('.') == 6
+        Expect [l,6,'h'] to_be_at_cursor
     end
 
     after

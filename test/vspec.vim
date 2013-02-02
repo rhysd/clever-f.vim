@@ -42,8 +42,9 @@ call vspec#customize_matcher('to_be_at_cursor', function('VspecToBeAtCursor'))
 describe 'must move cursor forward and backward within single line in normal mode'
 
     before
-        call AddLine('poge huga hiyo poyo')
+        normal! ggdG
         call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
     end
 
     it 'provides f mapping to search forward'
@@ -87,8 +88,4 @@ describe 'must move cursor forward and backward within single line in normal mod
         Expect [l,6,'h'] to_be_at_cursor
     end
 
-    after
-        normal! 3dd
-        normal! dd
-    end
 end

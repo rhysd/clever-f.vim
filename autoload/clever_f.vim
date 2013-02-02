@@ -23,7 +23,7 @@ function! clever_f#find_with(map)
     let save_ignorecase = &l:ignorecase
     setlocal noignorecase
     let search_flag = a:map ==# 'f' ? 'nW' : 'nbW'
-    let next_pos = searchpos('\V'.s:previous_char, search_flag)
+    let next_pos = searchpos('\V'.s:previous_char, search_flag, line('.'))
     let &l:ignorecase = save_ignorecase
 
     if next_pos == [0, 0]
@@ -32,7 +32,7 @@ function! clever_f#find_with(map)
     endif
 
     let s:previous_pos = next_pos
-    return next_pos[0].'gg'.next_pos[1].'|'
+    return a:map.s:previous_char
 endfunction
 
 call clever_f#reset()

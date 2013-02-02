@@ -29,12 +29,8 @@ function! AddLine(str)
     execute 'put!' '='''.a:str.''''
 endfunction
 
-function! Cmd(f, char)
+function! ExecuteCleverF(f, char)
     call feedkeys(a:char) | execute 'normal!' clever_f#find_with(a:f)
-endfunction
-
-function! CursorChar()
-    return getline('.')[col('.')-1]
 endfunction
 
 function! VspecToBeAtCursor(args)
@@ -55,7 +51,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         let l = line('.')
         Expect [l,1,'p'] to_be_at_cursor
 
-        call Cmd('f', 'h')
+        call ExecuteCleverF('f', 'h')
         Expect [l,6,'h'] to_be_at_cursor
 
         normal f
@@ -64,7 +60,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         normal! e
         Expect [l,14,'o'] to_be_at_cursor
 
-        call Cmd('f', 'o')
+        call ExecuteCleverF('f', 'o')
         Expect [l,17,'o'] to_be_at_cursor
 
         normal f
@@ -76,7 +72,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         let l = line('.')
         Expect [l,19,'o'] to_be_at_cursor
 
-        call Cmd('F', 'o')
+        call ExecuteCleverF('F', 'o')
         Expect [l,17,'o'] to_be_at_cursor
 
         normal F
@@ -84,7 +80,7 @@ describe 'must move cursor forward and backward within single line in normal mod
 
         normal! h
 
-        call Cmd('F', 'h')
+        call ExecuteCleverF('F', 'h')
         Expect [l,11,'h'] to_be_at_cursor
 
         normal F

@@ -38,7 +38,8 @@ function! CursorChar()
 endfunction
 
 function! VspecToBeAtCursor(args)
-    return line('.') == a:args[0] && col('.') == a:args[1] && getline('.')[col('.')-1] == a:args[2]
+    let [line, col, char] = a:args
+    return line('.') == line && col('.') == col && getline('.')[col('.')-1] == char
 endfunction
 call vspec#customize_matcher('to_be_at_cursor', function('VspecToBeAtCursor'))
 

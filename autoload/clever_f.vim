@@ -16,7 +16,8 @@ function! clever_f#find_with(map)
     endif
 
     let current_pos = getpos('.')[1:2]
-    if current_pos != s:previous_pos
+    if current_pos != s:previous_pos ||
+        \ getline('.')[col('.')-1] !=# s:previous_char
         let s:previous_char = nr2char(getchar())
     endif
 

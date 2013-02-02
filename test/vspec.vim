@@ -30,68 +30,120 @@ function! AddLine(str)
 endfunction
 
 function! s:exe_clever_f(f, char)
-    call feedkeys(a:char) | execute 'normal!' clever_f#find_with(a:f)
+    " use \<Esc> to avoid no argument for normal!
+    call feedkeys(a:char) | execute 'normal!' "\<Esc>".clever_f#find_with(a:f)
 endfunction
 command! -nargs=+ CleverF call <SID>exe_clever_f(<f-args>)
 
-function! VspecToBeAtCursor(args)
-    let [line, col, char] = a:args
-    return line('.') == line && col('.') == col && getline('.')[col('.')-1] == char
+function! CursorPos()
+    return [line('.'), col('.'), getline('.')[col('.')-1]]
 endfunction
-call vspec#customize_matcher('to_be_at_cursor', function('VspecToBeAtCursor'))
 
-describe 'must move cursor forward and backward within single line in normal mode'
+describe 'must move cursor forward and backward within single line in normal mode.'
 
     before
-        normal! ggdG
         call clever_f#reset()
         call AddLine('poge huga hiyo poyo')
+    end
+
+    after
+        normal! ggdG
     end
 
     it 'provides f mapping to search forward'
         normal! 0
         let l = line('.')
-        Expect [l,1,'p'] to_be_at_cursor
+        Expect CursorPos() == [l,1,'p']
 
         CleverF f h
-        Expect [l,6,'h'] to_be_at_cursor
+        Expect CursorPos() == [l,6,'h']
 
         normal f
-        Expect [l,11,'h'] to_be_at_cursor
+        Expect CursorPos() == [l,11,'h']
 
         normal! e
-        Expect [l,14,'o'] to_be_at_cursor
+        Expect CursorPos() == [l,14,'o']
 
         CleverF f o
-        Expect [l,17,'o'] to_be_at_cursor
+        Expect CursorPos() == [l,17,'o']
 
         normal f
-        Expect [l,19,'o'] to_be_at_cursor
+        Expect CursorPos() == [l,19,'o']
     end
 
     it 'provides F mapping to search backward'
         normal! $
         let l = line('.')
-        Expect [l,19,'o'] to_be_at_cursor
+        Expect CursorPos() == [l,19,'o']
 
         CleverF F o
-        Expect [l,17,'o'] to_be_at_cursor
+        Expect CursorPos() == [l,17,'o']
 
         normal F
-        Expect [l,14,'o'] to_be_at_cursor
+        Expect CursorPos() == [l,14,'o']
 
         normal! h
 
         CleverF F h
-        Expect [l,11,'h'] to_be_at_cursor
+        Expect CursorPos() == [l,11,'h']
 
         normal F
-        Expect [l,6,'h'] to_be_at_cursor
+        Expect CursorPos() == [l,6,'h']
+    end
+end
+
+describe 'f and F use the same context.'
+
+    before
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
     end
 
-    it 'provise the same context to f and F'
+    after
+        normal! ggdG
+    end
+
+    it 'provides the same context to f and F'
         " poge huga hiyo poyo
         normal! 0
         let l = line('.')
+
+        CleverF f h
+        Expect CursorPos() == [l,6,'h']
+        normal f
+        Expect CursorPos() == [l,11,'h']
+        normal F
+        Expect CursorPos() == [l,6,'h']
+        normal f
+        Expect CursorPos() == [l,11,'h']
     end
+end
+
+describe 'getting no char'
+
+    before
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+    end
+
+    after
+        normal! ggdG
+    end
+
+    it 'makes no change'
+        normal! 0
+        let origin = CursorPos()
+
+        CleverF f d
+        Expect CursorPos() == origin
+        CleverF f 1
+        Expect CursorPos() == origin
+        CleverF f )
+        Expect CursorPos() == origin
+        CleverF f ^
+        Expect CursorPos() == origin
+        CleverF f m
+        Expect CursorPos() == origin
+    end
+
 end

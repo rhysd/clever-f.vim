@@ -31,8 +31,13 @@ function! clever_f#find_with(map)
         return ""
     endif
 
+    let cmd = a:map . s:previous_char
+    if next_pos[0] != line('.')
+        let cmd = next_pos[0].'gg'.(a:map ==# 'f' ? '0' : '$') . cmd
+    endif
+
     let s:previous_pos = next_pos
-    return next_pos[0].'gg'.next_pos[1].'|'
+    return cmd
 endfunction
 
 call clever_f#reset()

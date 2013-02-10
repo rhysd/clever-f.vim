@@ -1,8 +1,3 @@
-if exists('g:clever_f_loaded')
-    finish
-endif
-let g:clever_f_loaded = 1
-
 function! clever_f#reset()
     let s:previous_char = ""
     "                    line col

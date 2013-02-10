@@ -23,9 +23,16 @@ function! clever_f#find_with(map)
         return ""
     endif
 
-    let cmd = a:map . s:previous_char
-    if next_pos[0] != line('.')
-        let cmd = next_pos[0].'gg'.(a:map ==# 'f' ? '0' : '$') . cmd
+    let mode = mode(1)
+    if mode ==? 'v' || mode ==# "\<C-v>"
+        let cmd = a:map . s:previous_char
+        if next_pos[0] != line('.')
+            let cmd = next_pos[0].'gg'.(a:map ==# 'f' ? '0' : '$') . cmd
+        endif
+    else
+        let inclusive = mode ==# 'no' && a:map =~# '\l'
+        let cmd = printf("%s:\<C-u>call cursor(%d, %d)\<CR>",
+        \                inclusive ? 'v' : '', next_pos[0], next_pos[1])
     endif
 
     let s:previous_pos = next_pos

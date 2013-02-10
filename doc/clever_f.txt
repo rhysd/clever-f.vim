@@ -31,7 +31,8 @@ text :  hoge        huga    hoo         hugu                ponyo
 ==============================================================================
 MAPPINGS                                               *clever-f.vim-mappings*
 
-If you don't set *g:clever_f_not_overwrites_standard_mappings*, |clever-f|
+                                 *g:clever_f_not_overwrites_standard_mappings*
+If you don't set |g:clever_f_not_overwrites_standard_mappings|, |clever-f|
 replaces |f| and |F| with |<Plug>(clever-f)| and |<Plug>(clever-F)| as
 default mappings.
 

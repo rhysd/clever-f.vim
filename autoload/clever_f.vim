@@ -6,7 +6,7 @@ function! clever_f#reset()
 endfunction
 
 function! clever_f#find_with(map)
-    if a:map !=? 'f'
+    if a:map !~# '^[fFtT]$'
         echoerr 'invalid mapping: '.a:map | return
     endif
 
@@ -15,8 +15,9 @@ function! clever_f#find_with(map)
         let s:previous_char = nr2char(getchar())
     endif
 
-    let search_flag = a:map ==# 'f' ? 'nW' : 'nbW'
-    let next_pos = searchpos('\C\V'.s:previous_char, search_flag)
+    let search_flag = a:map =~# '\l' ? 'nW' : 'nbW'
+    let pre = a:map ==? 't' ? '.' : ''
+    let next_pos = searchpos('\C' . pre . '\V' . s:previous_char, search_flag)
 
     if next_pos == [0, 0]
         call clever_f#reset()

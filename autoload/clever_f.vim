@@ -16,8 +16,14 @@ function! clever_f#find_with(map)
     endif
 
     let search_flag = a:map =~# '\l' ? 'nW' : 'nbW'
-    let pre = a:map ==? 't' ? '.' : ''
-    let next_pos = searchpos('\C' . pre . '\V' . s:previous_char, search_flag)
+    if a:map ==# 't'
+        let target = '\.' . s:previous_char
+    elseif a:map ==# 'T'
+        let target = s:previous_char . '\zs\.'
+    else  " a:map ==? 'f'
+        let target = s:previous_char
+    endif
+    let next_pos = searchpos('\C\V' . target, search_flag)
 
     if next_pos == [0, 0]
         call clever_f#reset()

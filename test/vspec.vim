@@ -90,6 +90,47 @@ describe 'must move cursor forward and backward within single line in normal mod
         normal F
         Expect CursorPos() == [l,6,'h']
     end
+
+    it 'provides t mapping like builtin t'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        CleverF t h
+        Expect CursorPos() == [l,5,' ']
+
+        normal t
+        Expect CursorPos() == [l,10,' ']
+
+        normal! e
+        Expect CursorPos() == [l,14,'o']
+
+        CleverF t o
+        Expect CursorPos() == [l,16,'p']
+
+        normal t
+        Expect CursorPos() == [l,18,'y']
+    end
+
+    it 'provides T mapping like builtin T'
+        normal! $
+        let l = line('.')
+        Expect CursorPos() == [l,19,'o']
+
+        CleverF T o
+        Expect CursorPos() == [l,18,'y']
+
+        normal T
+        Expect CursorPos() == [l,15,' ']
+
+        normal! h
+
+        CleverF T h
+        Expect CursorPos() == [l,12,'i']
+
+        normal T
+        Expect CursorPos() == [l,7,'u']
+    end
 end
 
 describe 'f and F use the same context.'

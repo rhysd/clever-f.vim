@@ -28,34 +28,56 @@ function! clever_f#repeat(...)
     if back
         let pmap = s:swapcase(pmap)
     endif
-    let search_flag = pmap =~# '\l' ? 'nW' : 'nbW'
-    if pmap ==# 't'
-        let target = '\_.' . s:previous_char
-    elseif pmap ==# 'T'
-        let target = s:previous_char . '\zs\_.'
-    else  " pmap ==? 'f'
-        let target = s:previous_char
-    endif
-    let next_pos = searchpos('\C\V' . target, search_flag)
 
+    let mode = mode(1)
+    if mode ==? 'v' || mode ==# "\<C-v>"
+        let cmd = s:move_cmd_for_visualmode(pmap, s:previous_char)
+    else
+        let inclusive = mode ==# 'no' && pmap =~# '\l'
+        let cmd = printf("%s:\<C-u>call clever_f#search(%s, %s)\<CR>",
+        \                inclusive ? 'v' : '',
+        \                string(pmap), string(s:previous_char))
+    endif
+    return cmd
+endfunction
+
+function! clever_f#search(map, char)
+    let next_pos = s:next_pos(a:map, a:char)
+    if next_pos != [0, 0]
+        let s:previous_pos = next_pos
+        call cursor(next_pos[0], next_pos[1])
+    endif
+endfunction
+
+function! s:move_cmd_for_visualmode(map, char)
+    let next_pos = s:next_pos(a:map, a:char)
     if next_pos == [0, 0]
         return ''
     endif
 
-    let mode = mode(1)
-    if mode ==? 'v' || mode ==# "\<C-v>"
-        let cmd = pmap . s:previous_char
-        if next_pos[0] != line('.')
-            let cmd = next_pos[0].'gg'.(pmap ==# 'f' ? '0' : '$') . cmd
-        endif
-    else
-        let inclusive = mode ==# 'no' && pmap =~# '\l'
-        let cmd = printf("%s:\<C-u>call cursor(%d, %d)\<CR>",
-        \                inclusive ? 'v' : '', next_pos[0], next_pos[1])
+    let cmd = a:map . a:char
+    if a:map ==# 't'
+        let cmd = 'l' . cmd
+    elseif a:map ==# 'T'
+        let cmd = 'h' . cmd
     endif
-
+    if next_pos[0] != line('.')
+        let cmd = next_pos[0] . 'gg' . (a:map =~# '\l' ? '0' : '$') . cmd
+    endif
     let s:previous_pos = next_pos
     return cmd
+endfunction
+
+function! s:next_pos(map, char)
+    if a:map ==# 't'
+        let target = '\_.\ze' . a:char
+    elseif a:map ==# 'T'
+        let target = a:char . '\@<=\_.'
+    else  " a:map ==? 'f'
+        let target = a:char
+    endif
+    let search_flag = a:map =~# '\l' ? 'nW' : 'nbW'
+    return searchpos('\C\V' . target, search_flag)
 endfunction
 
 function! s:swapcase(char)

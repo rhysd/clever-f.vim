@@ -26,7 +26,7 @@ describe 'must exist default mappings and autoload functions.'
 end
 
 function! AddLine(str)
-    execute 'put!' '='''.a:str.''''
+    put! =a:str
 endfunction
 
 function! s:exe_clever_f(f, char)

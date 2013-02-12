@@ -47,7 +47,7 @@ describe 'must move cursor forward and backward within single line in normal mod
     end
 
     after
-        normal! ggdG
+        %delete _
     end
 
     it 'provides f mapping to search forward'
@@ -100,7 +100,7 @@ describe 'f and F use the same context.'
     end
 
     after
-        normal! ggdG
+        %delete _
     end
 
     it 'provides the same context to f and F'
@@ -127,7 +127,7 @@ describe 'getting no char'
     end
 
     after
-        normal! ggdG
+        %delete _
     end
 
     it 'makes no change'

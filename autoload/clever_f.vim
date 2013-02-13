@@ -11,7 +11,7 @@ function! clever_f#find_with(map)
         echoerr 'invalid mapping: '.a:map | return
     endif
 
-    let current_pos = getpos('.')[1:2]
+    let current_pos = getpos('.')[1 : 2]
     let back = 0
     if current_pos != s:previous_pos
         let s:previous_char = nr2char(getchar())
@@ -45,7 +45,7 @@ function! clever_f#repeat(...)
 endfunction
 
 function! clever_f#search(map, char)
-    let next_pos = s:next_pos(a:map, a:char)
+    let next_pos = s:next_pos(a:map, a:char, v:count1)
     if next_pos != [0, 0]
         let s:previous_pos = next_pos
         call cursor(next_pos[0], next_pos[1])
@@ -53,7 +53,7 @@ function! clever_f#search(map, char)
 endfunction
 
 function! s:move_cmd_for_visualmode(map, char)
-    let next_pos = s:next_pos(a:map, a:char)
+    let next_pos = s:next_pos(a:map, a:char, v:count1)
     if next_pos == [0, 0]
         return ''
     endif
@@ -64,7 +64,7 @@ function! s:move_cmd_for_visualmode(map, char)
     return cmd
 endfunction
 
-function! s:next_pos(map, char)
+function! s:next_pos(map, char, count)
     if a:map ==# 't'
         let target = '\_.\ze' . a:char
     elseif a:map ==# 'T'
@@ -72,8 +72,13 @@ function! s:next_pos(map, char)
     else  " a:map ==? 'f'
         let target = a:char
     endif
-    let search_flag = a:map =~# '\l' ? 'nW' : 'nbW'
-    return searchpos('\C\V' . target, search_flag)
+    let search_flag = a:map =~# '\l' ? 'W' : 'bW'
+    for i in range(a:count)
+        if !search('\C\V' . target, search_flag)
+            return [0, 0]
+        endif
+    endfor
+    return getpos('.')[1 : 2]
 endfunction
 
 function! s:swapcase(char)

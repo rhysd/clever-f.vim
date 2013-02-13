@@ -8,7 +8,8 @@ endfunction
 
 function! clever_f#find_with(map)
     if a:map !~# '^[fFtT]$'
-        echoerr 'invalid mapping: '.a:map | return
+        echoerr 'invalid mapping: ' . a:map
+        return
     endif
 
     let current_pos = getpos('.')[1 : 2]

@@ -58,15 +58,8 @@ function! s:move_cmd_for_visualmode(map, char)
         return ''
     endif
 
-    let cmd = a:map . a:char
-    if a:map ==# 't'
-        let cmd = 'l' . cmd
-    elseif a:map ==# 'T'
-        let cmd = 'h' . cmd
-    endif
-    if next_pos[0] != line('.')
-        let cmd = next_pos[0] . 'gg' . (a:map =~# '\l' ? '0' : '$') . cmd
-    endif
+    call setpos("''", [0] + next_pos + [0])
+    let cmd = "``"
     let s:previous_pos = next_pos
     return cmd
 endfunction

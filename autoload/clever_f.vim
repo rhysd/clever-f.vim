@@ -10,13 +10,16 @@ function! clever_f#find_with(map)
     if a:map !~# '^[fFtT]$'
         echoerr 'invalid mapping: '.a:map | return
     endif
-    let s:previous_map = a:map
 
     let current_pos = getpos('.')[1:2]
+    let back = 0
     if current_pos != s:previous_pos
         let s:previous_char = nr2char(getchar())
+        let s:previous_map = a:map
+    else
+        let back = a:map =~# '\u'
     endif
-    return clever_f#repeat()
+    return clever_f#repeat(back)
 endfunction
 
 function! clever_f#repeat(...)

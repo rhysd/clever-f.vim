@@ -79,7 +79,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         CleverF F o
         Expect CursorPos() == [l,17,'o']
 
-        normal F
+        normal f
         Expect CursorPos() == [l,14,'o']
 
         normal! h
@@ -87,7 +87,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         CleverF F h
         Expect CursorPos() == [l,11,'h']
 
-        normal F
+        normal f
         Expect CursorPos() == [l,6,'h']
     end
 
@@ -120,7 +120,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         CleverF T o
         Expect CursorPos() == [l,18,'y']
 
-        normal T
+        normal t
         Expect CursorPos() == [l,15,' ']
 
         normal! h
@@ -128,7 +128,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         CleverF T h
         Expect CursorPos() == [l,12,'i']
 
-        normal T
+        normal t
         Expect CursorPos() == [l,7,'u']
     end
 end

@@ -26,7 +26,7 @@ describe 'must exist default mappings and autoload functions.'
 end
 
 function! AddLine(str)
-    execute 'put!' '='''.a:str.''''
+    put! =a:str
 endfunction
 
 function! s:exe_clever_f(f, char)
@@ -47,7 +47,7 @@ describe 'must move cursor forward and backward within single line in normal mod
     end
 
     after
-        normal! ggdG
+        %delete _
     end
 
     it 'provides f mapping to search forward'
@@ -79,7 +79,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         CleverF F o
         Expect CursorPos() == [l,17,'o']
 
-        normal F
+        normal f
         Expect CursorPos() == [l,14,'o']
 
         normal! h
@@ -87,8 +87,49 @@ describe 'must move cursor forward and backward within single line in normal mod
         CleverF F h
         Expect CursorPos() == [l,11,'h']
 
-        normal F
+        normal f
         Expect CursorPos() == [l,6,'h']
+    end
+
+    it 'provides t mapping like builtin t'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        CleverF t h
+        Expect CursorPos() == [l,5,' ']
+
+        normal t
+        Expect CursorPos() == [l,10,' ']
+
+        normal! e
+        Expect CursorPos() == [l,14,'o']
+
+        CleverF t o
+        Expect CursorPos() == [l,16,'p']
+
+        normal t
+        Expect CursorPos() == [l,18,'y']
+    end
+
+    it 'provides T mapping like builtin T'
+        normal! $
+        let l = line('.')
+        Expect CursorPos() == [l,19,'o']
+
+        CleverF T o
+        Expect CursorPos() == [l,18,'y']
+
+        normal t
+        Expect CursorPos() == [l,15,' ']
+
+        normal! h
+
+        CleverF T h
+        Expect CursorPos() == [l,12,'i']
+
+        normal t
+        Expect CursorPos() == [l,7,'u']
     end
 end
 
@@ -100,7 +141,7 @@ describe 'f and F use the same context.'
     end
 
     after
-        normal! ggdG
+        %delete _
     end
 
     it 'provides the same context to f and F'
@@ -127,7 +168,7 @@ describe 'getting no char'
     end
 
     after
-        normal! ggdG
+        %delete _
     end
 
     it 'makes no change'

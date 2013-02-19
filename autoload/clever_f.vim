@@ -3,6 +3,7 @@ function! clever_f#reset()
     let s:previous_char = 0
     "                    line col
     let s:previous_pos = [ 0, 0 ]
+    let s:first_move = 0
     return ""
 endfunction
 
@@ -17,6 +18,7 @@ function! clever_f#find_with(map)
     if current_pos != s:previous_pos
         let s:previous_char = getchar()
         let s:previous_map = a:map
+        let s:first_move = 1
     else
         let back = a:map =~# '\u'
     endif
@@ -74,9 +76,22 @@ function! s:next_pos(map, char, count)
     else  " a:map ==? 'f'
         let target = char
     endif
+    let pat = '\C\V' . target
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
-    for i in range(a:count)
-        if !search('\C\V' . target, search_flag)
+
+    let cnt = a:count
+    if s:first_move
+        let s:first_move = 0
+        if a:map ==? 't'
+            if !search(pat, search_flag . 'c')
+                return [0, 0]
+            endif
+            let cnt -= 1
+        endif
+    endif
+
+    for i in range(cnt)
+        if !search(pat, search_flag)
             return [0, 0]
         endif
     endfor

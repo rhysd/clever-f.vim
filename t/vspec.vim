@@ -4,12 +4,16 @@
 set rtp +=..
 runtime! plugin/clever-f.vim
 
-describe 'must exist default mappings and autoload functions.'
+describe 'default mappings and autoload functions.'
 
     it 'provides default <Plug> mappings'
         Expect maparg('<Plug>(clever-f)') != ''
         Expect maparg('<Plug>(clever-F)') != ''
+        Expect maparg('<Plug>(clever-t)') != ''
+        Expect maparg('<Plug>(clever-T)') != ''
         Expect maparg('<Plug>(clever-f-reset)') != ''
+        Expect maparg('<Plug>(clever-f-repeat-forward)') != ''
+        Expect maparg('<Plug>(clever-f-repeat-back)') != ''
     end
 
     it 'provides autoload functions'
@@ -18,9 +22,9 @@ describe 'must exist default mappings and autoload functions.'
             call clever_f#reset()
         catch
         endtry
-        let TRUE = !!1
-        Expect exists('*clever_f#find_with') == TRUE
-        Expect exists('*clever_f#reset') == TRUE
+        Expect exists('*clever_f#find_with') to_be_true
+        Expect exists('*clever_f#reset') to_be_true
+        Expect exists('*clever_f#repeat') to_be_true
     end
 
 end
@@ -39,18 +43,19 @@ function! CursorPos()
     return [line('.'), col('.'), getline('.')[col('.')-1]]
 endfunction
 
-describe 'must move cursor forward and backward within single line in normal mode.'
+describe 'f and F mappings'
 
     before
+        new
         call clever_f#reset()
         call AddLine('poge huga hiyo poyo')
     end
 
     after
-        %delete _
+        close!
     end
 
-    it 'provides f mapping to search forward'
+    it 'provides f mapping like builtin f'
         normal! 0
         let l = line('.')
         Expect CursorPos() == [l,1,'p']
@@ -71,7 +76,7 @@ describe 'must move cursor forward and backward within single line in normal mod
         Expect CursorPos() == [l,19,'o']
     end
 
-    it 'provides F mapping to search backward'
+    it 'provides F mapping like builtin F'
         normal! $
         let l = line('.')
         Expect CursorPos() == [l,19,'o']
@@ -133,19 +138,19 @@ describe 'must move cursor forward and backward within single line in normal mod
     end
 end
 
-describe 'f and F use the same context.'
+describe 'f and F mappings'' context'
 
     before
+        new
         call clever_f#reset()
         call AddLine('poge huga hiyo poyo')
     end
 
     after
-        %delete _
+        close!
     end
 
-    it 'provides the same context to f and F'
-        " poge huga hiyo poyo
+    it 'is shared'
         normal! 0
         let l = line('.')
 
@@ -163,12 +168,13 @@ end
 describe 'getting no char'
 
     before
+        new
         call clever_f#reset()
         call AddLine('poge huga hiyo poyo')
     end
 
     after
-        %delete _
+        close!
     end
 
     it 'makes no change'
@@ -186,5 +192,80 @@ describe 'getting no char'
         CleverF f m
         Expect CursorPos() == origin
     end
+end
 
+
+describe 'when target is in other line, f and F mappings'
+
+    before
+        new
+        call AddLine('foo bar baz')
+        call AddLine('poge huga hiyo poyo')
+        call clever_f#reset()
+        normal! gg
+    end
+
+    after
+        close!
+    end
+
+    it 'move cursor forward across lines'
+        normal! 0
+        let l = line('.')
+        Expect col('.') == 1
+
+        normal fa
+        Expect CursorPos() == [l, 9, 'a']
+
+        normal f
+        Expect CursorPos() == [l+1, 6, 'a']
+
+        normal f
+        Expect CursorPos() == [l+1, 10, 'a']
+    end
+
+    it 'move cursor backward across lines'
+        normal! Gk$
+        let l = line('.')
+        Expect col('.') == 11
+
+        normal Fa
+        Expect CursorPos() == [l, 10, 'a']
+
+        normal F
+        Expect CursorPos() == [l, 6, 'a']
+
+        normal F
+        Expect CursorPos() == [l-1, 9, 'a']
+    end
+end
+
+describe 'multibyte characters'
+
+    before
+        new
+        call AddLine('ビムかわいいよzビムx')
+        call AddLine('foo bar baz')
+        call clever_f#reset()
+        normal! gg
+    end
+
+    after
+        close!
+    end
+
+    it 'is supported'
+        normal! gg0
+        let l = line('.')
+
+        normal fz
+        Expect CursorPos() == [l, 11, 'z']
+
+        normal f
+        Expect CursorPos() == [l+1, 15, 'z']
+
+        normal! h
+        normal fx
+        Expect CursorPos() == [l+1, 20, 'x']
+    end
 end

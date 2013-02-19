@@ -90,11 +90,12 @@ function! s:next_pos(map, char, count)
         endif
     endif
 
-    for i in range(cnt)
+    while 0 < cnt
         if !search(pat, search_flag)
             return [0, 0]
         endif
-    endfor
+        let cnt -= 1
+    endwhile
     return getpos('.')[1 : 2]
 endfunction
 

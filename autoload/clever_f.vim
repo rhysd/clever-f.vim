@@ -1,6 +1,6 @@
 function! clever_f#reset()
     let s:previous_map = ""
-    let s:previous_char = ""
+    let s:previous_char = 0
     "                    line col
     let s:previous_pos = [ 0, 0 ]
     return ""
@@ -15,7 +15,7 @@ function! clever_f#find_with(map)
     let current_pos = getpos('.')[1 : 2]
     let back = 0
     if current_pos != s:previous_pos
-        let s:previous_char = nr2char(getchar())
+        let s:previous_char = getchar()
         let s:previous_map = a:map
     else
         let back = a:map =~# '\u'
@@ -40,7 +40,7 @@ function! clever_f#repeat(...)
         let inclusive = mode ==# 'no' && pmap =~# '\l'
         let cmd = printf("%s:\<C-u>call clever_f#search(%s, %s)\<CR>",
         \                inclusive ? 'v' : '',
-        \                string(pmap), string(s:previous_char))
+        \                string(pmap), s:previous_char)
     endif
     return cmd
 endfunction
@@ -66,12 +66,13 @@ function! s:move_cmd_for_visualmode(map, char)
 endfunction
 
 function! s:next_pos(map, char, count)
+    let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
     if a:map ==# 't'
-        let target = '\_.\ze' . a:char
+        let target = '\_.\ze' . char
     elseif a:map ==# 'T'
-        let target = a:char . '\@<=\_.'
+        let target = char . '\@<=\_.'
     else  " a:map ==? 'f'
-        let target = a:char
+        let target = char
     endif
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     for i in range(a:count)

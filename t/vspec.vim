@@ -262,10 +262,10 @@ describe 'multibyte characters'
         Expect CursorPos() == [l, 11, 'z']
 
         normal f
-        Expect CursorPos() == [l+1, 15, 'z']
+        Expect CursorPos() == [l+1, 22, 'z']
 
         normal! h
         normal fx
-        Expect CursorPos() == [l+1, 20, 'x']
+        Expect CursorPos() == [l+1, 29, 'x']
     end
 end

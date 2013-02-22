@@ -40,14 +40,14 @@ function! clever_f#repeat(...)
         let cmd = s:move_cmd_for_visualmode(pmap, s:previous_char)
     else
         let inclusive = mode ==# 'no' && pmap =~# '\l'
-        let cmd = printf("%s:\<C-u>call clever_f#search(%s, %s)\<CR>",
+        let cmd = printf("%s:\<C-u>call clever_f#find(%s, %s)\<CR>",
         \                inclusive ? 'v' : '',
         \                string(pmap), s:previous_char)
     endif
     return cmd
 endfunction
 
-function! clever_f#search(map, char)
+function! clever_f#find(map, char)
     let next_pos = s:next_pos(a:map, a:char, v:count1)
     if next_pos != [0, 0]
         let s:previous_pos = next_pos
@@ -67,6 +67,14 @@ function! s:move_cmd_for_visualmode(map, char)
     return cmd
 endfunction
 
+function! s:search(pat, flag)
+    if g:clever_f_across_no_line
+        return search(a:pat, a:flag, line('.'))
+    else
+        return search(a:pat, a:flag)
+    endif
+endfunction
+
 function! s:next_pos(map, char, count)
     let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
     if a:map ==# 't'
@@ -83,7 +91,7 @@ function! s:next_pos(map, char, count)
     if s:first_move
         let s:first_move = 0
         if a:map ==? 't'
-            if !search(pat, search_flag . 'c')
+            if !s:search(pat, search_flag . 'c')
                 return [0, 0]
             endif
             let cnt -= 1
@@ -91,7 +99,7 @@ function! s:next_pos(map, char, count)
     endif
 
     while 0 < cnt
-        if !search(pat, search_flag)
+        if !s:search(pat, search_flag)
             return [0, 0]
         endif
         let cnt -= 1

@@ -1,5 +1,6 @@
 " test with vim-vspec
 " https://github.com/kana/vim-vspec
+" FIXME this test doesn't work in MacVim
 
 set rtp +=..
 runtime! plugin/clever-f.vim

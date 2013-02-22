@@ -33,12 +33,6 @@ function! AddLine(str)
     put! =a:str
 endfunction
 
-function! s:exe_clever_f(f, char)
-    " use \<Esc> to avoid no argument for normal!
-    call feedkeys(a:char) | execute 'normal!' "\<Esc>".clever_f#find_with(a:f)
-endfunction
-command! -nargs=+ CleverF call <SID>exe_clever_f(<f-args>)
-
 function! CursorPos()
     return [line('.'), col('.'), getline('.')[col('.')-1]]
 endfunction
@@ -60,7 +54,7 @@ describe 'f and F mappings'
         let l = line('.')
         Expect CursorPos() == [l,1,'p']
 
-        CleverF f h
+        normal fh
         Expect CursorPos() == [l,6,'h']
 
         normal f
@@ -69,7 +63,7 @@ describe 'f and F mappings'
         normal! e
         Expect CursorPos() == [l,14,'o']
 
-        CleverF f o
+        normal fo
         Expect CursorPos() == [l,17,'o']
 
         normal f
@@ -81,7 +75,7 @@ describe 'f and F mappings'
         let l = line('.')
         Expect CursorPos() == [l,19,'o']
 
-        CleverF F o
+        normal Fo
         Expect CursorPos() == [l,17,'o']
 
         normal f
@@ -89,7 +83,7 @@ describe 'f and F mappings'
 
         normal! h
 
-        CleverF F h
+        normal Fh
         Expect CursorPos() == [l,11,'h']
 
         normal f
@@ -101,7 +95,7 @@ describe 'f and F mappings'
         let l = line('.')
         Expect CursorPos() == [l,1,'p']
 
-        CleverF t h
+        normal th
         Expect CursorPos() == [l,5,' ']
 
         normal t
@@ -110,7 +104,7 @@ describe 'f and F mappings'
         normal! e
         Expect CursorPos() == [l,14,'o']
 
-        CleverF t o
+        normal to
         Expect CursorPos() == [l,16,'p']
 
         normal t
@@ -122,7 +116,7 @@ describe 'f and F mappings'
         let l = line('.')
         Expect CursorPos() == [l,19,'o']
 
-        CleverF T o
+        normal To
         Expect CursorPos() == [l,18,'y']
 
         normal t
@@ -130,7 +124,7 @@ describe 'f and F mappings'
 
         normal! h
 
-        CleverF T h
+        normal Th
         Expect CursorPos() == [l,12,'i']
 
         normal t
@@ -154,7 +148,7 @@ describe 'f and F mappings'' context'
         normal! 0
         let l = line('.')
 
-        CleverF f h
+        normal fh
         Expect CursorPos() == [l,6,'h']
         normal f
         Expect CursorPos() == [l,11,'h']
@@ -181,15 +175,15 @@ describe 'getting no char'
         normal! 0
         let origin = CursorPos()
 
-        CleverF f d
+        normal fd
         Expect CursorPos() == origin
-        CleverF f 1
+        normal f1
         Expect CursorPos() == origin
-        CleverF f )
+        normal f)
         Expect CursorPos() == origin
-        CleverF f ^
+        normal f^
         Expect CursorPos() == origin
-        CleverF f m
+        normal fm
         Expect CursorPos() == origin
     end
 end
@@ -222,6 +216,12 @@ describe 'when target is in other line, f and F mappings'
 
         normal f
         Expect CursorPos() == [l+1, 10, 'a']
+
+        normal F
+        Expect CursorPos() == [l+1, 6, 'a']
+
+        normal F
+        Expect CursorPos() == [l, 9, 'a']
     end
 
     it 'move cursor backward across lines'
@@ -232,11 +232,17 @@ describe 'when target is in other line, f and F mappings'
         normal Fa
         Expect CursorPos() == [l, 10, 'a']
 
+        normal f
+        Expect CursorPos() == [l, 6, 'a']
+
+        normal f
+        Expect CursorPos() == [l-1, 9, 'a']
+
         normal F
         Expect CursorPos() == [l, 6, 'a']
 
         normal F
-        Expect CursorPos() == [l-1, 9, 'a']
+        Expect CursorPos() == [l, 10, 'a']
     end
 end
 

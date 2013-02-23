@@ -55,7 +55,7 @@ describe 'f and F mappings'
         close!
     end
 
-    it 'provides f mapping like builtin f'
+    it 'provides improved forward search like builtin f'
         normal! 0
         let l = line('.')
         Expect CursorPos() == [l,1,'p']
@@ -76,7 +76,7 @@ describe 'f and F mappings'
         Expect CursorPos() == [l,19,'o']
     end
 
-    it 'provides F mapping like builtin F'
+    it 'provides improved backward search like builtin F'
         normal! $
         let l = line('.')
         Expect CursorPos() == [l,19,'o']

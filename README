@@ -9,9 +9,29 @@ See doc/clever_f.txt to get more information.
 
 *USAGE*
 
-I'll show an example of usage. _ is the place of cursor, -> is a move of
+I'll show some examples of usage. _ is the place of cursor, -> is a move of
 cursor, alphabets above -> is input by keyboard.
+
 
 input:       fh         f         f      e         fo         f
 move :  _---------->_------>_---------->_->_---------------->_->_
+input:                            F                            F
+move :                        _<-----------------------------_<-_
 text :  hoge        huga    hoo         hugu                ponyo
+
+
+
+input:        f        Fh       b     f                         Fo
+move :  _<----------_<------_<-_<----------------------------_<-_
+input:        F        F          F
+move :  _---------->_------>_----------->_
+text :  hoge        huga    huyo         hugu                ponyo
+
+
+
+input:       th         t         t      e         to         t
+move :  _--------->_------>_---------->_-->_--------------->_->_
+input:                            T                            T
+move :                         _<-----------------------------__
+text :  hoge        huga    hoo         hugu                ponyo
+

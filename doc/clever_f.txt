@@ -8,13 +8,15 @@ Introduction      |clever-f.vim-introduction|
 Usage             |clever-f.vim-usage|
 Mappings          |clever-f.vim-mappings|
 License           |clever-f.vim-license|
+Special Thanks    |clever-f.vim-special-thanks|
 
 
 ==============================================================================
 INTRODUCTION                                       *clever-f.vim-introduction*
 
 *clever-f.vim* or *clever-f* extends |f| mapping for more convenience.
-You can forget the existence of |;|.
+You can forget the existence of |;|. Instead of |;|, f is available to repeat
+after you type f{char} or F{char}.
 
 
 ==============================================================================
@@ -23,8 +25,27 @@ USAGE                                                     *clever-f.vim-usage*
 I'll show an example of usage. _ is the place of cursor, -> is a move of
 cursor, alphabets above -> is input by keyboard.
 
+
 input:       fh         f         f      e         fo         f
 move :  _---------->_------>_---------->_->_---------------->_->_
+input:                            F                            F
+move :                        _<-----------------------------_<-_
+text :  hoge        huga    hoo         hugu                ponyo
+
+
+
+input:        f        Fh       b     f                         Fo
+move :  _<----------_<------_<-_<----------------------------_<-_
+input:        F        F          F
+move :  _---------->_------>_----------->_
+text :  hoge        huga    huyo         hugu                ponyo
+
+
+
+input:       th         t         t      e         to         t
+move :  _--------->_------>_---------->_-->_--------------->_->_
+input:                            T                            T
+move :                         _<-----------------------------__
 text :  hoge        huga    hoo         hugu                ponyo
 
 
@@ -43,6 +64,14 @@ replaces |f|, |F|, |t|, and |T| with |<Plug>(clever-f)|, |<Plug>(clever-F)|,
 <Plug>(clever-f-reset)              *<Plug>(clever-f-reset)*
 <Plug>(clever-f-repeat-forward)     *<Plug>(clever-f-repeat-forward)*
 <Plug>(clever-f-repeat-back)        *<Plug>(clever-f-repeat-back)*
+
+
+==============================================================================
+SPECIAL THANKS                                   *clever-f.vim-special-thanks*
+
+|<Plug>(clever-f-t)|, |<Plug>(clever-f-T)|, repeatability with |.|,
+availability of |[count]| are the works by @thinca. Thanks!
+(http://d.hatena.ne.jp/thinca/20130227/1361891993)
 
 
 ==============================================================================

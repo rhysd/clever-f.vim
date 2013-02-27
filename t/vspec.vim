@@ -8,13 +8,13 @@ runtime! plugin/clever-f.vim
 describe 'default mappings and autoload functions.'
 
     it 'provides default <Plug> mappings'
-        Expect maparg('<Plug>(clever-f-f)') != ''
-        Expect maparg('<Plug>(clever-f-F)') != ''
-        Expect maparg('<Plug>(clever-f-t)') != ''
-        Expect maparg('<Plug>(clever-f-T)') != ''
-        Expect maparg('<Plug>(clever-f-reset)') != ''
-        Expect maparg('<Plug>(clever-f-repeat-forward)') != ''
-        Expect maparg('<Plug>(clever-f-repeat-back)') != ''
+        Expect maparg('<Plug>(clever-f-f)') ==# "clever_f#find_with('f')"
+        Expect maparg('<Plug>(clever-f-F)') ==# "clever_f#find_with('F')"
+        Expect maparg('<Plug>(clever-f-t)') ==# "clever_f#find_with('t')"
+        Expect maparg('<Plug>(clever-f-T)') ==# "clever_f#find_with('T')"
+        Expect maparg('<Plug>(clever-f-reset)') ==# 'clever_f#reset()'
+        Expect maparg('<Plug>(clever-f-repeat-forward)') ==# 'clever_f#repeat(0)'
+        Expect maparg('<Plug>(clever-f-repeat-back)') ==# 'clever_f#repeat(1)'
     end
 
     it 'provides autoload functions'

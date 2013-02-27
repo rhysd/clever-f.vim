@@ -1,9 +1,7 @@
 *INTRODUCTION*
 
-clever-f.vim extends |f| mapping for more convenience.
-You may be able to forget the existence of |;|.
-clever-f.vim is distributed under MIT license.
-See doc/clever_f.txt to get more information.
+clever-f.vim extends 'f' mapping for more convenience. You may be able to forget the existence of ';'. And you can use ';' for an other mapping.
+clever-f.vim is distributed under MIT license. See doc/clever_f.txt to get more information.
 
 
 
@@ -22,7 +20,7 @@ text :  hoge        huga    hoo         hugu                ponyo
 
 
 input:        f        Fh       b     f                         Fo
-move :  _<----------_<------_<-_<----------------------------_<-_
+move :  _<----------_<------_<-_<-----------------------------_<-_
 input:        F        F          F
 move :  _---------->_------>_----------->_
 text :  hoge        huga    huyo         hugu                ponyo

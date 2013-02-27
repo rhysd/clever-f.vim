@@ -16,7 +16,7 @@ INTRODUCTION                                       *clever-f.vim-introduction*
 
 *clever-f.vim* or *clever-f* extends |f| mapping for more convenience.
 You can forget the existence of |;|. Instead of |;|, f is available to repeat
-after you type f{char} or F{char}.
+after you type f{char} or F{char}. So, you can use |;| for other key mappings.
 
 
 ==============================================================================
@@ -57,13 +57,13 @@ If you don't set |g:clever_f_not_overwrites_standard_mappings|, |clever-f|
 replaces |f|, |F|, |t|, and |T| with |<Plug>(clever-f)|, |<Plug>(clever-F)|,
 |<Plug>(clever-t)| and |<Plug>(clever-T)| as default mappings.
 
-<Plug>(clever-f)                    *<Plug>(clever-f)*
-<Plug>(clever-F)                    *<Plug>(clever-F)*
-<Plug>(clever-t)                    *<Plug>(clever-t)*
-<Plug>(clever-T)                    *<Plug>(clever-T)*
-<Plug>(clever-f-reset)              *<Plug>(clever-f-reset)*
-<Plug>(clever-f-repeat-forward)     *<Plug>(clever-f-repeat-forward)*
-<Plug>(clever-f-repeat-back)        *<Plug>(clever-f-repeat-back)*
+<Plug>(clever-f-f)                    *<Plug>(clever-f-f)*
+<Plug>(clever-f-F)                    *<Plug>(clever-f-F)*
+<Plug>(clever-f-t)                    *<Plug>(clever-f-t)*
+<Plug>(clever-f-T)                    *<Plug>(clever-f-T)*
+<Plug>(clever-f-reset)                *<Plug>(clever-f-reset)*
+<Plug>(clever-f-repeat-forward)       *<Plug>(clever-f-repeat-forward)*
+<Plug>(clever-f-repeat-back)          *<Plug>(clever-f-repeat-back)*
 
 
 ==============================================================================

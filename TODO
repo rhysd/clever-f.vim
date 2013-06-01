@@ -1,0 +1,1 @@
+モードごとに変数を分ける（normal モードと operator-pending モードでは状態を共有しない）

@@ -143,6 +143,14 @@ describe 'f, F, t and T mappings'
 
         normal f
         Expect CursorPos() == [l, 11, 'h']
+
+        normal! d
+        Expect getline('.') == "piyo poyo"
+        Expect CursorPos() == [l, 2, 'i']
+
+        normal! dfp
+        Expect getline('.') == "poyo"
+        Expect CursorPos() == [l, 2, 'o']
     end
 end
 

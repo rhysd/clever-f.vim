@@ -1,22 +1,11 @@
+" モードをキーにする辞書で定義
 function! clever_f#reset()
-    let s:previous_map_n = ""
-    let s:previous_char_n = 0
-    "                      line col
-    let s:previous_pos_n = [ 0, 0 ]
-    let s:first_move_n = 0
-
-    let s:previous_map_v = ""
-    let s:previous_char_v = 0
-    "                      line col
-    let s:previous_pos_v = [ 0, 0 ]
-    let s:first_move_v = 0
+    let s:previous_map = {}
+    let s:previous_char = {}
+    let s:previous_pos = {}
+    let s:first_move = {}
 
     return ""
-endfunction
-
-function! s:normal()
-    let mode = mode(1)
-    return mode ==# 'n' || mode ==# 'ce'
 endfunction
 
 function! clever_f#find_with(map)
@@ -28,18 +17,11 @@ function! clever_f#find_with(map)
     let current_pos = getpos('.')[1 : 2]
     let back = 0
 
-    let previous_pos = s:normal() ? s:previous_pos_n : s:previous_pos_v
-
-    if current_pos != previous_pos
-        if s:normal()
-            let s:previous_char_n = getchar()
-            let s:previous_map_n = a:map
-            let s:first_move_n = 1
-        else
-            let s:previous_char_v = getchar()
-            let s:previous_map_v = a:map
-            let s:first_move_v = 1
-        endif
+    let mode = mode(1)
+    if current_pos != get(s:previous_pos, mode, [0, 0])
+        let s:previous_char[mode] = getchar()
+        let s:previous_map[mode] = a:map
+        let s:first_move[mode] = 1
     else
         let back = a:map =~# '\u'
     endif
@@ -48,7 +30,9 @@ endfunction
 
 function! clever_f#repeat(...)
     let back = a:0 && a:1
-    let pmap = s:normal() ? s:previous_map_n : s:previous_map_v
+    let mode = mode(1)
+    let pmap = get(s:previous_map, mode, "")
+    let pchar = get(s:previous_char, mode, 0)
     if pmap ==# ''
         return ''
     endif
@@ -56,14 +40,13 @@ function! clever_f#repeat(...)
         let pmap = s:swapcase(pmap)
     endif
 
-    let mode = mode(1)
     if mode ==? 'v' || mode ==# "\<C-v>"
-        let cmd = s:move_cmd_for_visualmode(pmap, s:normal() ? s:previous_char_n : s:previous_char_v)
+        let cmd = s:move_cmd_for_visualmode(pmap, pchar)
     else
         let inclusive = mode ==# 'no' && pmap =~# '\l'
         let cmd = printf("%s:\<C-u>call clever_f#find(%s, %s)\<CR>",
         \                inclusive ? 'v' : '',
-        \                string(pmap), s:normal() ? s:previous_char_n : s:previous_char_v)
+        \                string(pmap), pchar)
     endif
     return cmd
 endfunction
@@ -71,11 +54,8 @@ endfunction
 function! clever_f#find(map, char)
     let next_pos = s:next_pos(a:map, a:char, v:count1)
     if next_pos != [0, 0]
-        if s:normal()
-            let s:previous_pos_n = next_pos
-        else
-            let s:previous_pos_v = next_pos
-        endif
+        let mode = mode(1)
+        let s:previous_pos[mode] = next_pos
         call cursor(next_pos[0], next_pos[1])
     endif
 endfunction
@@ -88,11 +68,8 @@ function! s:move_cmd_for_visualmode(map, char)
 
     call setpos("''", [0] + next_pos + [0])
     let cmd = "``"
-    if s:normal()
-        let s:previous_pos_n = next_pos
-    else
-        let s:previous_pos_v = next_pos
-    endif
+    let mode = mode(1)
+    let s:previous_pos[mode] = next_pos
     return cmd
 endfunction
 
@@ -117,25 +94,14 @@ function! s:next_pos(map, char, count)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
 
     let cnt = a:count
-    if s:normal()
-        if s:first_move_n
-            let s:first_move_n = 0
-            if a:map ==? 't'
-                if !s:search(pat, search_flag . 'c')
-                    return [0, 0]
-                endif
-                let cnt -= 1
+    let mode = mode(1)
+    if get(s:first_move, mode, 0)
+        let s:first_move[mode] = 0
+        if a:map ==? 't'
+            if !s:search(pat, search_flag . 'c')
+                return [0, 0]
             endif
-        endif
-    else
-        if s:first_move_v
-            let s:first_move_v = 0
-            if a:map ==? 't'
-                if !s:search(pat, search_flag . 'c')
-                    return [0, 0]
-                endif
-                let cnt -= 1
-            endif
+            let cnt -= 1
         endif
     endif
 

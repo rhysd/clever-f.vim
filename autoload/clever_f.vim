@@ -15,7 +15,8 @@ function! clever_f#reset()
 endfunction
 
 function! s:normal()
-    return mode(1) ==# 'n'
+    let mode = mode(1)
+    return mode ==# 'n' || mode ==# 'ce'
 endfunction
 
 function! clever_f#find_with(map)

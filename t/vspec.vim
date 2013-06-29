@@ -1,6 +1,5 @@
 " test with vim-vspec
 " https://github.com/kana/vim-vspec
-" FIXME this test doesn't work in MacVim
 
 set rtp +=..
 runtime! plugin/clever-f.vim
@@ -38,7 +37,7 @@ function! CursorPos()
     return [line('.'), col('.'), getline('.')[col('.')-1]]
 endfunction
 
-describe 'f and F mappings'
+describe 'f, F, t and T mappings'
 
     before
         new
@@ -50,7 +49,7 @@ describe 'f and F mappings'
         close!
     end
 
-    it 'provides improved forward search like builtin f'
+    it 'provide improved forward search like builtin f'
         normal! 0
         let l = line('.')
         Expect CursorPos() == [l,1,'p']
@@ -71,7 +70,7 @@ describe 'f and F mappings'
         Expect CursorPos() == [l,19,'o']
     end
 
-    it 'provides improved backward search like builtin F'
+    it 'provide improved backward search like builtin F'
         normal! $
         let l = line('.')
         Expect CursorPos() == [l,19,'o']
@@ -91,7 +90,7 @@ describe 'f and F mappings'
         Expect CursorPos() == [l,6,'h']
     end
 
-    it 'provides t mapping like builtin t'
+    it 'provide t mapping like builtin t'
         normal! 0
         let l = line('.')
         Expect CursorPos() == [l,1,'p']
@@ -112,7 +111,7 @@ describe 'f and F mappings'
         Expect CursorPos() == [l,18,'y']
     end
 
-    it 'provides T mapping like builtin T'
+    it 'provide T mapping like builtin T'
         normal! $
         let l = line('.')
         Expect CursorPos() == [l,19,'o']
@@ -130,6 +129,20 @@ describe 'f and F mappings'
 
         normal t
         Expect CursorPos() == [l,7,'u']
+    end
+
+    it 'have different context in normal mode and visual mode'
+        let l = line('.')
+        Expect CursorPos() == [l, 1, 'p']
+
+        normal fo
+        Expect CursorPos() == [l, 2, 'o']
+
+        normal vfh
+        Expect CursorPos() == [l, 6, 'h']
+
+        normal f
+        Expect CursorPos() == [l, 11, 'h']
     end
 end
 

@@ -297,3 +297,36 @@ describe 'multibyte characters'
         Expect CursorPos() == [l+1, 29, 'x']
     end
 end
+
+
+describe 'g:clever_f_ignore_case'
+
+    before
+        new
+        let g:clever_f_ignore_case = 1
+        call clever_f#reset()
+        call AddLine('poge Guga hiyo Goyo')
+    end
+
+    after
+        let g:clever_f_ignore_case = 0
+        close!
+    end
+
+    it 'makes f case insensitive'
+        normal! gg0
+        let l = line('.')
+
+        normal fg
+        Expect CursorPos() == [l, 3, 'g']
+
+        normal f
+        Expect CursorPos() == [l, 6, 'G']
+
+        normal f
+        Expect CursorPos() == [l, 8, 'g']
+
+        normal F
+        Expect CursorPos() == [l, 6, 'G']
+    end
+end

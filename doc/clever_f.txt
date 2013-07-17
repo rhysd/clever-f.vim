@@ -7,6 +7,7 @@ CONTENTS          *clever-f.vim-contents*
 Introduction      |clever-f.vim-introduction|
 Usage             |clever-f.vim-usage|
 Mappings          |clever-f.vim-mappings|
+Variables         |clever-f.vim-variables|
 License           |clever-f.vim-license|
 Special Thanks    |clever-f.vim-special-thanks|
 
@@ -64,6 +65,20 @@ replaces |f|, |F|, |t|, and |T| with |<Plug>(clever-f)|, |<Plug>(clever-F)|,
 <Plug>(clever-f-reset)                *<Plug>(clever-f-reset)*
 <Plug>(clever-f-repeat-forward)       *<Plug>(clever-f-repeat-forward)*
 <Plug>(clever-f-repeat-back)          *<Plug>(clever-f-repeat-back)*
+
+
+==============================================================================
+VARIABLES                                             *clever-f.vim-variables*
+
+g:clever_f_across_no_line                          *g:clever_f_across_no_line*
+
+    If the value is equivalent to 1, |clever-f| mappings search target
+    character only in the cursor line.
+
+g:clever_f_ignore_case                                *g:clever_f_ignore_case*
+
+    If the value is equivalent to 1, it makes |clever-f| mappings' search case
+    insensitive. For example, if you input 'fa', it matches both 'a' and 'A'.
 
 
 ==============================================================================

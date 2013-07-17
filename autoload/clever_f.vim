@@ -90,7 +90,7 @@ function! s:next_pos(map, char, count)
     else  " a:map ==? 'f'
         let target = char
     endif
-    let pat = '\C\V' . target
+    let pat = (g:clever_f_ignore_case ? '\c' : '\C') . '\V' . target
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
 
     let cnt = a:count

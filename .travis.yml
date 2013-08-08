@@ -1,0 +1,6 @@
+script:
+    - vim --version
+    - cd t/
+    - ../vim-vspec/bin/vspec ../vim-vspec vspec.vim
+install:
+    - git clone https://github.com/kana/vim-vspec.git

@@ -1,4 +1,4 @@
-## INTRODUCTION [![Build Status](https://travis-ci.org/rhysd/clever-f.vim.png?branch=dev)](https://travis-ci.org/rhysd/clever-f.vim)
+## INTRODUCTION [![Build Status](https://travis-ci.org/rhysd/clever-f.vim.png?branch=master)](https://travis-ci.org/rhysd/clever-f.vim)
 
 clever-f.vim extends `f` mapping for more convenience. You may be able to forget the existence of `;`. And you can use `;` for an other mapping.
 clever-f.vim is distributed under MIT license. See `doc/clever_f.txt` to get more information.

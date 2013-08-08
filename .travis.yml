@@ -1,3 +1,4 @@
+language: viml
 script:
     - vim --version
     - cd t/

@@ -1,7 +1,21 @@
 " test with vim-vspec
 " https://github.com/kana/vim-vspec
 
-set rtp +=..
+function! s:chomp(s)
+    return a:s =~# '\n$'
+                \ ? a:s[0:len(a:s)-2]
+                \ : a:s
+endfunction
+
+function! s:chomp_head(s)
+    return a:s =~# '^\n'
+                \ ? a:s[1:len(a:s)-1]
+                \ : a:s
+endfunction
+
+let s:root_dir = s:chomp_head(s:chomp(system('git rev-parse --show-cdup')))
+execute 'set' 'rtp +=./'.s:root_dir
+
 runtime! plugin/clever-f.vim
 
 describe 'default mappings and autoload functions.'

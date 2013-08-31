@@ -1,0 +1,30 @@
+# encoding: utf-8
+
+require './t/vspec_helper'
+
+def notify m
+  msg = "'#{m}\\n#{Time.now.to_s}'"
+  case
+  when which('terminal-notifier')
+    `terminal-notifier -message #{msg}`
+  when which('notify-send')
+    `notify-send #{msg}`
+  when which('tmux')
+    `tmux display-message #{msg}` if `tmux list-clients 1>/dev/null 2>&1` && $?.success?
+  end
+end
+
+
+guard :shell do
+  watch /^(.+\.vim)$/ do |m|
+    v = Vspec.new
+    v.run "t/vspec.vim"
+    if v.success?
+      failed = v.count_failed
+      notify("#{failed} test#{failed>1 ? 's' : ''} failed") unless failed==0
+    else
+      notify "vspec occurs an error"
+    end
+    v.result
+  end
+end

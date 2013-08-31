@@ -83,6 +83,9 @@ endfunction
 
 function! s:next_pos(map, char, count)
     let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
+    if g:clever_f_use_migemo
+        let char = clever_f#migemo#generate_regex(char)
+    endif
     if a:map ==# 't'
         let target = '\_.\ze' . char
     elseif a:map ==# 'T'
@@ -90,7 +93,7 @@ function! s:next_pos(map, char, count)
     else  " a:map ==? 'f'
         let target = char
     endif
-    let pat = (g:clever_f_ignore_case ? '\c' : '\C') . '\V' . target
+    let pat = (g:clever_f_ignore_case ? '\c' : '\C') . (g:clever_f_use_migemo ? '' : '\V') . target
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
 
     let cnt = a:count

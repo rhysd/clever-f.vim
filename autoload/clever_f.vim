@@ -121,7 +121,7 @@ function! s:next_pos(map, char, count)
     let mode = mode(1)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
-    if get(s:first_move, mode, 0)
+    if get(s:first_move, mode, 1)
         let pattern = s:generate_pattern(a:map, a:char)
         let s:previous_pattern[mode] = pattern
         let s:first_move[mode] = 0

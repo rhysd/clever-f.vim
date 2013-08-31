@@ -13,3 +13,17 @@ endfunction
 function! clever_f#helper#system(...)
     return call(s:has_vimproc() ? 'vimproc#system' : 'system', a:000)
 endfunction
+
+if exists('*strchars')
+    function! clever_f#helper#strchars(str)
+        return strchars(a:str)
+    endfunction
+else
+    function! clever_f#helper#strchars(str)
+        return strlen(substitute(str, ".", "x", "g"))
+    endfunction
+endif
+
+function! clever_f#helper#include_multibyte_char(str)
+    return strlen(a:str) != clever_f#helper#strchars(a:str)
+endfunction

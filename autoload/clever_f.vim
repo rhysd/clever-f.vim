@@ -81,9 +81,23 @@ function! s:search(pat, flag)
     endif
 endfunction
 
+function! s:should_use_migemo()
+    if ! g:clever_f_use_migemo
+        return 0
+    endif
+
+    if ! g:clever_f_across_no_line
+        return 1
+    endif
+
+    return clever_f#helper#include_multibyte_char(getline('.'))
+endfunction
+
 function! s:next_pos(map, char, count)
     let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
-    if g:clever_f_use_migemo && char =~# '^\a$'
+
+    let should_use_migemo = s:should_use_migemo()
+    if should_use_migemo && char =~# '^\a$'
         let char = clever_f#migemo#generate_regex(char)
     endif
     if a:map ==# 't'
@@ -93,7 +107,7 @@ function! s:next_pos(map, char, count)
     else  " a:map ==? 'f'
         let target = char
     endif
-    let pat = (g:clever_f_ignore_case ? '\c' : '\C') . (g:clever_f_use_migemo ? '' : '\V') . target
+    let pat = (g:clever_f_ignore_case ? '\c' : '\C') . (should_use_migemo ? '' : '\V') . target
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
 
     let cnt = a:count

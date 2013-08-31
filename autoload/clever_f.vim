@@ -83,7 +83,7 @@ endfunction
 
 function! s:next_pos(map, char, count)
     let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
-    if g:clever_f_use_migemo
+    if g:clever_f_use_migemo && char =~# '^\a$'
         let char = clever_f#migemo#generate_regex(char)
     endif
     if a:map ==# 't'

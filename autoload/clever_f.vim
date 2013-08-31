@@ -75,6 +75,7 @@ function! s:move_cmd_for_visualmode(map, char)
     let cmd = "``"
     let mode = mode(1)
     let s:previous_pos[mode] = next_pos
+
     return cmd
 endfunction
 
@@ -122,9 +123,9 @@ function! s:next_pos(map, char, count)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
     if get(s:first_move, mode, 1)
+        let s:first_move[mode] = 0
         let pattern = s:generate_pattern(a:map, a:char)
         let s:previous_pattern[mode] = pattern
-        let s:first_move[mode] = 0
         if a:map ==? 't'
             if !s:search(pattern, search_flag . 'c')
                 return [0, 0]

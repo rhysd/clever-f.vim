@@ -4,6 +4,7 @@ function! clever_f#reset()
     let s:previous_char = {}
     let s:previous_pos = {}
     let s:first_move = {}
+    let s:previous_pattern = {}
 
     return ""
 endfunction
@@ -97,7 +98,7 @@ function! s:should_use_migemo()
     return clever_f#helper#include_multibyte_char(getline('.'))
 endfunction
 
-function! s:next_pos(map, char, count)
+function! s:generate_pattern(map, char)
     let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
 
     let should_use_migemo = s:should_use_migemo()
@@ -113,23 +114,29 @@ function! s:next_pos(map, char, count)
         let target = char
     endif
 
-    let pat = (g:clever_f_ignore_case ? '\c' : '\C') . (should_use_migemo ? '' : '\V') . target
-    let search_flag = a:map =~# '\l' ? 'W' : 'bW'
+    return (g:clever_f_ignore_case ? '\c' : '\C') . (should_use_migemo ? '' : '\V') . target
+endfunction
 
-    let cnt = a:count
+function! s:next_pos(map, char, count)
     let mode = mode(1)
+    let search_flag = a:map =~# '\l' ? 'W' : 'bW'
+    let cnt = a:count
     if get(s:first_move, mode, 0)
+        let pattern = s:generate_pattern(a:map, a:char)
+        let s:previous_pattern[mode] = pattern
         let s:first_move[mode] = 0
         if a:map ==? 't'
-            if !s:search(pat, search_flag . 'c')
+            if !s:search(pattern, search_flag . 'c')
                 return [0, 0]
             endif
             let cnt -= 1
         endif
+    else
+        let pattern = s:previous_pattern[mode]
     endif
 
     while 0 < cnt
-        if !s:search(pat, search_flag)
+        if !s:search(pattern, search_flag)
             return [0, 0]
         endif
         let cnt -= 1

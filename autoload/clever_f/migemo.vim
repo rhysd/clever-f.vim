@@ -27,6 +27,7 @@ function! s:detect_dict()
         endif
     endfor
     echoerr 'a dictionary for migemo is not found'
+    echoerr 'your encoding is '.&encoding
 endfunction
 
 if has('migemo')

@@ -25,6 +25,7 @@ function! clever_f#find_with(map)
     else
         let back = a:map =~# '\u'
     endif
+
     return clever_f#repeat(back)
 endfunction
 
@@ -33,9 +34,11 @@ function! clever_f#repeat(...)
     let mode = mode(1)
     let pmap = get(s:previous_map, mode, "")
     let pchar = get(s:previous_char, mode, 0)
+
     if pmap ==# ''
         return ''
     endif
+
     if back
         let pmap = s:swapcase(pmap)
     endif
@@ -48,6 +51,7 @@ function! clever_f#repeat(...)
         \                inclusive ? 'v' : '',
         \                string(pmap), pchar)
     endif
+
     return cmd
 endfunction
 
@@ -100,6 +104,7 @@ function! s:next_pos(map, char, count)
     if should_use_migemo && char =~# '^\a$'
         let char = clever_f#migemo#generate_regex(char)
     endif
+
     if a:map ==# 't'
         let target = '\_.\ze' . char
     elseif a:map ==# 'T'
@@ -107,6 +112,7 @@ function! s:next_pos(map, char, count)
     else  " a:map ==? 'f'
         let target = char
     endif
+
     let pat = (g:clever_f_ignore_case ? '\c' : '\C') . (should_use_migemo ? '' : '\V') . target
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
 
@@ -128,6 +134,7 @@ function! s:next_pos(map, char, count)
         endif
         let cnt -= 1
     endwhile
+
     return getpos('.')[1 : 2]
 endfunction
 

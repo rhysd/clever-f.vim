@@ -352,3 +352,20 @@ describe 'g:clever_f_ignore_case'
         Expect CursorPos() == [l, 6, 'G']
     end
 end
+
+describe 'clever_f#helper#include_multibyte_char'
+
+    it 'return true when the argument includes multibyte char'
+        Expect clever_f#helper#include_multibyte_char("あいうえお") to_be_true
+        Expect clever_f#helper#include_multibyte_char("aiueoあ") to_be_true
+        Expect clever_f#helper#include_multibyte_char("１２3ABC４5") to_be_true
+    end
+
+    it 'return true when the argument includes multibyte char'
+        Expect clever_f#helper#include_multibyte_char("aiueo") to_be_false
+        Expect clever_f#helper#include_multibyte_char("this_is_a_pen.") to_be_false
+        Expect clever_f#helper#include_multibyte_char("!#$%&'()'") to_be_false
+        Expect clever_f#helper#include_multibyte_char("") to_be_false
+    end
+end
+

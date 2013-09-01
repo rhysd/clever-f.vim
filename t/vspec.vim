@@ -15,12 +15,12 @@ endfunction
 
 let s:root_dir = s:chomp_head(s:chomp(system('git rev-parse --show-cdup')))
 execute 'set' 'rtp +=./'.s:root_dir
-
 runtime! plugin/clever-f.vim
 
-describe 'default mappings and autoload functions.'
 
-    it 'provides default <Plug> mappings'
+describe 'default settings'
+
+    it 'provide default <Plug> mappings'
         Expect maparg('<Plug>(clever-f-f)') ==# "clever_f#find_with('f')"
         Expect maparg('<Plug>(clever-f-F)') ==# "clever_f#find_with('F')"
         Expect maparg('<Plug>(clever-f-t)') ==# "clever_f#find_with('t')"
@@ -30,15 +30,19 @@ describe 'default mappings and autoload functions.'
         Expect maparg('<Plug>(clever-f-repeat-back)') ==# 'clever_f#repeat(1)'
     end
 
-    it 'provides autoload functions'
+    it 'provide autoload functions'
         try
             " load autoload functions
-            call clever_f#reset()
+            runtime autoload/clever_f.vim
+            runtime autoload/clever_f/helper.vim
         catch
         endtry
         Expect exists('*clever_f#find_with') to_be_true
         Expect exists('*clever_f#reset') to_be_true
         Expect exists('*clever_f#repeat') to_be_true
+        Expect exists('*clever_f#helper#system') to_be_true
+        Expect exists('*clever_f#helper#strchars') to_be_true
+        Expect exists('*clever_f#helper#include_multibyte_char') to_be_true
     end
 
 end
@@ -50,6 +54,7 @@ endfunction
 function! CursorPos()
     return [line('.'), col('.'), getline('.')[col('.')-1]]
 endfunction
+
 
 describe 'f, F, t and T mappings'
 
@@ -168,6 +173,7 @@ describe 'f, F, t and T mappings'
     end
 end
 
+
 describe 'f and F mappings'' context'
 
     before
@@ -195,7 +201,8 @@ describe 'f and F mappings'' context'
     end
 end
 
-describe 'getting no char'
+
+describe 'a non-existent char'
 
     before
         new
@@ -281,6 +288,7 @@ describe 'when target is in other line, f and F mappings'
         Expect CursorPos() == [l, 10, 'a']
     end
 end
+
 
 describe 'multibyte characters'
 

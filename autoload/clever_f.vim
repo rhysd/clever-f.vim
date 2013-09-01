@@ -4,7 +4,6 @@ function! clever_f#reset()
     let s:previous_char = {}
     let s:previous_pos = {}
     let s:first_move = {}
-    let s:previous_pattern = {}
 
     return ""
 endfunction
@@ -122,18 +121,16 @@ function! s:next_pos(map, char, count)
     let mode = mode(1)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
+    let s:first_move[mode] = 0
+    let pattern = s:generate_pattern(a:map, a:char)
+
     if get(s:first_move, mode, 1)
-        let s:first_move[mode] = 0
-        let pattern = s:generate_pattern(a:map, a:char)
-        let s:previous_pattern[mode] = pattern
         if a:map ==? 't'
             if !s:search(pattern, search_flag . 'c')
                 return [0, 0]
             endif
             let cnt -= 1
         endif
-    else
-        let pattern = s:previous_pattern[mode]
     endif
 
     while 0 < cnt

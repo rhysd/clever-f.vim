@@ -4,6 +4,7 @@ function! clever_f#reset()
     let s:previous_char = {}
     let s:previous_pos = {}
     let s:first_move = {}
+    let s:migemo_dicts = {}
 
     return ""
 endfunction
@@ -98,23 +99,40 @@ function! s:should_use_migemo()
     return clever_f#helper#include_multibyte_char(getline('.'))
 endfunction
 
+function! s:load_migemo_dict()
+    let enc = &l:encoding
+    if enc ==# 'utf-8'
+        return clever_f#migemo#utf8#load_dict()
+    elseif enc ==# 'cp932'
+        return clever_f#migemo#cp932#load_dict()
+    elseif enc ==# 'euc-jp'
+        return clever_f#migemo#eucjp#load_dict()
+    else
+        let g:clever_f_use_migemo = 0
+        throw "Error: ".enc." is not supported. Migemo is disabled."
+    endif
+endfunction
+
 function! s:generate_pattern(map, char)
-    let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
+    let regex = type(a:char) == type(0) ? nr2char(a:char) : a:char
 
     let should_use_migemo = s:should_use_migemo()
-    if should_use_migemo && char =~# '^\a$'
-        let char = clever_f#migemo#generate_regex(char)
+    if should_use_migemo && regex =~# '^\a$'
+        if ! has_key(s:migemo_dicts, &l:encoding)
+            let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
+        endif
+        let regex = s:migemo_dicts[&l:encoding][regex]
     endif
 
     if a:map ==# 't'
-        let target = '\_.\ze' . char
+        let regex = '\_.\ze' . regex
     elseif a:map ==# 'T'
-        let target = char . '\@<=\_.'
+        let regex = regex . '\@<=\_.'
     else  " a:map ==? 'f'
-        let target = char
+        " do nothing
     endif
 
-    return (g:clever_f_ignore_case ? '\c' : '\C') . (should_use_migemo ? '' : '\V') . target
+    return (g:clever_f_ignore_case ? '\c' : '\C') . (should_use_migemo ? '' : '\V') . regex
 endfunction
 
 function! s:next_pos(map, char, count)

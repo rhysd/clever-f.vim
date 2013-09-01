@@ -19,6 +19,6 @@ endif
 
 let g:clever_f_across_no_line = get(g:, 'clever_f_across_no_line', 0)
 let g:clever_f_ignore_case = get(g:, 'clever_f_ignore_case', 0)
-let g:clever_f_use_migemo = get(g:, 'clever_f_use_migemo', g:clever_f_across_no_line == 1 ? executable('cmigemo') : 0)
+let g:clever_f_use_migemo = get(g:, 'clever_f_use_migemo', 0)
 
 let g:loaded_clever_f = 1

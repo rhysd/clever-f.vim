@@ -369,3 +369,52 @@ describe 'clever_f#helper#include_multibyte_char'
     end
 end
 
+
+describe 'migemo support'
+
+    before
+        new
+        let g:clever_f_use_migemo = 1
+        call AddLine('はー，ビムかわいいよビム')
+        call clever_f#reset()
+        normal! gg0
+    end
+
+    after
+        close!
+        let g:clever_f_use_migemo = 0
+    end
+
+    it 'makes f and F mapping match multibyte characters'
+        normal fb
+        Expect col('.') == 10
+        normal f
+        Expect col('.') == 31
+        normal F
+        Expect col('.') == 10
+        normal $
+        normal Fb
+        Expect col('.') == 31
+        normal f
+        Expect col('.') == 10
+        normal F
+        Expect col('.') == 31
+    end
+
+    it 'makes t and T mapping match multibyte characters'
+        normal tb
+        Expect col('.') == 7
+        normal t
+        Expect col('.') == 28
+        normal T
+        Expect col('.') == 13
+        normal $
+        normal Tb
+        Expect col('.') == 13
+        normal T
+        Expect col('.') == 28
+        normal t
+        Expect col('.') == 13
+    end
+
+end

@@ -24,14 +24,14 @@ function! clever_f#find_with(map)
         let s:previous_map[mode] = a:map
         let s:first_move[mode] = 1
     else
+        " when repeated
         let back = a:map =~# '\u'
     endif
 
     return clever_f#repeat(back)
 endfunction
 
-function! clever_f#repeat(...)
-    let back = a:0 && a:1
+function! clever_f#repeat(back)
     let mode = mode(1)
     let pmap = get(s:previous_map, mode, "")
     let pchar = get(s:previous_char, mode, 0)
@@ -40,7 +40,7 @@ function! clever_f#repeat(...)
         return ''
     endif
 
-    if back
+    if g:clever_f_fix_key_direction ? (! s:first_move[mode] && (pmap =~# '\u' ? !a:back : a:back)) : a:back
         let pmap = s:swapcase(pmap)
     endif
 

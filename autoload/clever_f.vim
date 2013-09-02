@@ -72,11 +72,10 @@ function! s:move_cmd_for_visualmode(map, char)
     endif
 
     call setpos("''", [0] + next_pos + [0])
-    let cmd = "``"
     let mode = mode(1)
     let s:previous_pos[mode] = next_pos
 
-    return cmd
+    return "``"
 endfunction
 
 function! s:search(pat, flag)

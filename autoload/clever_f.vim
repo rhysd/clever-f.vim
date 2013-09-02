@@ -109,7 +109,7 @@ function! s:load_migemo_dict()
         return clever_f#migemo#eucjp#load_dict()
     else
         let g:clever_f_use_migemo = 0
-        throw "Error: ".enc." is not supported. Migemo is disabled."
+        throw "Error: ".enc." is not supported. Migemo is made disabled."
     endif
 endfunction
 

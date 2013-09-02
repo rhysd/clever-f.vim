@@ -1,4 +1,4 @@
-*clever-f.txt*
+*clever-f.txt*                                      Make |f|, |F|, |t| and |T| cleverer.
 
 Author : rhysd <lin90162@yahoo.co.jp>
 
@@ -14,15 +14,20 @@ License           |clever-f.vim-license|
 
 
 ==============================================================================
-INTRODUCTION                                       *clever-f.vim-introduction*
+INTRODUCTION                                         *clever-f.vim-introduction*
 
-*clever-f.vim* or *clever-f* extends |f| mapping for more convenience.
-You can forget the existence of |;|. Instead of |;|, f is available to repeat
-after you type f{char} or F{char}. So, you can use |;| for other key mappings.
+*clever-f.vim* or *clever-f* extends |f|, |F|, |t| and |T| key mappings for more
+convenience.
+Instead of |;|, |f| is available to repeat after you type |f|{char} or |F|{char}.  |F|
+after |f|{char} and |F|{char} is also available to undo a jump. |t|{char} and
+|T|{char} are ditto. This extension makes a repeat easier and makes you forget
+the existence of |;|. You can use |;| for other key mapping.
+In addition, you can customize a behavior of the mappings. Please check
+|clever-f.vim-variables|.
 
 
 ==============================================================================
-USAGE                                                     *clever-f.vim-usage*
+USAGE                                                       *clever-f.vim-usage*
 
 I'll show an example of usage. _ is the place of cursor, -> is a move of
 cursor, alphabets above -> is input by keyboard.
@@ -52,9 +57,9 @@ text :  hoge        huga    hoo         hugu                ponyo
 
 
 ==============================================================================
-MAPPINGS                                               *clever-f.vim-mappings*
+MAPPINGS                                                 *clever-f.vim-mappings*
+                                   *g:clever_f_not_overwrites_standard_mappings*
 
-                                 *g:clever_f_not_overwrites_standard_mappings*
 If you don't set |g:clever_f_not_overwrites_standard_mappings|, |clever-f|
 replaces |f|, |F|, |t|, and |T| with |<Plug>(clever-f)|, |<Plug>(clever-F)|,
 |<Plug>(clever-t)| and |<Plug>(clever-T)| as default mappings.
@@ -69,20 +74,20 @@ replaces |f|, |F|, |t|, and |T| with |<Plug>(clever-f)|, |<Plug>(clever-F)|,
 
 
 ==============================================================================
-VARIABLES                                             *clever-f.vim-variables*
+VARIABLES                                               *clever-f.vim-variables*
 
-g:clever_f_across_no_line                          *g:clever_f_across_no_line*
+g:clever_f_across_no_line                            *g:clever_f_across_no_line*
 
     If the value is equivalent to 1, |clever-f| mappings search target
     character only in the cursor line. The default value is 0.
 
-g:clever_f_ignore_case                                *g:clever_f_ignore_case*
+g:clever_f_ignore_case                                  *g:clever_f_ignore_case*
 
     If the value is equivalent to 1, it makes |clever-f| mappings' search case
     insensitive. For example, if you input 'fa', it matches both 'a' and 'A'.
     The default value is 0.
 
-g:clever_f_use_migemo                                  *g:clever_f_use_migemo*
+g:clever_f_use_migemo                                    *g:clever_f_use_migemo*
 
     If the value is equivalent to 1, migemo support is enabled. This feature
     is useful in Japanese environment. |clever-f| can match multibyte Japanese
@@ -94,7 +99,7 @@ g:clever_f_use_migemo                                  *g:clever_f_use_migemo*
 
 
 ==============================================================================
-SPECIAL THANKS                                   *clever-f.vim-special-thanks*
+SPECIAL THANKS                                     *clever-f.vim-special-thanks*
 
 |<Plug>(clever-f-t)|, |<Plug>(clever-f-T)|, repeatability with |.|,
 availability of |[count]| are the works by @thinca. Thanks!
@@ -102,13 +107,14 @@ availability of |[count]| are the works by @thinca. Thanks!
 
 
 ==============================================================================
-REPOSITORY PAGE                                 *clever-f.vim-repository-page*
+REPOSITORY PAGE                                   *clever-f.vim-repository-page*
 
 The latest version of |clever-f| is available at
 https://github.com/rhysd/clever-f.vim
 
+
 ==============================================================================
-LICENSE                                                 *clever-f.vim-license*
+LICENSE                                                   *clever-f.vim-license*
 
 |clever-f.vim| is distributed under MIT license.
 

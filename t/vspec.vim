@@ -418,3 +418,54 @@ describe 'migemo support'
     end
 
 end
+
+
+describe 'g:clever_f_fix_key_direction'
+
+    before
+        new
+        let g:clever_f_fix_key_direction = 1
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+        normal! gg0
+    end
+
+    after
+        close!
+        let g:clever_f_fix_key_direction = 0
+    end
+
+    it 'fix the direction of search for f and F'
+        normal fofff
+        Expect col('.') == 19
+        normal F
+        Expect col('.') == 17
+        normal F
+        Expect col('.') == 14
+        normal F
+        Expect col('.') == 2
+        normal $
+        normal Fo
+        Expect col('.') == 17
+        normal F
+        Expect col('.') == 14
+        normal F
+        Expect col('.') == 2
+    end
+
+    it 'fix the direction of search for t and T'
+        normal tott
+        Expect col('.') == 18
+        normal T
+        Expect col('.') == 15
+        normal T
+        Expect col('.') == 3
+        normal $
+        normal To
+        Expect col('.') == 18
+        normal T
+        Expect col('.') == 15
+        normal T
+        Expect col('.') == 3
+    end
+end

@@ -97,6 +97,20 @@ g:clever_f_use_migemo                                    *g:clever_f_use_migemo*
     Please see http://0xcc.net/migemo/ if you want to know more about migemo.
     The default value of this variable is 0.
 
+g:clever_f_fix_key_direction                      *g:clever_f_fix_key_direction*
+
+    If the value is equivalent to 1, the directions of keys are fixed. For
+    example, |F| is backward search and repeating of |F| after |F| makes the
+    same direction search.  Below is the behavior. Please compare examples of
+    |clever-f.vim-usage|.
+    The default value is 0.
+
+input:        F        Fh       b     F                         Fo
+move :  _<----------_<------_<-_<----------------------------_<-_
+input:        f        f          f
+move :  _---------->_------>_----------->_
+text :  hoge        huga    huyo         hugu                ponyo
+
 
 ==============================================================================
 SPECIAL THANKS                                     *clever-f.vim-special-thanks*

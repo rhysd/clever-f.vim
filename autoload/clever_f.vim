@@ -49,8 +49,8 @@ function! clever_f#repeat(...)
     else
         let inclusive = mode ==# 'no' && pmap =~# '\l'
         let cmd = printf("%s:\<C-u>call clever_f#find(%s, %s)\<CR>",
-        \                inclusive ? 'v' : '',
-        \                string(pmap), pchar)
+                    \    inclusive ? 'v' : '',
+                    \    string(pmap), pchar)
     endif
 
     return cmd

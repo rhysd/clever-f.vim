@@ -17,17 +17,24 @@ let s:root_dir = s:chomp_head(s:chomp(system('git rev-parse --show-cdup')))
 execute 'set' 'rtp +=./'.s:root_dir
 runtime! plugin/clever-f.vim
 
+call vspec#customize_matcher('to_exists', function('exists'))
 
-describe 'default settings'
+function! ExistsAndDefaultIs(var, default)
+    return exists(a:var) && {a:var} == a:default
+endfunction
+call vspec#customize_matcher('to_exists_and_be_default_to', function('ExistsAndDefaultIs'))
+
+
+describe 'Default settings'
 
     it 'provide default <Plug> mappings'
-        Expect maparg('<Plug>(clever-f-f)') ==# "clever_f#find_with('f')"
-        Expect maparg('<Plug>(clever-f-F)') ==# "clever_f#find_with('F')"
-        Expect maparg('<Plug>(clever-f-t)') ==# "clever_f#find_with('t')"
-        Expect maparg('<Plug>(clever-f-T)') ==# "clever_f#find_with('T')"
-        Expect maparg('<Plug>(clever-f-reset)') ==# 'clever_f#reset()'
+        Expect maparg('<Plug>(clever-f-f)')              ==# "clever_f#find_with('f')"
+        Expect maparg('<Plug>(clever-f-F)')              ==# "clever_f#find_with('F')"
+        Expect maparg('<Plug>(clever-f-t)')              ==# "clever_f#find_with('t')"
+        Expect maparg('<Plug>(clever-f-T)')              ==# "clever_f#find_with('T')"
+        Expect maparg('<Plug>(clever-f-reset)')          ==# 'clever_f#reset()'
         Expect maparg('<Plug>(clever-f-repeat-forward)') ==# 'clever_f#repeat(0)'
-        Expect maparg('<Plug>(clever-f-repeat-back)') ==# 'clever_f#repeat(1)'
+        Expect maparg('<Plug>(clever-f-repeat-back)')    ==# 'clever_f#repeat(1)'
     end
 
     it 'provide autoload functions'
@@ -37,15 +44,24 @@ describe 'default settings'
             runtime autoload/clever_f/helper.vim
         catch
         endtry
-        Expect exists('*clever_f#find_with') to_be_true
-        Expect exists('*clever_f#reset') to_be_true
-        Expect exists('*clever_f#repeat') to_be_true
-        Expect exists('*clever_f#helper#system') to_be_true
-        Expect exists('*clever_f#helper#strchars') to_be_true
-        Expect exists('*clever_f#helper#include_multibyte_char') to_be_true
+        Expect '*clever_f#find_with' to_exists
+        Expect '*clever_f#reset' to_exists
+        Expect '*clever_f#repeat' to_exists
+        Expect '*clever_f#helper#system' to_exists
+        Expect '*clever_f#helper#strchars' to_exists
+        Expect '*clever_f#helper#include_multibyte_char' to_exists
+    end
+
+    it 'provide variables to customize clever-f'
+        Expect 'g:clever_f_across_no_line' to_exists_and_be_default_to 0
+        Expect 'g:clever_f_ignore_case' to_exists_and_be_default_to 0
+        Expect 'g:clever_f_use_migemo' to_exists_and_be_default_to 0
+        Expect 'g:clever_f_fix_key_direction' to_exists_and_be_default_to 0
+        Expect 'g:loaded_clever_f' to_exists_and_be_default_to 1
     end
 
 end
+
 
 function! AddLine(str)
     put! =a:str
@@ -171,6 +187,7 @@ describe 'f, F, t and T mappings'
         Expect getline('.') == "poyo"
         Expect CursorPos() == [l, 2, 'o']
     end
+
 end
 
 
@@ -199,6 +216,7 @@ describe 'f and F mappings'' context'
         normal f
         Expect CursorPos() == [l,11,'h']
     end
+
 end
 
 
@@ -229,6 +247,7 @@ describe 'a non-existent char'
         normal fm
         Expect CursorPos() == origin
     end
+
 end
 
 
@@ -287,6 +306,7 @@ describe 'when target is in other line, f and F mappings'
         normal F
         Expect CursorPos() == [l, 10, 'a']
     end
+
 end
 
 
@@ -318,6 +338,7 @@ describe 'multibyte characters'
         normal fx
         Expect CursorPos() == [l+1, 29, 'x']
     end
+
 end
 
 
@@ -351,6 +372,7 @@ describe 'g:clever_f_ignore_case'
         normal F
         Expect CursorPos() == [l, 6, 'G']
     end
+
 end
 
 describe 'clever_f#helper#include_multibyte_char'
@@ -361,12 +383,13 @@ describe 'clever_f#helper#include_multibyte_char'
         Expect clever_f#helper#include_multibyte_char("１２3ABC４5") to_be_true
     end
 
-    it 'return true when the argument includes multibyte char'
+    it 'return false when the argument does not include multibyte char'
         Expect clever_f#helper#include_multibyte_char("aiueo") to_be_false
         Expect clever_f#helper#include_multibyte_char("this_is_a_pen.") to_be_false
         Expect clever_f#helper#include_multibyte_char("!#$%&'()'") to_be_false
         Expect clever_f#helper#include_multibyte_char("") to_be_false
     end
+
 end
 
 
@@ -468,4 +491,5 @@ describe 'g:clever_f_fix_key_direction'
         normal T
         Expect col('.') == 3
     end
+
 end

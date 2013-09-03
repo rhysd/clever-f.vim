@@ -111,6 +111,12 @@ input:        f        f          f
 move :  _---------->_------>_----------->_
 text :  hoge        huga    huyo         hugu                ponyo
 
+g:clever_f_show_prompt                                  *g:clever_f_show_prompt*
+
+    If the value is equivalent to 1, a prompt is shown when a character is
+    input to search. The prompt is disposed after the input.
+    The default value is 0.
+
 
 ==============================================================================
 SPECIAL THANKS                                     *clever-f.vim-special-thanks*

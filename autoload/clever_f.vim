@@ -20,6 +20,7 @@ function! clever_f#find_with(map)
 
     let mode = mode(1)
     if current_pos != get(s:previous_pos, mode, [0, 0])
+        " TODO consider an argument of getchar(). 0 is needed?
         let s:previous_char[mode] = getchar()
         let s:previous_map[mode] = a:map
         let s:first_move[mode] = 1

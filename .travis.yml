@@ -1,7 +1,7 @@
-language: viml
+language: ruby
 script:
     - vim --version
-    - cd t/
-    - ../vim-vspec/bin/vspec ../vim-vspec vspec.vim
+    - ./t/travis.rb
+rvm: 2.0.0
 install:
     - git clone https://github.com/kana/vim-vspec.git

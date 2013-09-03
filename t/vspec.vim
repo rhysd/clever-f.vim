@@ -493,3 +493,27 @@ describe 'g:clever_f_fix_key_direction'
     end
 
 end
+
+describe 'Special characters'
+
+    before
+        new
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+        normal! gg0
+    end
+
+    after
+        close!
+    end
+
+    it 'cannot break clever-f.vim'
+        let pos = getpos('.')
+        execute 'normal' "f\<F1>"
+        execute 'normal' "f\<Left>"
+        execute 'normal' "f\<BS>"
+        execute 'normal' "f\<Esc>"
+        Expect pos == getpos('.')
+    end
+
+end

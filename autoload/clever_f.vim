@@ -43,6 +43,11 @@ function! clever_f#repeat(back)
         return ''
     endif
 
+    " ignore special characters like \<Left>
+    if type(pchar) == type("") && char2nr(pchar) == 128
+        return ''
+    endif
+
     if g:clever_f_fix_key_direction ? (! s:first_move[mode] && (pmap =~# '\u' ? !a:back : a:back)) : a:back
         let pmap = s:swapcase(pmap)
     endif

@@ -34,7 +34,7 @@ cursor, alphabets above -> is input by keyboard.
     text :  hoge        huga    hoo         hugu                ponyo
 
 
-## Unstable version
+## UNSTABLE VERSION
 
 If you want to use the latest version, use [dev branch](https://github.com/rhysd/clever-f.vim/tree/dev).
 

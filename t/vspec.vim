@@ -310,7 +310,7 @@ describe 'when target is in other line, f and F mappings'
 end
 
 
-describe 'multibyte characters'
+describe 'Multibyte characters'
 
     before
         new

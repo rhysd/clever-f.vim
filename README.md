@@ -1,4 +1,4 @@
-## INTRODUCTION [![Build Status](https://travis-ci.org/rhysd/clever-f.vim.png?branch=dev)](https://travis-ci.org/rhysd/clever-f.vim)
+## INTRODUCTION [![Build Status](https://travis-ci.org/rhysd/clever-f.vim.png?branch=master)](https://travis-ci.org/rhysd/clever-f.vim)
 
 clever-f.vim extends `f`, `F`, `t` and `T` mappings for more convenience.  Instead of `;`, `f` is available to repeat after you type `f{char}` or `F{char}`.  `F` after `f{char}` and `F{char}` is also available to undo a jump. `t{char}` and `T{char}` are ditto. This extension makes a repeat easier and makes you forget the existence of `;`. You can use `;` for other key mapping.
 In addition, you can customize a behavior of the mappings.
@@ -33,10 +33,6 @@ cursor, alphabets above -> is input by keyboard.
     move :                         _<-----------------------------__
     text :  hoge        huga    hoo         hugu                ponyo
 
-
-## UNSTABLE VERSION
-
-If you want to use the latest version, use [dev branch](https://github.com/rhysd/clever-f.vim/tree/dev).
 
 
 ## CUSTOMIZE
@@ -76,6 +72,12 @@ If you always want to search forward with `f` and always want to search backward
 ### Show prompt
 
 If you want to show a prompt when you input a character for clever-f, set `g:clever_f_show_prompt` to `1`. The prompt is disposed after a character is input.
+
+
+
+## UNSTABLE VERSION
+
+If you want to use the latest version, use [dev branch](https://github.com/rhysd/clever-f.vim/tree/dev).
 
 
 

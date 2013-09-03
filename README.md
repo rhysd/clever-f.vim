@@ -1,7 +1,7 @@
 ## INTRODUCTION [![Build Status](https://travis-ci.org/rhysd/clever-f.vim.png?branch=dev)](https://travis-ci.org/rhysd/clever-f.vim)
 
-clever-f.vim extends `f` mapping for more convenience. You may be able to forget the existence of `;`. And you can use `;` for an other mapping.
-clever-f.vim is distributed under MIT license. See `doc/clever_f.txt` to get more information.
+clever-f.vim extends `f`, `F`, `t` and `T` mappings for more convenience.  Instead of `;`, `f` is available to repeat after you type `f{char}` or `F{char}`.  `F` after `f{char}` and `F{char}` is also available to undo a jump. `t{char}` and `T{char}` are ditto. This extension makes a repeat easier and makes you forget the existence of `;`. You can use `;` for other key mapping.
+In addition, you can customize a behavior of the mappings.
 
 
 

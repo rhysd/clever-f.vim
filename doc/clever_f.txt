@@ -42,7 +42,7 @@ text :  hoge        huga    hoo         hugu                ponyo
 
 
 input:        f        Fh       b     f                         Fo
-move :  _<----------_<------_<-_<----------------------------_<-_
+move :  _<----------_<------_<-_<-----------------------------_<-_
 input:        F        F          F
 move :  _---------->_------>_----------->_
 text :  hoge        huga    huyo         hugu                ponyo
@@ -105,8 +105,8 @@ g:clever_f_fix_key_direction                      *g:clever_f_fix_key_direction*
     |clever-f.vim-usage|.
     The default value is 0.
 
-input:        F        Fh       b     F                         Fo
-move :  _<----------_<------_<-_<----------------------------_<-_
+input:        F        Fh     b     F                         Fo
+move :  _<----------_<------_<-_<-----------------------------_<-_
 input:        f        f          f
 move :  _---------->_------>_----------->_
 text :  hoge        huga    huyo         hugu                ponyo

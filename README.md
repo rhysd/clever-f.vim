@@ -57,6 +57,12 @@ Set `clever_f_use_migemo` to `1` to get migemo support.
 
 If you always want to search forward with `f` and always want to search backward with `F`, set `g:clever_f_fix_key_direction` to `1`.
 
+    input:        F        Fh     b     F                         Fo
+    move :  _<----------_<------_<-_<-----------------------------_<-_
+    input:        f        f          f
+    move :  _---------->_------>_----------->_
+    text :  hoge        huga    huyo         hugu                ponyo
+
 ### Show prompt
 
 If you want to show a prompt when you input a character for clever-f, set `g:clever_f_show_prompt` to `1`. The prompt is disposed after a character is input.

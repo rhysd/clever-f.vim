@@ -19,10 +19,10 @@ runtime! plugin/clever-f.vim
 
 call vspec#customize_matcher('to_exists', function('exists'))
 
-function! ExistsAndDefaultIs(var, default)
+function! ExistsAndDefaultTo(var, default)
     return exists(a:var) && {a:var} == a:default
 endfunction
-call vspec#customize_matcher('to_exists_and_be_default_to', function('ExistsAndDefaultIs'))
+call vspec#customize_matcher('to_exists_and_default_to', function('ExistsAndDefaultTo'))
 
 
 describe 'Default settings'
@@ -53,11 +53,11 @@ describe 'Default settings'
     end
 
     it 'provide variables to customize clever-f'
-        Expect 'g:clever_f_across_no_line' to_exists_and_be_default_to 0
-        Expect 'g:clever_f_ignore_case' to_exists_and_be_default_to 0
-        Expect 'g:clever_f_use_migemo' to_exists_and_be_default_to 0
-        Expect 'g:clever_f_fix_key_direction' to_exists_and_be_default_to 0
-        Expect 'g:loaded_clever_f' to_exists_and_be_default_to 1
+        Expect 'g:clever_f_across_no_line' to_exists_and_default_to 0
+        Expect 'g:clever_f_ignore_case' to_exists_and_default_to 0
+        Expect 'g:clever_f_use_migemo' to_exists_and_default_to 0
+        Expect 'g:clever_f_fix_key_direction' to_exists_and_default_to 0
+        Expect 'g:loaded_clever_f' to_exists_and_default_to 1
     end
 
 end

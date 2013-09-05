@@ -5,3 +5,4 @@ script:
 rvm: 2.0.0
 install:
     - git clone https://github.com/kana/vim-vspec.git
+    - mkdir -p ~/.vim/bundle && cd ~/.vim/bundle && git clone https://github.com/rhysd/vim-vspec-matchers.git

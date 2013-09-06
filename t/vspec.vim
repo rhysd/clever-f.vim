@@ -1,28 +1,23 @@
-" test with vim-vspec
+" test with vim-vspec and vim-vspec-matchers
 " https://github.com/kana/vim-vspec
+" https://github.com/rhysd/vim-vspec-matchers
 
 let s:root_dir = matchstr(system('git rev-parse --show-cdup'), '[^\n]\+')
 execute 'set' 'rtp +=./'.s:root_dir
 runtime! plugin/clever-f.vim
 
-call vspec#customize_matcher('to_exists', function('exists'))
-
-function! ExistsAndDefaultTo(var, default)
-    return exists(a:var) && {a:var} == a:default
-endfunction
-call vspec#customize_matcher('to_exists_and_default_to', function('ExistsAndDefaultTo'))
-
+call vspec#matchers#load()
 
 describe 'Default settings'
 
     it 'provide default <Plug> mappings'
-        Expect maparg('<Plug>(clever-f-f)')              ==# "clever_f#find_with('f')"
-        Expect maparg('<Plug>(clever-f-F)')              ==# "clever_f#find_with('F')"
-        Expect maparg('<Plug>(clever-f-t)')              ==# "clever_f#find_with('t')"
-        Expect maparg('<Plug>(clever-f-T)')              ==# "clever_f#find_with('T')"
-        Expect maparg('<Plug>(clever-f-reset)')          ==# 'clever_f#reset()'
-        Expect maparg('<Plug>(clever-f-repeat-forward)') ==# 'clever_f#repeat(0)'
-        Expect maparg('<Plug>(clever-f-repeat-back)')    ==# 'clever_f#repeat(1)'
+        Expect '<Plug>(clever-f-f)'              to_be_mapped_to "clever_f#find_with('f')"
+        Expect '<Plug>(clever-f-F)'              to_be_mapped_to "clever_f#find_with('F')"
+        Expect '<Plug>(clever-f-t)'              to_be_mapped_to "clever_f#find_with('t')"
+        Expect '<Plug>(clever-f-T)'              to_be_mapped_to "clever_f#find_with('T')"
+        Expect '<Plug>(clever-f-reset)'          to_be_mapped_to 'clever_f#reset()'
+        Expect '<Plug>(clever-f-repeat-forward)' to_be_mapped_to 'clever_f#repeat(0)'
+        Expect '<Plug>(clever-f-repeat-back)'    to_be_mapped_to 'clever_f#repeat(1)'
     end
 
     it 'provide autoload functions'
@@ -32,20 +27,20 @@ describe 'Default settings'
             runtime autoload/clever_f/helper.vim
         catch
         endtry
-        Expect '*clever_f#find_with' to_exists
-        Expect '*clever_f#reset' to_exists
-        Expect '*clever_f#repeat' to_exists
-        Expect '*clever_f#helper#system' to_exists
-        Expect '*clever_f#helper#strchars' to_exists
-        Expect '*clever_f#helper#include_multibyte_char' to_exists
+        Expect '*clever_f#find_with' to_exist
+        Expect '*clever_f#reset' to_exist
+        Expect '*clever_f#repeat' to_exist
+        Expect '*clever_f#helper#system' to_exist
+        Expect '*clever_f#helper#strchars' to_exist
+        Expect '*clever_f#helper#include_multibyte_char' to_exist
     end
 
     it 'provide variables to customize clever-f'
-        Expect 'g:clever_f_across_no_line' to_exists_and_default_to 0
-        Expect 'g:clever_f_ignore_case' to_exists_and_default_to 0
-        Expect 'g:clever_f_use_migemo' to_exists_and_default_to 0
-        Expect 'g:clever_f_fix_key_direction' to_exists_and_default_to 0
-        Expect 'g:loaded_clever_f' to_exists_and_default_to 1
+        Expect 'g:clever_f_across_no_line' to_exist_and_default_to 0
+        Expect 'g:clever_f_ignore_case' to_exist_and_default_to 0
+        Expect 'g:clever_f_use_migemo' to_exist_and_default_to 0
+        Expect 'g:clever_f_fix_key_direction' to_exist_and_default_to 0
+        Expect 'g:loaded_clever_f' to_exist_and_default_to 1
     end
 
 end

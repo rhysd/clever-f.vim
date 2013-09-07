@@ -477,6 +477,7 @@ describe 'g:clever_f_fix_key_direction'
 
 end
 
+
 describe 'Special characters'
 
     before
@@ -499,4 +500,66 @@ describe 'Special characters'
         Expect pos == getpos('.')
     end
 
+end
+
+
+describe 'g:clever_f_smart_case'
+
+    before
+        new
+        call clever_f#reset()
+        call AddLine('poHe huga Hiyo hoyo')
+        normal! gg0
+        let g:clever_f_smart_case = 1
+    end
+
+    after
+        close!
+        let g:clever_f_smart_case = 0
+    end
+
+    it 'makes f smart case'
+        normal fh
+        Expect col('.') == 3
+        normal f
+        Expect col('.') == 6
+        normal f
+        Expect col('.') == 11
+        normal f
+        Expect col('.') == 16
+        normal F
+        Expect col('.') == 11
+
+        normal 0
+        normal fH
+        Expect col('.') == 3
+        normal f
+        Expect col('.') == 11
+        normal f
+        Expect col('.') == 11
+        normal F
+        Expect col('.') == 3
+    end
+
+    it 'makes t smart case'
+        normal! $
+        normal Th
+        Expect col('.') == 17
+        normal t
+        Expect col('.') == 12
+        normal t
+        Expect col('.') == 7
+        normal t
+        Expect col('.') == 4
+        normal T
+        Expect col('.') == 5
+
+        normal! $
+        normal TH
+        Expect col('.') == 12
+        normal t
+        Expect col('.') == 4
+        normal T
+        Expect col('.') == 10
+    end
 end

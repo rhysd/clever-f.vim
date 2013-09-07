@@ -47,6 +47,11 @@ Please set it to `1` in your vimrc to search a character only in current line.
 `g:clever_f_ignore_case` controls to make a search case-insensitive or not.
 Please set it to `1` in your vimrc to ignore case.
 
+### Smart case
+`g:clever_f_smart_case` controls make smart case or not.
+If and only if you type an lower case character, clever-f.vim ignores case.
+Please set it to `1` in your vimrc to make smart case
+
 ### Migemo support
 
 In Japanese environment, it is convenient that `fa` matches `あ` in some cases. Originally, this feature is provided by [migemo](http://0xcc.net/migemo/).

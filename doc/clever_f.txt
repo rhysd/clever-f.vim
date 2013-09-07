@@ -87,6 +87,13 @@ g:clever_f_ignore_case                                  *g:clever_f_ignore_case*
     insensitive. For example, if you input 'fa', it matches both 'a' and 'A'.
     The default value is 0.
 
+g:clever_f_smart_case                                    *g:clever_f_smart_case*
+
+    If the value is equivalent to 1, it makes |clever-f| mappings' search
+    smart case. For example, if you input 'fa', it matches both 'a' and 'A',
+    but if you input 'fA', it matches only 'A'.
+    The default value is 0.
+
 g:clever_f_use_migemo                                    *g:clever_f_use_migemo*
 
     If the value is equivalent to 1, migemo support is enabled. This feature

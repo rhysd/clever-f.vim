@@ -22,5 +22,6 @@ let g:clever_f_ignore_case = get(g:, 'clever_f_ignore_case', 0)
 let g:clever_f_use_migemo = get(g:, 'clever_f_use_migemo', 0)
 let g:clever_f_fix_key_direction = get(g:, 'clever_f_fix_key_direction', 0)
 let g:clever_f_show_prompt = get(g:, 'clever_f_show_prompt', 0)
+let g:clever_f_smart_case = get(g:, 'clever_f_smart_case', 0)
 
 let g:loaded_clever_f = 1

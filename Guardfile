@@ -18,7 +18,7 @@ end
 guard :shell do
   watch /^(.+\.vim)$/ do |m|
     v = Vspec.new
-    v.run "t/vspec.vim"
+    v.run "t/vspec.vim", autoloads: ['~/.vim/bundle/vim-vspec-matchers']
     if v.success?
       failed = v.count_failed
       notify("#{failed} test#{failed>1 ? 's' : ''} failed") unless failed==0

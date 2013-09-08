@@ -10,6 +10,10 @@ call vspec#matchers#load()
 
 describe 'Default settings'
 
+    it 'loads plugin file'
+        Expect 'clever_f' to_be_loaded
+    end
+
     it 'provide default <Plug> mappings'
         Expect '<Plug>(clever-f-f)'              to_be_mapped_to "clever_f#find_with('f')"
         Expect '<Plug>(clever-f-F)'              to_be_mapped_to "clever_f#find_with('F')"
@@ -40,7 +44,8 @@ describe 'Default settings'
         Expect 'g:clever_f_ignore_case' to_exist_and_default_to 0
         Expect 'g:clever_f_use_migemo' to_exist_and_default_to 0
         Expect 'g:clever_f_fix_key_direction' to_exist_and_default_to 0
-        Expect 'g:loaded_clever_f' to_exist_and_default_to 1
+        Expect 'g:clever_f_show_prompt' to_exist_and_default_to 0
+        Expect 'g:clever_f_smart_case' to_exist_and_default_to 0
     end
 
 end

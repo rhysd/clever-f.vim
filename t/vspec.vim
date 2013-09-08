@@ -336,7 +336,7 @@ describe 'g:clever_f_ignore_case'
         new
         let g:clever_f_ignore_case = 1
         call clever_f#reset()
-        call AddLine('poge Guga hiyo Goyo')
+        call AddLine('poge Guga hiyo Go;yo;')
     end
 
     after
@@ -359,6 +359,15 @@ describe 'g:clever_f_ignore_case'
 
         normal F
         Expect CursorPos() == [l, 6, 'G']
+    end
+
+    it 'makes no effect on searching signs'
+        normal! 0
+        normal f;
+        Expect col('.') == 18
+        normal f
+        Expect col('.') == 21
+        Expect 'normal f' not to_move_cursor
     end
 
 end
@@ -513,7 +522,7 @@ describe 'g:clever_f_smart_case'
     before
         new
         call clever_f#reset()
-        call AddLine('poHe huga Hiyo hoyo')
+        call AddLine('poHe huga Hiyo hoyo: poyo();')
         normal! gg0
         let g:clever_f_smart_case = 1
     end
@@ -566,5 +575,14 @@ describe 'g:clever_f_smart_case'
         Expect col('.') == 4
         normal T
         Expect col('.') == 10
+    end
+
+    it 'makes no effect on searching signs'
+" poHe huga Hiyo hoyo: poyo();
+        normal! 0
+        normal f;
+        Expect col('.') == 28
+        normal! 0
+        Expect 'normal f"' not to_move_cursor
     end
 end

@@ -10,7 +10,7 @@ call vspec#matchers#load()
 
 describe 'Default settings'
 
-    it 'loads plugin file'
+    it 'load plugin file'
         Expect 'clever_f' to_be_loaded
     end
 

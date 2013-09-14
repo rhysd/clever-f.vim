@@ -578,7 +578,6 @@ describe 'g:clever_f_smart_case'
     end
 
     it 'makes no effect on searching signs'
-" poHe huga Hiyo hoyo: poyo();
         normal! 0
         normal f;
         Expect col('.') == 28

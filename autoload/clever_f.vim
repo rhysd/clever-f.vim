@@ -94,8 +94,8 @@ function! s:search(pat, flag)
     endif
 endfunction
 
-function! s:should_use_migemo()
-    if ! g:clever_f_use_migemo
+function! s:should_use_migemo(char)
+    if ! g:clever_f_use_migemo || a:char !~# '^\a$'
         return 0
     endif
 
@@ -124,8 +124,8 @@ function! s:generate_pattern(map, char)
     let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
     let regex = char
 
-    let should_use_migemo = s:should_use_migemo()
-    if should_use_migemo && regex =~# '^\a$'
+    let should_use_migemo = s:should_use_migemo(char)
+    if should_use_migemo
         if ! has_key(s:migemo_dicts, &l:encoding)
             let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
         endif
@@ -138,7 +138,11 @@ function! s:generate_pattern(map, char)
         let regex = regex . '\@<=\_.'
     endif
 
-    return ((g:clever_f_smart_case && char =~# '\l') || g:clever_f_ignore_case ? '\c' : '\C') . (should_use_migemo ? '' : '\V') . regex
+    if ! should_use_migemo
+        let regex = '\V'.regex
+    endif
+
+    return ((g:clever_f_smart_case && char =~# '\l') || g:clever_f_ignore_case ? '\c' : '\C') . regex
 endfunction
 
 function! s:next_pos(map, char, count)

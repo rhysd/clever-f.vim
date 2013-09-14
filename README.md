@@ -10,6 +10,7 @@ In addition, you can customize a behavior of the mappings.
 I'll show some examples of usage. _ is the place of cursor, -> is a move of
 cursor, alphabets above -> is input by keyboard.
 
+![Screen shot](http://gifzo.net/LRNAnxYhCq.gif)
 
     input:       fh         f         f      e         fo         f
     move :  _---------->_------>_---------->_->_---------------->_->_

@@ -46,6 +46,7 @@ describe 'Default settings'
         Expect 'g:clever_f_fix_key_direction' to_exist_and_default_to 0
         Expect 'g:clever_f_show_prompt' to_exist_and_default_to 0
         Expect 'g:clever_f_smart_case' to_exist_and_default_to 0
+        Expect 'g:clever_f_chars_match_any_signs' to_exist_and_default_to ''
     end
 
 end
@@ -584,4 +585,39 @@ describe 'g:clever_f_smart_case'
         normal! 0
         Expect 'normal f"' not to_move_cursor
     end
+
+end
+
+describe 'g:clever_f_chars_match_any_signs'
+
+    before
+        new
+        call AddLine(' !"#$%&''()=~|\-^\@`[]{};:+*<>,.?_/')
+        let g:clever_f_chars_match_any_signs = ';'
+        normal! gg0
+    end
+
+    after
+        close!
+        let g:clever_f_chars_match_any_signs = ''
+    end
+
+    it 'specifies characters which match to any signs'
+        normal f;
+        Expect col('.') == 2
+        for i in range(3, 34)
+            normal f
+            Expect col('.') == i
+        endfor
+
+        Expect 'normal f' not to_move_cursor
+
+        for i in reverse(range(2, 33))
+            normal F
+            Expect col('.') == i
+        endfor
+
+        Expect 'normal F' not to_move_cursor
+    end
+
 end

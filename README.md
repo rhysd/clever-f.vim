@@ -76,7 +76,7 @@ If you want to show a prompt when you input a character for clever-f, set `g:cle
 
 Many sign(like {, (, ", and so on) keys are hard to press. If you want to match `;` key to all signs, you can use `g:clever_f_chars_match_any_signs`. If you set it to `';'`, `f;` matches all signs.
 
-    input:   f;   ;       ;      ; ;       ;       ;
+    input:   f;   f       f      f f       f       f
     move :  _-->_--->_--------->_>_>_------------>_>_
     text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
 

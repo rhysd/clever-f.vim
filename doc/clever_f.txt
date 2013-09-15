@@ -137,10 +137,10 @@ g:clever_f_chars_match_any_signs              *g:clever_f_chars_match_any_signs*
     matches all signs. You can jump signs whose keys are hard to press.
     The default value is ''.
 
-    input:   f;   ;       ;      ; ;       ;       ;
+    input:   f;   f       f      f f       f       f
     move :  _-->_--->_--------->_>_>_------------>_>_
     text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
-    
+
 ==============================================================================
 SPECIAL THANKS                                     *clever-f.vim-special-thanks*
 

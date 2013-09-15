@@ -72,6 +72,13 @@ If you always want to search forward with `f` and always want to search backward
 
 If you want to show a prompt when you input a character for clever-f, set `g:clever_f_show_prompt` to `1`. The prompt is disposed after a character is input.
 
+### Match all signs with one char
+
+Many sign(like {, (, ", and so on) keys are hard to press. If you want to match `;` key to all signs, you can use `g:clever_f_chars_match_any_signs`. If you set it to `';'`, `f;` matches all signs.
+
+    input:   f;   ;       ;      ; ;       ;       ;
+    move :  _-->_--->_--------->_>_>_------------>_>_
+    text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
 
 
 ## LICENSE

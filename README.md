@@ -49,6 +49,11 @@ Please set it to `1` in your vimrc to search a character only in current line.
 `g:clever_f_ignore_case` controls to make a search case-insensitive or not.
 Please set it to `1` in your vimrc to ignore case.
 
+### Smart case
+`g:clever_f_smart_case` controls make smart case or not.
+If and only if you type an lower case character, clever-f.vim ignores case.
+Please set it to `1` in your vimrc to make smart case
+
 ### Migemo support
 
 In Japanese environment, it is convenient that `fa` matches `あ` in some cases. Originally, this feature is provided by [migemo](http://0xcc.net/migemo/).
@@ -69,6 +74,13 @@ If you always want to search forward with `f` and always want to search backward
 
 If you want to show a prompt when you input a character for clever-f, set `g:clever_f_show_prompt` to `1`. The prompt is disposed after a character is input.
 
+### Match all signs with one char
+
+Many sign(like {, (, ", and so on) keys are hard to press. If you want to match `;` key to all signs, you can use `g:clever_f_chars_match_any_signs`. If you set it to `';'`, `f;` matches all signs.
+
+    input:   f;   f       f      f f       f       f
+    move :  _-->_--->_--------->_>_>_------------>_>_
+    text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
 
 
 ## UNSTABLE VERSION

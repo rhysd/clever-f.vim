@@ -1,4 +1,4 @@
-" モードをキーにする辞書で定義
+" keys are mode string returned from mode()
 function! clever_f#reset()
     let s:previous_map = {}
     let s:previous_char = {}

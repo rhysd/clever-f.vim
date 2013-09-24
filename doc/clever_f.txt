@@ -155,6 +155,9 @@ REPOSITORY PAGE                                   *clever-f.vim-repository-page*
 The latest version of |clever-f| is available at
 https://github.com/rhysd/clever-f.vim
 
+Contributions (pull requests) are welcome. None of them are too short.
+Especially, English check is very helpful because I'm poor at English :(
+
 
 ==============================================================================
 LICENSE                                                   *clever-f.vim-license*

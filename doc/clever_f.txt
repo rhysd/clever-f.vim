@@ -62,8 +62,8 @@ MAPPINGS                                                 *clever-f.vim-mappings*
                                    *g:clever_f_not_overwrites_standard_mappings*
 
 If you don't set |g:clever_f_not_overwrites_standard_mappings|, |clever-f|
-replaces |f|, |F|, |t|, and |T| with |<Plug>(clever-f)|, |<Plug>(clever-F)|,
-|<Plug>(clever-t)| and |<Plug>(clever-T)| as default mappings.
+replaces |f|, |F|, |t|, and |T| with |<Plug>(clever-f-f)|, |<Plug>(clever-f-F)|,
+|<Plug>(clever-f-t)| and |<Plug>(clever-f-T)| as default mappings.
 
 <Plug>(clever-f-f)                    *<Plug>(clever-f-f)*
 <Plug>(clever-f-F)                    *<Plug>(clever-f-F)*

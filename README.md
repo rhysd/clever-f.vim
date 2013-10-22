@@ -80,6 +80,11 @@ Many sign(like {, (, ", and so on) keys are hard to press. If you want to match 
     move :  _-->_--->_--------->_>_>_------------>_>_
     text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
 
+### Reset current search
+
+If you'd like to reset the current search character, set
+`g:clever_f_reset_key` with the keys you'd like to use.
+
 
 ## LICENSE
 

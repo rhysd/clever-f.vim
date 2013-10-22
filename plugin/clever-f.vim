@@ -19,7 +19,7 @@ endif
 
 if exists('g:clever_f_reset_key')
     let g:clever_f_reset_key = get(g:, 'clever_f_reset_key', '')
-    execute "noremap" g:clever_f_reset_key ":call clever_f#reset()<CR>"
+    execute "map" g:clever_f_reset_key ":call clever_f#reset()<CR>"
 endif
 
 let g:clever_f_across_no_line        = get(g:, 'clever_f_across_no_line', 0)

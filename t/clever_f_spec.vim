@@ -15,13 +15,13 @@ describe 'Default settings'
     end
 
     it 'provide default <Plug> mappings'
-        Expect '<Plug>(clever-f-f)'              to_be_mapped_to "clever_f#find_with('f')"
-        Expect '<Plug>(clever-f-F)'              to_be_mapped_to "clever_f#find_with('F')"
-        Expect '<Plug>(clever-f-t)'              to_be_mapped_to "clever_f#find_with('t')"
-        Expect '<Plug>(clever-f-T)'              to_be_mapped_to "clever_f#find_with('T')"
-        Expect '<Plug>(clever-f-reset)'          to_be_mapped_to 'clever_f#reset()'
-        Expect '<Plug>(clever-f-repeat-forward)' to_be_mapped_to 'clever_f#repeat(0)'
-        Expect '<Plug>(clever-f-repeat-back)'    to_be_mapped_to 'clever_f#repeat(1)'
+        Expect '<Plug>(clever-f-f)'              to_map_to "clever_f#find_with('f')", 'nv'
+        Expect '<Plug>(clever-f-F)'              to_map_to "clever_f#find_with('F')", 'nv'
+        Expect '<Plug>(clever-f-t)'              to_map_to "clever_f#find_with('t')", 'nv'
+        Expect '<Plug>(clever-f-T)'              to_map_to "clever_f#find_with('T')", 'nv'
+        Expect '<Plug>(clever-f-reset)'          to_map_to 'clever_f#reset()', 'nv'
+        Expect '<Plug>(clever-f-repeat-forward)' to_map_to 'clever_f#repeat(0)', 'nv'
+        Expect '<Plug>(clever-f-repeat-back)'    to_map_to 'clever_f#repeat(1)', 'nv'
     end
 
     it 'provide autoload functions'

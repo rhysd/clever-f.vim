@@ -20,11 +20,17 @@ function! clever_f#find_with(map)
 
     let mode = mode(1)
     if current_pos != get(s:previous_pos, mode, [0, 0])
+        if g:clever_f_mark_cursor
+            let cursor = matchadd('CleverFCursor', '\%#', 999)
+            redraw!
+        endif
         " TODO consider an argument of getchar(). 0 is needed?
         if g:clever_f_show_prompt | echon "clever-f: " | endif
         let s:previous_char[mode] = getchar()
         let s:previous_map[mode] = a:map
         let s:first_move[mode] = 1
+
+        if g:clever_f_mark_cursor | call matchdelete(cursor) | endif
         if g:clever_f_show_prompt | redraw! | endif
     else
         " when repeated

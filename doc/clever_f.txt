@@ -142,6 +142,13 @@ g:clever_f_chars_match_any_signs              *g:clever_f_chars_match_any_signs*
     move :  _-->_--->_--------->_>_>_------------>_>_
     text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
 
+g:clever_f_mark_cursor                                 *g:clever_f_mark_cursor*
+
+    If the value is equivalent to 1, current cursor position will be
+    highlighted when waiting for {char}. This way you won't loose your focus
+    from the place your cursor was.
+    The default value is 0.
+
 ==============================================================================
 SPECIAL THANKS                                     *clever-f.vim-special-thanks*
 

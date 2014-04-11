@@ -48,7 +48,8 @@ describe 'Default settings'
         Expect 'g:clever_f_smart_case' to_exist_and_default_to 0
         Expect 'g:clever_f_chars_match_any_signs' to_exist_and_default_to ''
         Expect 'g:clever_f_mark_cursor_color' to_exist_and_default_to 'Cursor'
-        Expect 'g:clever_f_mark_cursor' to_exist_and_default_to 0
+        Expect 'g:clever_f_mark_cursor' to_exist_and_default_to 1
+        Expect 'g:clever_f_hide_cursor_on_cmdline' to_exist_and_default_to 1
     end
 
 end

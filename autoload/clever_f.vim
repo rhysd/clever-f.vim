@@ -24,6 +24,12 @@ function! clever_f#find_with(map)
             let cursor_marker = matchadd('CleverFCursor', '\%#', 999)
             redraw
         endif
+        if g:clever_f_hide_cursor_on_cmdline
+            let guicursor_save = &guicursor
+            set guicursor=n:block-NONE
+            let t_ve_save = &t_ve
+            set t_ve=
+        endif
         if g:clever_f_show_prompt | echon "clever-f: " | endif
         let s:previous_char[mode] = getchar()
         let s:previous_map[mode] = a:map
@@ -31,6 +37,10 @@ function! clever_f#find_with(map)
 
         if g:clever_f_mark_cursor | call matchdelete(cursor_marker) | endif
         if g:clever_f_show_prompt | redraw! | endif
+        if g:clever_f_hide_cursor_on_cmdline
+            let &guicursor = guicursor_save
+            let &t_ve = t_ve_save
+        endif
     else
         " when repeated
         let back = a:map =~# '\u'

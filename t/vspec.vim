@@ -624,3 +624,48 @@ describe 'g:clever_f_chars_match_any_signs'
     end
 
 end
+
+describe 'Cursor marking on input'
+    before
+        new
+        let g:clever_f_mark_cursor = 1
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+    end
+
+    after
+        close!
+    end
+
+    it 'ensures to remove highlight properly'
+        normal fh
+        Expect filter(getmatches(), 'v:val.group!="CleverFCursor"') == []
+        normal fq
+        Expect filter(getmatches(), 'v:val.group!="CleverFCursor"') == []
+    end
+end
+
+describe 'Hiding cursor on command line'
+    before
+        new
+        let g:clever_f_mark_cursor = 1
+        let g:clever_f_hide_cursor_on_cmdline = 1
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+    end
+
+    after
+        close!
+    end
+
+    it 'ensures to restore highlight properly'
+        let guicursor = &guicursor
+        let t_ve = &t_ve
+        normal fh
+        Expect guicursor ==# &guicursor
+        Expect t_ve ==# &t_ve
+        normal fq
+        Expect guicursor ==# &guicursor
+        Expect t_ve ==# &t_ve
+    end
+end

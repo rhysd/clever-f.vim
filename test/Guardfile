@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require './t/vspec_helper'
-
 def notify m
   msg = "'#{m}\\n#{Time.now.to_s}'"
   case

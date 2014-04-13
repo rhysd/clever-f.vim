@@ -7,3 +7,7 @@ end
 task :test do
   sh 'bundle exec vim-flavor test'
 end
+
+task :guard do
+  sh 'guard -w ..'
+end

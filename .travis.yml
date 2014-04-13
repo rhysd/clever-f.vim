@@ -3,4 +3,4 @@ rvm:
   - 1.9.3
 script: rake ci
 install:
-    - bundle install
+    - cd test && bundle install

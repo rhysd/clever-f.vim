@@ -1,8 +1,6 @@
 language: ruby
-script:
-    - vim --version
-    - ./t/travis.rb
-rvm: 2.0.0
+rvm:
+  - 1.9.3
+script: rake ci
 install:
-    - git clone https://github.com/kana/vim-vspec.git
-    - git clone https://github.com/rhysd/vim-vspec-matchers.git
+    - bundle install

@@ -40,6 +40,7 @@ function! clever_f#find_with(map)
         finally
             if g:clever_f_mark_cursor | call matchdelete(cursor_marker) | endif
             if g:clever_f_hide_cursor_on_cmdline
+                set guicursor&
                 let &guicursor = guicursor_save
                 let &t_ve = t_ve_save
             endif

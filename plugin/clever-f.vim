@@ -27,6 +27,7 @@ let g:clever_f_chars_match_any_signs  = get(g:, 'clever_f_chars_match_any_signs'
 let g:clever_f_mark_cursor            = get(g:, 'clever_f_mark_cursor', 1)
 let g:clever_f_mark_cursor_color      = get(g:, 'clever_f_mark_cursor_color', 'Cursor')
 let g:clever_f_hide_cursor_on_cmdline = get(g:, 'clever_f_hide_cursor_on_cmdline', 1)
+let g:clever_f_auto_reset             = get(g:, 'clever_f_auto_reset', 1)
 
 if g:clever_f_mark_cursor
     execute "highlight link CleverFCursor " . g:clever_f_mark_cursor_color

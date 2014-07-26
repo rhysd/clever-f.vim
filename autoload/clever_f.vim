@@ -5,6 +5,7 @@ function! clever_f#reset()
     let s:previous_pos = {}
     let s:first_move = {}
     let s:migemo_dicts = {}
+    let s:last_mode = ''
 
     return ""
 endfunction
@@ -35,6 +36,13 @@ function! clever_f#find_with(map)
             let s:previous_char[mode] = getchar()
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
+            let s:last_mode = mode
+
+            if g:clever_f_auto_reset
+                augroup plugin-clever-f-watcher
+                    autocmd CursorMoved,CursorMovedI,InsertEnter * call s:watch()
+                augroup END
+            endif
 
             if g:clever_f_show_prompt | redraw! | endif
         finally
@@ -88,6 +96,15 @@ function! clever_f#find(map, char)
         let mode = mode(1)
         let s:previous_pos[mode] = next_pos
         call cursor(next_pos[0], next_pos[1])
+    endif
+endfunction
+
+function! s:watch()
+    let pc = get(s:previous_char, s:last_mode, '')
+    let cc = char2nr(getline('.')[col('.')-1])
+    if pc !=# cc
+        call clever_f#reset()
+        autocmd! plugin-clever-f-watcher
     endif
 endfunction
 

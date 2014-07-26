@@ -7,13 +7,26 @@ function! clever_f#reset()
     let s:migemo_dicts = {}
     let s:last_mode = ''
 
+    " Note:
+    " [0, 0] may be invalid because the representation of
+    " return value of reltime() is implentation-depended.
+    let s:timestamp = [0, 0]
+
     return ""
+endfunction
+
+function! s:is_timedout()
+    let cur = reltime()
+    let rel = reltimestr(reltime(s:timestamp, cur))
+    let elapsed_ms = float2nr(str2float(rel) * 1000.0)
+    let s:timestamp = cur
+    return elapsed_ms > g:clever_f_timeout_ms
 endfunction
 
 function! clever_f#find_with(map)
     if a:map !~# '^[fFtT]$'
         echoerr 'invalid mapping: ' . a:map
-        return
+        return ''
     endif
 
     let current_pos = getpos('.')[1 : 2]
@@ -44,6 +57,10 @@ function! clever_f#find_with(map)
                 augroup END
             endif
 
+            if g:clever_f_timeout_ms > 0
+                let s:timestamp = reltime()
+            endif
+
             if g:clever_f_show_prompt | redraw! | endif
         finally
             if g:clever_f_mark_cursor | call matchdelete(cursor_marker) | endif
@@ -55,6 +72,12 @@ function! clever_f#find_with(map)
     else
         " when repeated
         let back = a:map =~# '\u'
+
+        " Reset and retry if timed out
+        if g:clever_f_timeout_ms > 0 && s:is_timedout()
+            call clever_f#reset()
+            return clever_f#find_with(a:map)
+        endif
     endif
 
     return clever_f#repeat(back)

@@ -33,7 +33,7 @@ endfunction
 
 function! s:mark_char_in_current_line(map, char)
     let regex = '\%' . line('.') . 'l' . s:generate_pattern(a:map, a:char)
-    call matchadd('CleverFChar',regex , 999)
+    call matchadd('CleverFChar', regex , 999)
 endfunction
 
 function! clever_f#find_with(map)

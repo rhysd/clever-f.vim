@@ -23,8 +23,9 @@ Instead of |;|, |f| is available to repeat after you type |f|{char} or |F|{char}
 after |f|{char} and |F|{char} is also available to undo a jump. |t|{char} and
 |T|{char} are ditto. This extension makes a repeat easier and makes you forget
 the existence of |;|. You can use |;| for other key mapping.
-In addition, you can customize a behavior of the mappings. Please check
-|clever-f.vim-variables|.
+In addition, many handy features (target highlignting, smartcase matching, and
+so on) are provided and you can customize behavior of the mappings.
+Please check |clever-f.vim-variables|.
 
 
 ==============================================================================
@@ -151,7 +152,7 @@ g:clever_f_mark_cursor                                  *g:clever_f_mark_cursor*
 
 g:clever_f_mark_cursor_color                      *g:clever_f_mark_cursor_color*
 
-    Only used when g:clever_f_mark_cursor is enabled. Change highlight group
+    Only used when |g:clever_f_mark_cursor| is enabled. Change highlight group
     used to mark cursor position.
     The default value is "Cursor".
 
@@ -160,6 +161,30 @@ g:clever_f_hide_cursor_on_cmdline            *g:clever_f_hide_cursor_on_cmdline*
     If the value is equivalent to 1, a cursor is hidden on inputting {char}.
     This feature prevents cursor from moving to command line.
     The default value is 1.
+
+g:clever_f_timeout_ms                                    *g:clever_f_timeout_ms*
+
+    If the value is greater than 0, |clever-f| check the interval of previous
+    search and next search.  If the interval is longer than the value,
+    |clever-f| resets its state to make you input a character. The unit of the
+    value is millisecond.
+    The default value is 0 (it means no timeout).
+
+g:clever_f_mark_char                                      *g:clever_f_mark_char*
+
+    If the value is equivalent to 1, the characters in line which you input
+    in |f|, |F|, |t| and |T| are highlighted until the search ends.  The
+    highlighted characters means candidates the cursor can move to by |f|, |F|, |t|
+    and |T|.  Highlighting is enabled in normal and visual mode.
+    The default value is 1.
+
+g:clever_f_mark_char_color                          *g:clever_f_mark_char_color*
+
+    If |g:clever_f_mark_char| is enabled, |clever-f| highlights the target
+    characters using the highlight group which |g:clever_f_mark_char_color|
+    specifies.  If you want to change the highlight group |clever-f| uses, set
+    your favorite highlight group to this variable.
+    The default value is "Search".
 
 
 ==============================================================================

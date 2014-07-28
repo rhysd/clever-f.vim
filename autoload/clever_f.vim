@@ -1,18 +1,45 @@
 " keys are mode string returned from mode()
 function! clever_f#reset()
+    call s:remove_highlight()
+
     let s:previous_map = {}
-    let s:previous_char = {}
+    let s:previous_char_num = {}
     let s:previous_pos = {}
     let s:first_move = {}
     let s:migemo_dicts = {}
+    let s:last_mode = ''
+
+    " Note:
+    " [0, 0] may be invalid because the representation of
+    " return value of reltime() is implentation-depended.
+    let s:timestamp = [0, 0]
 
     return ""
+endfunction
+
+function! s:remove_highlight()
+    for h in filter(getmatches(), 'v:val.group ==# "CleverFChar"')
+        call matchdelete(h.id)
+    endfor
+endfunction
+
+function! s:is_timedout()
+    let cur = reltime()
+    let rel = reltimestr(reltime(s:timestamp, cur))
+    let elapsed_ms = float2nr(str2float(rel) * 1000.0)
+    let s:timestamp = cur
+    return elapsed_ms > g:clever_f_timeout_ms
+endfunction
+
+function! s:mark_char_in_current_line(map, char)
+    let regex = '\%' . line('.') . 'l' . s:generate_pattern(a:map, a:char)
+    call matchadd('CleverFChar', regex , 999)
 endfunction
 
 function! clever_f#find_with(map)
     if a:map !~# '^[fFtT]$'
         echoerr 'invalid mapping: ' . a:map
-        return
+        return ''
     endif
 
     let current_pos = getpos('.')[1 : 2]
@@ -32,9 +59,25 @@ function! clever_f#find_with(map)
         endif
         try
             if g:clever_f_show_prompt | echon "clever-f: " | endif
-            let s:previous_char[mode] = getchar()
+            let s:previous_char_num[mode] = getchar()
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
+            let s:last_mode = mode
+
+            if g:clever_f_timeout_ms > 0
+                let s:timestamp = reltime()
+            endif
+
+            if g:clever_f_mark_char
+                call s:remove_highlight()
+                if mode =~? '^[nvs]$'
+                    augroup plugin-clever-f-finalizer
+                        autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
+                        autocmd InsertEnter * call s:finalize()
+                    augroup END
+                    call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
+                endif
+            endif
 
             if g:clever_f_show_prompt | redraw! | endif
         finally
@@ -48,6 +91,12 @@ function! clever_f#find_with(map)
     else
         " when repeated
         let back = a:map =~# '\u'
+
+        " reset and retry if timed out
+        if g:clever_f_timeout_ms > 0 && s:is_timedout()
+            call clever_f#reset()
+            return clever_f#find_with(a:map)
+        endif
     endif
 
     return clever_f#repeat(back)
@@ -56,14 +105,14 @@ endfunction
 function! clever_f#repeat(back)
     let mode = mode(1)
     let pmap = get(s:previous_map, mode, "")
-    let pchar = get(s:previous_char, mode, 0)
+    let prev_char_num = get(s:previous_char_num, mode, 0)
 
     if pmap ==# ''
         return ''
     endif
 
     " ignore special characters like \<Left>
-    if type(pchar) == type("") && char2nr(pchar) == 128
+    if type(prev_char_num) == type("") && char2nr(prev_char_num) == 128
         return ''
     endif
 
@@ -72,28 +121,49 @@ function! clever_f#repeat(back)
     endif
 
     if mode ==? 'v' || mode ==# "\<C-v>"
-        let cmd = s:move_cmd_for_visualmode(pmap, pchar)
+        let cmd = s:move_cmd_for_visualmode(pmap, prev_char_num)
     else
         let inclusive = mode ==# 'no' && pmap =~# '\l'
         let cmd = printf("%s:\<C-u>call clever_f#find(%s, %s)\<CR>",
                     \    inclusive ? 'v' : '',
-                    \    string(pmap), pchar)
+                    \    string(pmap), prev_char_num)
     endif
 
     return cmd
 endfunction
 
-function! clever_f#find(map, char)
-    let next_pos = s:next_pos(a:map, a:char, v:count1)
-    if next_pos != [0, 0]
-        let mode = mode(1)
-        let s:previous_pos[mode] = next_pos
-        call cursor(next_pos[0], next_pos[1])
+function! clever_f#find(map, char_num)
+    let before_line = line('.')
+    let next_pos = s:next_pos(a:map, a:char_num, v:count1)
+    if next_pos == [0, 0]
+        return
+    endif
+
+    " update highlight when cursor moves across lines
+    if g:clever_f_mark_char
+        if next_pos[0] != before_line
+            call s:remove_highlight()
+            call s:mark_char_in_current_line(a:map, a:char_num)
+        endif
+    endif
+
+    let s:previous_pos[mode(1)] = next_pos
+endfunction
+
+function! s:finalize()
+    autocmd! plugin-clever-f-finalizer
+    call clever_f#reset()
+endfunction
+
+function! s:maybe_finalize()
+    let pp = get(s:previous_pos, s:last_mode, [0, 0])
+    if getpos('.')[1 : 2] != pp
+        call s:finalize()
     endif
 endfunction
 
-function! s:move_cmd_for_visualmode(map, char)
-    let next_pos = s:next_pos(a:map, a:char, v:count1)
+function! s:move_cmd_for_visualmode(map, char_num)
+    let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos == [0, 0]
         return ''
     endif
@@ -139,8 +209,8 @@ function! s:load_migemo_dict()
     endif
 endfunction
 
-function! s:generate_pattern(map, char)
-    let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
+function! s:generate_pattern(map, char_num)
+    let char = type(a:char_num) == type(0) ? nr2char(a:char_num) : a:char_num
     let regex = char
 
     let should_use_migemo = s:should_use_migemo(char)
@@ -166,12 +236,12 @@ function! s:generate_pattern(map, char)
     return ((g:clever_f_smart_case && char =~# '\l') || g:clever_f_ignore_case ? '\c' : '\C') . regex
 endfunction
 
-function! s:next_pos(map, char, count)
+function! s:next_pos(map, char_num, count)
     let mode = mode(1)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
     let s:first_move[mode] = 0
-    let pattern = s:generate_pattern(a:map, a:char)
+    let pattern = s:generate_pattern(a:map, a:char_num)
 
     if get(s:first_move, mode, 1)
         if a:map ==? 't'

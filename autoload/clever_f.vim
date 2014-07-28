@@ -31,16 +31,9 @@ function! s:is_timedout()
     return elapsed_ms > g:clever_f_timeout_ms
 endfunction
 
-function! s:mark_char_in_current_line(char)
-    if g:clever_f_ignore_case
-        let ignorecase = '\c'
-    elseif g:clever_f_smart_case
-        let ignorecase = a:char =~# '\l' ? '\c' : '\C'
-    else
-        let ignorecase = '\C'
-    endif
-    let regex = '\%' . line('.') . 'l' . ignorecase . a:char
-    let s:last_highlight_id = matchadd('CleverFChar', regex, 999)
+function! s:mark_char_in_current_line(map, char)
+    let regex = '\%' . line('.') . 'l' . s:generate_pattern(a:map, a:char)
+    let s:last_highlight_id = matchadd('CleverFChar',regex , 999)
 endfunction
 
 function! clever_f#find_with(map)
@@ -76,16 +69,16 @@ function! clever_f#find_with(map)
             endif
 
             if g:clever_f_mark_char
-                augroup plugin-clever-f-finalizer
-                    autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
-                    autocmd InsertEnter * call s:finalize()
-                augroup END
-                if s:last_highlight_id != -1
-                    call matchdelete(s:last_highlight_id)
-                endif
-                let c = s:previous_char_num[mode]
                 silent! call matchdelete(s:last_highlight_id)
-                call s:mark_char_in_current_line(type(c) == type(0) ? nr2char(c) : c)
+                if mode =~? '^[nvs]$'
+                    augroup plugin-clever-f-finalizer
+                        autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
+                        autocmd InsertEnter * call s:finalize()
+                    augroup END
+                    call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
+                else
+                    let s:last_highlight_id = -1
+                endif
             endif
 
             if g:clever_f_show_prompt | redraw! | endif
@@ -162,9 +155,8 @@ function! s:finalize()
 endfunction
 
 function! s:maybe_finalize()
-    let pc = get(s:previous_char_num, s:last_mode, '')
-    let cc = char2nr(getline('.')[col('.')-1])
-    if pc !=# cc
+    let pp = get(s:previous_pos, s:last_mode, [0, 0])
+    if getpos('.')[1 : 2] != pp
         call s:finalize()
     endif
 endfunction

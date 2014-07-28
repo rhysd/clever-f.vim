@@ -1,11 +1,6 @@
 " keys are mode string returned from mode()
 function! clever_f#reset()
-    " Note:
-    " :silent! ignores next errors:
-    "   1. s:last_highlight_id doesn't exist
-    "   2. s:last_highlight_id == -1
-    "   3. highlight for s:last_highlight_id doesn't exist
-    silent! call matchdelete(s:last_highlight_id)
+    call s:remove_highlight()
 
     let s:previous_map = {}
     let s:previous_char_num = {}
@@ -13,7 +8,6 @@ function! clever_f#reset()
     let s:first_move = {}
     let s:migemo_dicts = {}
     let s:last_mode = ''
-    let s:last_highlight_id = -1
 
     " Note:
     " [0, 0] may be invalid because the representation of
@@ -21,6 +15,12 @@ function! clever_f#reset()
     let s:timestamp = [0, 0]
 
     return ""
+endfunction
+
+function! s:remove_highlight()
+    for h in filter(getmatches(), 'v:val.group ==# "CleverFChar"')
+        call matchdelete(h.id)
+    endfor
 endfunction
 
 function! s:is_timedout()
@@ -33,7 +33,7 @@ endfunction
 
 function! s:mark_char_in_current_line(map, char)
     let regex = '\%' . line('.') . 'l' . s:generate_pattern(a:map, a:char)
-    let s:last_highlight_id = matchadd('CleverFChar',regex , 999)
+    call matchadd('CleverFChar',regex , 999)
 endfunction
 
 function! clever_f#find_with(map)
@@ -69,15 +69,13 @@ function! clever_f#find_with(map)
             endif
 
             if g:clever_f_mark_char
-                silent! call matchdelete(s:last_highlight_id)
+                call s:remove_highlight()
                 if mode =~? '^[nvs]$'
                     augroup plugin-clever-f-finalizer
                         autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
                         autocmd InsertEnter * call s:finalize()
                     augroup END
                     call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
-                else
-                    let s:last_highlight_id = -1
                 endif
             endif
 
@@ -143,7 +141,7 @@ function! clever_f#find(map, char_num)
     " update highlight when cursor moves across lines
     if g:clever_f_mark_char
         if next_pos[0] != before_line
-            silent! call matchdelete(s:last_highlight_id)
+            call s:remove_highlight()
             call s:mark_char_in_current_line(a:map, a:char_num)
         endif
     endif

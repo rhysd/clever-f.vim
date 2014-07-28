@@ -5,7 +5,7 @@ function! clever_f#reset()
     endif
 
     let s:previous_map = {}
-    let s:previous_char = {}
+    let s:previous_char_num = {}
     let s:previous_pos = {}
     let s:first_move = {}
     let s:migemo_dicts = {}
@@ -63,7 +63,7 @@ function! clever_f#find_with(map)
         endif
         try
             if g:clever_f_show_prompt | echon "clever-f: " | endif
-            let s:previous_char[mode] = getchar()
+            let s:previous_char_num[mode] = getchar()
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
             let s:last_mode = mode
@@ -80,7 +80,7 @@ function! clever_f#find_with(map)
                 if s:last_highlight_id != -1
                     call matchdelete(s:last_highlight_id)
                 endif
-                let c = s:previous_char[mode]
+                let c = s:previous_char_num[mode]
                 call s:mark_char_in_current_line(type(c) == type(0) ? nr2char(c) : c)
             endif
 
@@ -109,14 +109,14 @@ endfunction
 function! clever_f#repeat(back)
     let mode = mode(1)
     let pmap = get(s:previous_map, mode, "")
-    let pchar = get(s:previous_char, mode, 0)
+    let prev_char_num = get(s:previous_char_num, mode, 0)
 
     if pmap ==# ''
         return ''
     endif
 
     " ignore special characters like \<Left>
-    if type(pchar) == type("") && char2nr(pchar) == 128
+    if type(prev_char_num) == type("") && char2nr(prev_char_num) == 128
         return ''
     endif
 
@@ -125,19 +125,19 @@ function! clever_f#repeat(back)
     endif
 
     if mode ==? 'v' || mode ==# "\<C-v>"
-        let cmd = s:move_cmd_for_visualmode(pmap, pchar)
+        let cmd = s:move_cmd_for_visualmode(pmap, prev_char_num)
     else
         let inclusive = mode ==# 'no' && pmap =~# '\l'
         let cmd = printf("%s:\<C-u>call clever_f#find(%s, %s)\<CR>",
                     \    inclusive ? 'v' : '',
-                    \    string(pmap), pchar)
+                    \    string(pmap), prev_char_num)
     endif
 
     return cmd
 endfunction
 
-function! clever_f#find(map, char)
-    let next_pos = s:next_pos(a:map, a:char, v:count1)
+function! clever_f#find(map, char_num)
+    let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos != [0, 0]
         let mode = mode(1)
         call cursor(next_pos[0], next_pos[1])
@@ -145,8 +145,7 @@ function! clever_f#find(map, char)
         " update highlight when cursor moves across lines
         if g:clever_f_mark_char && has_key(s:previous_pos, mode) && s:previous_pos[mode][0] != line('.')
             call matchdelete(s:last_highlight_id)
-            echomsg a:char
-            call s:mark_char_in_current_line(type(a:char) == type(0) ? nr2char(a:char) : a:char)
+            call s:mark_char_in_current_line(type(a:char_num) == type(0) ? nr2char(a:char_num) : a:char_num)
         endif
 
         let s:previous_pos[mode] = next_pos
@@ -159,15 +158,15 @@ function! s:finalize()
 endfunction
 
 function! s:maybe_finalize()
-    let pc = get(s:previous_char, s:last_mode, '')
+    let pc = get(s:previous_char_num, s:last_mode, '')
     let cc = char2nr(getline('.')[col('.')-1])
     if pc !=# cc
         call s:finalize()
     endif
 endfunction
 
-function! s:move_cmd_for_visualmode(map, char)
-    let next_pos = s:next_pos(a:map, a:char, v:count1)
+function! s:move_cmd_for_visualmode(map, char_num)
+    let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos == [0, 0]
         return ''
     endif
@@ -213,8 +212,8 @@ function! s:load_migemo_dict()
     endif
 endfunction
 
-function! s:generate_pattern(map, char)
-    let char = type(a:char) == type(0) ? nr2char(a:char) : a:char
+function! s:generate_pattern(map, char_num)
+    let char = type(a:char_num) == type(0) ? nr2char(a:char_num) : a:char_num
     let regex = char
 
     let should_use_migemo = s:should_use_migemo(char)
@@ -240,12 +239,12 @@ function! s:generate_pattern(map, char)
     return ((g:clever_f_smart_case && char =~# '\l') || g:clever_f_ignore_case ? '\c' : '\C') . regex
 endfunction
 
-function! s:next_pos(map, char, count)
+function! s:next_pos(map, char_num, count)
     let mode = mode(1)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
     let s:first_move[mode] = 0
-    let pattern = s:generate_pattern(a:map, a:char)
+    let pattern = s:generate_pattern(a:map, a:char_num)
 
     if get(s:first_move, mode, 1)
         if a:map ==? 't'

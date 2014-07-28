@@ -15,13 +15,13 @@ describe 'Default settings'
     end
 
     it 'provide default <Plug> mappings'
-        Expect '<Plug>(clever-f-f)'              to_map_to "clever_f#find_with('f')", 'nv'
-        Expect '<Plug>(clever-f-F)'              to_map_to "clever_f#find_with('F')", 'nv'
-        Expect '<Plug>(clever-f-t)'              to_map_to "clever_f#find_with('t')", 'nv'
-        Expect '<Plug>(clever-f-T)'              to_map_to "clever_f#find_with('T')", 'nv'
-        Expect '<Plug>(clever-f-reset)'          to_map_to 'clever_f#reset()', 'nv'
-        Expect '<Plug>(clever-f-repeat-forward)' to_map_to 'clever_f#repeat(0)', 'nv'
-        Expect '<Plug>(clever-f-repeat-back)'    to_map_to 'clever_f#repeat(1)', 'nv'
+        Expect '<Plug>(clever-f-f)'              to_map_to "clever_f#find_with('f')", 'nvo'
+        Expect '<Plug>(clever-f-F)'              to_map_to "clever_f#find_with('F')", 'nvo'
+        Expect '<Plug>(clever-f-t)'              to_map_to "clever_f#find_with('t')", 'nvo'
+        Expect '<Plug>(clever-f-T)'              to_map_to "clever_f#find_with('T')", 'nvo'
+        Expect '<Plug>(clever-f-reset)'          to_map_to 'clever_f#reset()', 'nvo'
+        Expect '<Plug>(clever-f-repeat-forward)' to_map_to 'clever_f#repeat(0)', 'nvo'
+        Expect '<Plug>(clever-f-repeat-back)'    to_map_to 'clever_f#repeat(1)', 'nvo'
     end
 
     it 'provide autoload functions'
@@ -50,6 +50,9 @@ describe 'Default settings'
         Expect 'g:clever_f_mark_cursor_color' to_exist_and_default_to 'Cursor'
         Expect 'g:clever_f_mark_cursor' to_exist_and_default_to 1
         Expect 'g:clever_f_hide_cursor_on_cmdline' to_exist_and_default_to 1
+        Expect 'g:clever_f_timeout_ms' to_exist_and_default_to 0
+        Expect 'g:clever_f_mark_char' to_exist_and_default_to 1
+        Expect 'g:clever_f_mark_char_color' to_exist_and_default_to 'Search'
     end
 
 end
@@ -669,3 +672,81 @@ describe 'Hiding cursor on command line'
         Expect t_ve ==# &t_ve
     end
 end
+
+describe 'g:clever_f_timeout_ms'
+    before
+        new
+        let g:clever_f_timeout_ms = 100
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+        normal! gg0
+    end
+
+    after
+        close!
+        let g:clever_f_timeout_ms = 0
+    end
+
+    it 'resets the state if timed out'
+        normal fhf
+        Expect col('.') == 11
+        sleep 150m
+        normal fo
+        Expect col('.') == 14
+        normal f
+        Expect col('.') == 17
+        sleep 150m
+        normal Fo
+        Expect col('.') == 14
+    end
+end
+
+describe 'g:clever_f_mark_char'
+    before
+        new
+        let g:clever_f_mark_char = 1
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+    end
+
+    after
+        close!
+    end
+
+    it 'highlights the target characters and remove the highlight automatically'
+        SKIP because somehow getmatches() can't get matches
+        normal! gg0
+        normal fh
+        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
+        normal f
+        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
+        normal! l
+        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') == []
+        normal! gg0
+        normal fhf
+        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
+        normal! j
+        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') == []
+    end
+
+    it 'updates the highlight if the cursor moves to another line'
+        SKIP because somehow getmatches() can't get matches
+        let old_across_no_line = g:clever_f_across_no_line
+        let g:clever_f_across_no_line = 1
+        call AddLine('oh huh')
+        normal! gg0
+        let l = line('.')
+        normal fhf
+        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
+        Expect getmatches()[0].pattern =~# l
+        normal f
+        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
+        Expect getmatches()[0].pattern =~# l+1
+        normal f
+        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
+        Expect getmatches()[0].pattern =~# l+1
+        let g:clever_f_across_no_line = old_across_no_line
+    end
+end
+
+

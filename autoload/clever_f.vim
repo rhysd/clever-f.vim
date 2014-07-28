@@ -1,11 +1,16 @@
 " keys are mode string returned from mode()
 function! clever_f#reset()
+    if g:clever_f_mark_char && get(s:, 'last_highlight_id', -1) != -1
+        call matchdelete(s:last_highlight_id)
+    endif
+
     let s:previous_map = {}
     let s:previous_char = {}
     let s:previous_pos = {}
     let s:first_move = {}
     let s:migemo_dicts = {}
     let s:last_mode = ''
+    let s:last_highlight_id = -1
 
     " Note:
     " [0, 0] may be invalid because the representation of
@@ -21,6 +26,18 @@ function! s:is_timedout()
     let elapsed_ms = float2nr(str2float(rel) * 1000.0)
     let s:timestamp = cur
     return elapsed_ms > g:clever_f_timeout_ms
+endfunction
+
+function! s:mark_char_in_current_line(char)
+    if g:clever_f_ignore_case
+        let ignorecase = '\c'
+    elseif g:clever_f_smart_case
+        let ignorecase = a:char =~# '\l' ? '\c' : '\C'
+    else
+        let ignorecase = '\C'
+    endif
+    let regex = '\%' . line('.') . 'l' . ignorecase . a:char
+    let s:last_highlight_id = matchadd('CleverFChar', regex, 999)
 endfunction
 
 function! clever_f#find_with(map)
@@ -51,14 +68,20 @@ function! clever_f#find_with(map)
             let s:first_move[mode] = 1
             let s:last_mode = mode
 
-            if g:clever_f_auto_reset
-                augroup plugin-clever-f-watcher
-                    autocmd CursorMoved,CursorMovedI,InsertEnter * call s:watch()
-                augroup END
-            endif
-
             if g:clever_f_timeout_ms > 0
                 let s:timestamp = reltime()
+            endif
+
+            if g:clever_f_mark_char
+                augroup plugin-clever-f-finalizer
+                    autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
+                    autocmd InsertEnter * call s:finalize()
+                augroup END
+                if s:last_highlight_id != -1
+                    call matchdelete(s:last_highlight_id)
+                endif
+                let c = s:previous_char[mode]
+                call s:mark_char_in_current_line(type(c) == type(0) ? nr2char(c) : c)
             endif
 
             if g:clever_f_show_prompt | redraw! | endif
@@ -117,17 +140,29 @@ function! clever_f#find(map, char)
     let next_pos = s:next_pos(a:map, a:char, v:count1)
     if next_pos != [0, 0]
         let mode = mode(1)
-        let s:previous_pos[mode] = next_pos
         call cursor(next_pos[0], next_pos[1])
+
+        " update highlight when cursor moves across lines
+        if g:clever_f_mark_char && has_key(s:previous_pos, mode) && s:previous_pos[mode][0] != line('.')
+            call matchdelete(s:last_highlight_id)
+            echomsg a:char
+            call s:mark_char_in_current_line(type(a:char) == type(0) ? nr2char(a:char) : a:char)
+        endif
+
+        let s:previous_pos[mode] = next_pos
     endif
 endfunction
 
-function! s:watch()
+function! s:finalize()
+    autocmd! plugin-clever-f-finalizer
+    call clever_f#reset()
+endfunction
+
+function! s:maybe_finalize()
     let pc = get(s:previous_char, s:last_mode, '')
     let cc = char2nr(getline('.')[col('.')-1])
     if pc !=# cc
-        call clever_f#reset()
-        autocmd! plugin-clever-f-watcher
+        call s:finalize()
     endif
 endfunction
 

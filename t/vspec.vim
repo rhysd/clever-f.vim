@@ -639,9 +639,9 @@ describe 'Cursor marking on input'
 
     it 'ensures to remove highlight properly'
         normal fh
-        Expect filter(getmatches(), 'v:val.group!="CleverFCursor"') == []
+        Expect filter(getmatches(), 'v:val.group=="CleverFCursor"') == []
         normal fq
-        Expect filter(getmatches(), 'v:val.group!="CleverFCursor"') == []
+        Expect filter(getmatches(), 'v:val.group=="CleverFCursor"') == []
     end
 end
 

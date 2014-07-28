@@ -1,8 +1,11 @@
 " keys are mode string returned from mode()
 function! clever_f#reset()
-    if g:clever_f_mark_char && get(s:, 'last_highlight_id', -1) != -1
-        call matchdelete(s:last_highlight_id)
-    endif
+    " Note:
+    " :silent! ignores next errors:
+    "   1. s:last_highlight_id doesn't exist
+    "   2. s:last_highlight_id == -1
+    "   3. highlight for s:last_highlight_id doesn't exist
+    silent! call matchdelete(s:last_highlight_id)
 
     let s:previous_map = {}
     let s:previous_char_num = {}
@@ -81,6 +84,7 @@ function! clever_f#find_with(map)
                     call matchdelete(s:last_highlight_id)
                 endif
                 let c = s:previous_char_num[mode]
+                silent! call matchdelete(s:last_highlight_id)
                 call s:mark_char_in_current_line(type(c) == type(0) ? nr2char(c) : c)
             endif
 
@@ -96,7 +100,7 @@ function! clever_f#find_with(map)
         " when repeated
         let back = a:map =~# '\u'
 
-        " Reset and retry if timed out
+        " reset and retry if timed out
         if g:clever_f_timeout_ms > 0 && s:is_timedout()
             call clever_f#reset()
             return clever_f#find_with(a:map)

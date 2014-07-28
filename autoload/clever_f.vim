@@ -134,19 +134,21 @@ function! clever_f#repeat(back)
 endfunction
 
 function! clever_f#find(map, char_num)
+    let before_line = line('.')
     let next_pos = s:next_pos(a:map, a:char_num, v:count1)
-    if next_pos != [0, 0]
-        let mode = mode(1)
-        call cursor(next_pos[0], next_pos[1])
-
-        " update highlight when cursor moves across lines
-        if g:clever_f_mark_char && has_key(s:previous_pos, mode) && s:previous_pos[mode][0] != line('.')
-            call matchdelete(s:last_highlight_id)
-            call s:mark_char_in_current_line(type(a:char_num) == type(0) ? nr2char(a:char_num) : a:char_num)
-        endif
-
-        let s:previous_pos[mode] = next_pos
+    if next_pos == [0, 0]
+        return
     endif
+
+    " update highlight when cursor moves across lines
+    if g:clever_f_mark_char
+        if next_pos[0] != before_line
+            silent! call matchdelete(s:last_highlight_id)
+            call s:mark_char_in_current_line(a:map, a:char_num)
+        endif
+    endif
+
+    let s:previous_pos[mode(1)] = next_pos
 endfunction
 
 function! s:finalize()

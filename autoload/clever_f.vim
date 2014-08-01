@@ -22,6 +22,7 @@ function! clever_f#reset()
     let s:first_move = {}
     let s:migemo_dicts = {}
     let s:last_mode = ''
+    let s:moved_forward = 0
 
     " Note:
     " [0, 0] may be invalid because the representation of
@@ -48,19 +49,6 @@ endfunction
 function! s:mark_char_in_current_line(map, char)
     let regex = '\%' . line('.') . 'l' . s:generate_pattern(a:map, a:char)
     call matchadd('CleverFChar', regex , 999)
-endfunction
-
-function! s:moved_forward(prev)
-    let now = getpos('.')[1 : 2]
-    if a:prev[0] != now[0]
-        return a:prev[0] < now[0]
-    endif
-
-    if a:prev[1] != now[1]
-        return a:prev[1] < now[1]
-    endif
-
-    return 0
 endfunction
 
 function! clever_f#find_with(map)
@@ -162,22 +150,39 @@ function! clever_f#repeat(back)
     return cmd
 endfunction
 
+" absolutely moved forward?
+function! s:moves_forward(p, n)
+    if a:p[0] != a:n[0]
+        return a:p[0] < a:n[0]
+    endif
+
+    if a:p[1] != a:n[1]
+        return a:p[1] < a:n[1]
+    endif
+
+    return 0
+endfunction
+
 function! clever_f#find(map, char_num)
-    let before_line = line('.')
+    let before_pos = getpos('.')[1 : 2]
     let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos == [0, 0]
         return
     endif
 
+    let mode = mode(1)
+    let moves_forward = s:moves_forward(before_pos, next_pos)
+
     " update highlight when cursor moves across lines
     if g:clever_f_mark_char
-        if next_pos[0] != before_line
+        if next_pos[0] != before_pos[0]
+            \ || (a:map ==? 't' && !s:first_move[mode] && xor(s:moved_forward, moves_forward))
             call s:remove_highlight()
             call s:mark_char_in_current_line(a:map, a:char_num)
         endif
     endif
 
-    let mode = mode(1)
+    let s:moved_forward = moves_forward
     let s:previous_pos[mode] = next_pos
     let s:first_move[mode] = 0
 endfunction

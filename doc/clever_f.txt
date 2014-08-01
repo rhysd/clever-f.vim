@@ -85,7 +85,7 @@ g:clever_f_across_no_line                            *g:clever_f_across_no_line*
 
 g:clever_f_ignore_case                                  *g:clever_f_ignore_case*
 
-    If the value is equivalent to 1, it makes |clever-f| mappings' search case
+    If the value is equivalent to 1, it makes |clever-f| mappings' search case-
     insensitive. For example, if you input 'fa', it matches both 'a' and 'A'.
     The default value is 0.
 
@@ -146,7 +146,7 @@ g:clever_f_chars_match_any_signs              *g:clever_f_chars_match_any_signs*
 g:clever_f_mark_cursor                                  *g:clever_f_mark_cursor*
 
     If the value is equivalent to 1, current cursor position will be
-    highlighted when waiting for {char}. This way you won't loose your focus
+    highlighted when waiting for {char}. This way you won't lose your focus
     from the place your cursor was.
     The default value is 1.
 
@@ -184,7 +184,9 @@ g:clever_f_mark_char_color                          *g:clever_f_mark_char_color*
     characters using the highlight group which |g:clever_f_mark_char_color|
     specifies.  If you want to change the highlight group |clever-f| uses, set
     your favorite highlight group to this variable.
-    The default value is "Search".
+    The default value is "CleverFDefaultLabel", which makes characters red and
+    bold.  If you want to make an original label highlight, define your own
+    highlight group.(See |:highlight|)
 
 
 ==============================================================================

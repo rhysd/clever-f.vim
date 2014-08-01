@@ -52,7 +52,7 @@ Please set it to `1` in your vimrc to ignore case.
 ### Smart case
 
 `g:clever_f_smart_case` controls make smart case or not.
-If and only if you type an lower case character, clever-f.vim ignores case.
+If and only if you type a lower case character, clever-f.vim ignores case.
 Please set it to `1` in your vimrc to make smart case
 
 ### Target character highlighting

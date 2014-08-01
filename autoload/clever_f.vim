@@ -1,9 +1,9 @@
 " highlight labels
 augroup plugin-clever-f-highlight
     autocmd!
-    autocmd ColorScheme * highlight default CleverFDefaultLabel ctermfg=red ctermbg=none cterm=bold guifg=red guibg=none gui=bold
+    autocmd ColorScheme * highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold guifg=red guibg=NONE gui=bold
 augroup END
-highlight default CleverFDefaultLabel ctermfg=red ctermbg=none cterm=bold guifg=red guibg=none gui=bold
+highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold guifg=red guibg=NONE gui=bold
 
 if g:clever_f_mark_cursor
     execute 'highlight link CleverFCursor' g:clever_f_mark_cursor_color

@@ -173,9 +173,10 @@ function! clever_f#find(map, char_num)
     let moves_forward = s:moves_forward(before_pos, next_pos)
 
     " update highlight when cursor moves across lines
+    let mode = mode(1)
     if g:clever_f_mark_char
         if next_pos[0] != before_pos[0]
-            \ || (a:map ==? 't' && !s:first_move[mode(1)] && xor(s:moved_forward, moves_forward))
+            \ || (a:map ==? 't' && !s:first_move[mode] && xor(s:moved_forward, moves_forward))
             call s:remove_highlight()
             call s:mark_char_in_current_line(a:map, a:char_num)
         endif
@@ -205,8 +206,7 @@ function! s:move_cmd_for_visualmode(map, char_num)
     endif
 
     call setpos("''", [0] + next_pos + [0])
-    let mode = mode(1)
-    let s:previous_pos[mode] = next_pos
+    let s:previous_pos[mode(1)] = next_pos
 
     return "``"
 endfunction

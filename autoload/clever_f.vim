@@ -50,6 +50,19 @@ function! s:mark_char_in_current_line(map, char)
     call matchadd('CleverFChar', regex , 999)
 endfunction
 
+function! s:moved_forward(prev)
+    let now = getpos('.')[1 : 2]
+    if a:prev[0] != now[0]
+        return a:prev[0] < now[0]
+    endif
+
+    if a:prev[1] != now[1]
+        return a:prev[1] < now[1]
+    endif
+
+    return 0
+endfunction
+
 function! clever_f#find_with(map)
     if a:map !~# '^[fFtT]$'
         echoerr 'invalid mapping: ' . a:map
@@ -105,15 +118,14 @@ function! clever_f#find_with(map)
     else
         " when repeated
         let back = a:map =~# '\u'
+        if g:clever_f_fix_key_direction
+            let back = s:previous_map[mode] =~# '\u' ? !back : back
+        endif
 
         " reset and retry if timed out
         if g:clever_f_timeout_ms > 0 && s:is_timedout()
             call clever_f#reset()
             return clever_f#find_with(a:map)
-        endif
-
-        if g:clever_f_fix_key_direction
-            let back = s:previous_map[mode] =~# '\u' ? !back : back
         endif
     endif
 
@@ -165,7 +177,9 @@ function! clever_f#find(map, char_num)
         endif
     endif
 
-    let s:previous_pos[mode(1)] = next_pos
+    let mode = mode(1)
+    let s:previous_pos[mode] = next_pos
+    let s:first_move[mode] = 0
 endfunction
 
 function! s:finalize()
@@ -258,16 +272,13 @@ function! s:next_pos(map, char_num, count)
     let mode = mode(1)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
-    let s:first_move[mode] = 0
     let pattern = s:generate_pattern(a:map, a:char_num)
 
-    if get(s:first_move, mode, 1)
-        if a:map ==? 't'
-            if !s:search(pattern, search_flag . 'c')
-                return [0, 0]
-            endif
-            let cnt -= 1
+    if a:map ==? 't' && get(s:first_move, mode, 1)
+        if !s:search(pattern, search_flag . 'c')
+            return [0, 0]
         endif
+        let cnt -= 1
     endif
 
     while 0 < cnt

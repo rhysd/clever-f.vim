@@ -57,10 +57,10 @@ function! clever_f#find_with(map)
     endif
 
     let current_pos = getpos('.')[1 : 2]
-    let back = 0
 
     let mode = mode(1)
     if current_pos != get(s:previous_pos, mode, [0, 0])
+        let back = 0
         if g:clever_f_mark_cursor
             let cursor_marker = matchadd('CleverFCursor', '\%#', 999)
             redraw
@@ -111,6 +111,10 @@ function! clever_f#find_with(map)
             call clever_f#reset()
             return clever_f#find_with(a:map)
         endif
+
+        if g:clever_f_fix_key_direction
+            let back = s:previous_map[mode] =~# '\u' ? !back : back
+        endif
     endif
 
     return clever_f#repeat(back)
@@ -130,7 +134,7 @@ function! clever_f#repeat(back)
         return ''
     endif
 
-    if g:clever_f_fix_key_direction ? (! s:first_move[mode] && (pmap =~# '\u' ? !a:back : a:back)) : a:back
+    if a:back
         let pmap = s:swapcase(pmap)
     endif
 

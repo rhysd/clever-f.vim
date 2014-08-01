@@ -52,7 +52,7 @@ describe 'Default settings'
         Expect 'g:clever_f_hide_cursor_on_cmdline' to_exist_and_default_to 1
         Expect 'g:clever_f_timeout_ms' to_exist_and_default_to 0
         Expect 'g:clever_f_mark_char' to_exist_and_default_to 1
-        Expect 'g:clever_f_mark_char_color' to_exist_and_default_to 'Search'
+        Expect 'g:clever_f_mark_char_color' to_exist_and_default_to 'CleverFDefaultLabel'
     end
 
 end

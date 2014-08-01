@@ -1,3 +1,17 @@
+" highlight labels
+augroup plugin-clever-f-highlight
+    autocmd!
+    autocmd ColorScheme * highlight default CleverFDefaultLabel ctermfg=red ctermbg=none cterm=bold guifg=red guibg=none gui=bold
+augroup END
+highlight default CleverFDefaultLabel ctermfg=red ctermbg=none cterm=bold guifg=red guibg=none gui=bold
+
+if g:clever_f_mark_cursor
+    execute 'highlight link CleverFCursor' g:clever_f_mark_cursor_color
+endif
+if g:clever_f_mark_char
+    execute 'highlight link CleverFChar' g:clever_f_mark_char_color
+endif
+
 " keys are mode string returned from mode()
 function! clever_f#reset()
     call s:remove_highlight()

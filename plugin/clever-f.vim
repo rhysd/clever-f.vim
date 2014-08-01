@@ -29,13 +29,6 @@ let g:clever_f_mark_cursor_color      = get(g:, 'clever_f_mark_cursor_color', 'C
 let g:clever_f_hide_cursor_on_cmdline = get(g:, 'clever_f_hide_cursor_on_cmdline', 1)
 let g:clever_f_timeout_ms             = get(g:, 'clever_f_timeout_ms', 0)
 let g:clever_f_mark_char              = get(g:, 'clever_f_mark_char', 1)
-let g:clever_f_mark_char_color        = get(g:, 'clever_f_mark_char_color', 'Search')
-
-if g:clever_f_mark_cursor
-    execute 'highlight link CleverFCursor' g:clever_f_mark_cursor_color
-endif
-if g:clever_f_mark_char
-    execute 'highlight link CleverFChar' g:clever_f_mark_char_color
-endif
+let g:clever_f_mark_char_color        = get(g:, 'clever_f_mark_char_color', 'CleverFDefaultLabel')
 
 let g:loaded_clever_f = 1

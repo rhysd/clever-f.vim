@@ -1,3 +1,17 @@
+" highlight labels
+augroup plugin-clever-f-highlight
+    autocmd!
+    autocmd ColorScheme * highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold guifg=red guibg=NONE gui=bold
+augroup END
+highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold guifg=red guibg=NONE gui=bold
+
+if g:clever_f_mark_cursor
+    execute 'highlight link CleverFCursor' g:clever_f_mark_cursor_color
+endif
+if g:clever_f_mark_char
+    execute 'highlight link CleverFChar' g:clever_f_mark_char_color
+endif
+
 " keys are mode string returned from mode()
 function! clever_f#reset()
     call s:remove_highlight()
@@ -8,6 +22,7 @@ function! clever_f#reset()
     let s:first_move = {}
     let s:migemo_dicts = {}
     let s:last_mode = ''
+    let s:moved_forward = 0
 
     " Note:
     " [0, 0] may be invalid because the representation of
@@ -43,10 +58,10 @@ function! clever_f#find_with(map)
     endif
 
     let current_pos = getpos('.')[1 : 2]
-    let back = 0
 
     let mode = mode(1)
     if current_pos != get(s:previous_pos, mode, [0, 0])
+        let back = 0
         if g:clever_f_mark_cursor
             let cursor_marker = matchadd('CleverFCursor', '\%#', 999)
             redraw
@@ -91,6 +106,9 @@ function! clever_f#find_with(map)
     else
         " when repeated
         let back = a:map =~# '\u'
+        if g:clever_f_fix_key_direction
+            let back = s:previous_map[mode] =~# '\u' ? !back : back
+        endif
 
         " reset and retry if timed out
         if g:clever_f_timeout_ms > 0 && s:is_timedout()
@@ -116,7 +134,7 @@ function! clever_f#repeat(back)
         return ''
     endif
 
-    if g:clever_f_fix_key_direction ? (! s:first_move[mode] && (pmap =~# '\u' ? !a:back : a:back)) : a:back
+    if a:back
         let pmap = s:swapcase(pmap)
     endif
 
@@ -132,22 +150,41 @@ function! clever_f#repeat(back)
     return cmd
 endfunction
 
+" absolutely moved forward?
+function! s:moves_forward(p, n)
+    if a:p[0] != a:n[0]
+        return a:p[0] < a:n[0]
+    endif
+
+    if a:p[1] != a:n[1]
+        return a:p[1] < a:n[1]
+    endif
+
+    return 0
+endfunction
+
 function! clever_f#find(map, char_num)
-    let before_line = line('.')
+    let before_pos = getpos('.')[1 : 2]
     let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos == [0, 0]
         return
     endif
 
+    let moves_forward = s:moves_forward(before_pos, next_pos)
+
     " update highlight when cursor moves across lines
+    let mode = mode(1)
     if g:clever_f_mark_char
-        if next_pos[0] != before_line
+        if next_pos[0] != before_pos[0]
+            \ || (a:map ==? 't' && !s:first_move[mode] && xor(s:moved_forward, moves_forward))
             call s:remove_highlight()
             call s:mark_char_in_current_line(a:map, a:char_num)
         endif
     endif
 
-    let s:previous_pos[mode(1)] = next_pos
+    let s:moved_forward = moves_forward
+    let s:previous_pos[mode] = next_pos
+    let s:first_move[mode] = 0
 endfunction
 
 function! s:finalize()
@@ -169,8 +206,7 @@ function! s:move_cmd_for_visualmode(map, char_num)
     endif
 
     call setpos("''", [0] + next_pos + [0])
-    let mode = mode(1)
-    let s:previous_pos[mode] = next_pos
+    let s:previous_pos[mode(1)] = next_pos
 
     return "``"
 endfunction
@@ -184,11 +220,11 @@ function! s:search(pat, flag)
 endfunction
 
 function! s:should_use_migemo(char)
-    if ! g:clever_f_use_migemo || a:char !~# '^\a$'
+    if !g:clever_f_use_migemo || a:char !~# '^\a$'
         return 0
     endif
 
-    if ! g:clever_f_across_no_line
+    if !g:clever_f_across_no_line
         return 1
     endif
 
@@ -215,7 +251,7 @@ function! s:generate_pattern(map, char_num)
 
     let should_use_migemo = s:should_use_migemo(char)
     if should_use_migemo
-        if ! has_key(s:migemo_dicts, &l:encoding)
+        if !has_key(s:migemo_dicts, &l:encoding)
             let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
         endif
         let regex = s:migemo_dicts[&l:encoding][regex]
@@ -229,7 +265,7 @@ function! s:generate_pattern(map, char_num)
         let regex = regex . '\@<=\_.'
     endif
 
-    if ! should_use_migemo
+    if !should_use_migemo
         let regex = '\V'.regex
     endif
 
@@ -240,16 +276,13 @@ function! s:next_pos(map, char_num, count)
     let mode = mode(1)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
-    let s:first_move[mode] = 0
     let pattern = s:generate_pattern(a:map, a:char_num)
 
-    if get(s:first_move, mode, 1)
-        if a:map ==? 't'
-            if !s:search(pattern, search_flag . 'c')
-                return [0, 0]
-            endif
-            let cnt -= 1
+    if a:map ==? 't' && get(s:first_move, mode, 1)
+        if !s:search(pattern, search_flag . 'c')
+            return [0, 0]
         endif
+        let cnt -= 1
     endif
 
     while 0 < cnt

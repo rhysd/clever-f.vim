@@ -52,7 +52,7 @@ describe 'Default settings'
         Expect 'g:clever_f_hide_cursor_on_cmdline' to_exist_and_default_to 1
         Expect 'g:clever_f_timeout_ms' to_exist_and_default_to 0
         Expect 'g:clever_f_mark_char' to_exist_and_default_to 1
-        Expect 'g:clever_f_mark_char_color' to_exist_and_default_to 'Search'
+        Expect 'g:clever_f_mark_char_color' to_exist_and_default_to 'CleverFDefaultLabel'
     end
 
 end
@@ -139,6 +139,13 @@ describe 'f, F, t and T mappings'
 
         normal t
         Expect CursorPos() == [l,18,'y']
+
+        call AddLine('ab hbge huga')
+        normal! gg0
+        normal tb
+        Expect CursorPos() == [l,1,'a']
+        normal t
+        Expect CursorPos() == [l,4,'h']
     end
 
     it 'provide T mapping like builtin T'
@@ -159,6 +166,13 @@ describe 'f, F, t and T mappings'
 
         normal t
         Expect CursorPos() == [l,7,'u']
+
+        call AddLine('ab hbge huga')
+        normal! gg$
+        normal Tg
+        Expect CursorPos() == [l,12,'a']
+        normal t
+        Expect CursorPos() == [l,7,'e']
     end
 
     it 'have different context in normal mode and visual mode'
@@ -437,6 +451,8 @@ describe 'migemo support'
         Expect col('.') == 13
         normal $
         normal Tb
+        Expect col('.') == 34
+        normal t
         Expect col('.') == 13
         normal T
         Expect col('.') == 28
@@ -481,7 +497,7 @@ describe 'g:clever_f_fix_key_direction'
     end
 
     it 'fix the direction of search for t and T'
-        normal tott
+        normal tottt
         Expect col('.') == 18
         normal T
         Expect col('.') == 15

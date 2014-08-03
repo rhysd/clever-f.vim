@@ -12,6 +12,17 @@ if g:clever_f_mark_char
     execute 'highlight link CleverFChar' g:clever_f_mark_char_color
 endif
 
+augroup plugin-clever-f-winleave-finalizer
+    autocmd!
+    autocmd WinLeave,CmdWinLeave * if g:clever_f_mark_char | call s:remove_highlight() | endif
+augroup END
+augroup plugin-clever-f-finalizer
+    autocmd!
+augroup END
+augroup plugin-clever-f-finalizer-cmdwin-workaround
+    autocmd!
+augroup END
+
 " keys are mode string returned from mode()
 function! clever_f#reset()
     call s:remove_highlight()
@@ -89,6 +100,7 @@ function! clever_f#find_with(map)
                     augroup plugin-clever-f-finalizer
                         autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
                         autocmd InsertEnter * call s:finalize()
+                        autocmd CmdWinEnter * call s:do_workaround_for_cmdwin()
                     augroup END
                     call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
                 endif
@@ -199,6 +211,21 @@ function! s:maybe_finalize()
     endif
 endfunction
 
+function! s:set_finalizer_again()
+    autocmd! plugin-clever-f-finalizer-cmdwin-workaround
+    augroup plugin-clever-f-finalizer
+        autocmd!
+        autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
+        autocmd InsertEnter,BufLeave,WinEnter * call s:finalize()
+    augroup END
+endfunction
+
+function! s:do_workaround_for_cmdwin()
+    augroup plugin-clever-f-finalizer-cmdwin-workaround
+        autocmd CmdWinLeave * call s:set_finalizer_again()
+    augroup
+endfunction
+
 function! s:move_cmd_for_visualmode(map, char_num)
     let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos == [0, 0]
@@ -241,7 +268,7 @@ function! s:load_migemo_dict()
         return clever_f#migemo#eucjp#load_dict()
     else
         let g:clever_f_use_migemo = 0
-        throw "Error: ".enc." is not supported. Migemo is made disabled."
+        throw "Error: " . enc . " is not supported. Migemo is disabled."
     endif
 endfunction
 

@@ -25,15 +25,10 @@ augroup END
 
 " keys are mode string returned from mode()
 function! clever_f#reset()
-    call s:remove_highlight()
-
     let s:previous_map = {}
-    let s:previous_char_num = {}
     let s:previous_pos = {}
     let s:first_move = {}
     let s:migemo_dicts = {}
-    let s:last_mode = ''
-    let s:moved_forward = 0
 
     " Note:
     " [0, 0] may be invalid because the representation of
@@ -64,7 +59,7 @@ endfunction
 
 function! clever_f#find_with(map)
     if a:map !~# '^[fFtT]$'
-        echoerr 'invalid mapping: ' . a:map
+        echoerr 'Invalid mapping: ' . a:map
         return ''
     endif
 
@@ -87,8 +82,18 @@ function! clever_f#find_with(map)
             if g:clever_f_show_prompt | echon "clever-f: " | endif
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
+            let cn = getchar()
+            if index(map(deepcopy(g:clever_f_repeat_last_char_inputs), 'char2nr(v:val)'), cn) == -1
+                let s:previous_char_num[mode] = cn
+            else
+                if has_key(s:previous_char_num, s:last_mode)
+                    let s:previous_char_num[mode] = s:previous_char_num[s:last_mode]
+                else
+                    echoerr 'Previous input not found.'
+                    return ''
+                endif
+            endif
             let s:last_mode = mode
-            let s:previous_char_num[mode] = getchar()
 
             if g:clever_f_timeout_ms > 0
                 let s:timestamp = reltime()
@@ -200,7 +205,8 @@ endfunction
 
 function! s:finalize()
     autocmd! plugin-clever-f-finalizer
-    call clever_f#reset()
+    call s:remove_highlight()
+    let s:moved_forward = 0
 endfunction
 
 function! s:maybe_finalize()
@@ -310,6 +316,8 @@ function! s:swapcase(char)
     return a:char =~# '\u' ? tolower(a:char) : toupper(a:char)
 endfunction
 
+let s:previous_char_num = {}
+let s:last_mode = ''
 call clever_f#reset()
 
 let &cpo = s:save_cpo

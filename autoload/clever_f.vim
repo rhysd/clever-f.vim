@@ -1,3 +1,6 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
 " highlight labels
 augroup plugin-clever-f-highlight
     autocmd!
@@ -82,10 +85,10 @@ function! clever_f#find_with(map)
         endif
         try
             if g:clever_f_show_prompt | echon "clever-f: " | endif
-            let s:previous_char_num[mode] = getchar()
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
             let s:last_mode = mode
+            let s:previous_char_num[mode] = getchar()
 
             if g:clever_f_timeout_ms > 0
                 let s:timestamp = reltime()
@@ -308,3 +311,6 @@ function! s:swapcase(char)
 endfunction
 
 call clever_f#reset()
+
+let &cpo = s:save_cpo
+unlet s:save_cpo

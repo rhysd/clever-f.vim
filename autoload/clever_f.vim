@@ -12,14 +12,11 @@ if g:clever_f_mark_char
     execute 'highlight link CleverFChar' g:clever_f_mark_char_color
 endif
 
-augroup plugin-clever-f-winleave-finalizer
+augroup plugin-clever-f-permanent-finalizer
     autocmd!
-    autocmd WinLeave,CmdWinLeave * if g:clever_f_mark_char | call s:remove_highlight() | endif
+    autocmd WinEnter,WinLeave,CmdWinLeave * if g:clever_f_mark_char | call s:remove_highlight() | endif
 augroup END
 augroup plugin-clever-f-finalizer
-    autocmd!
-augroup END
-augroup plugin-clever-f-finalizer-cmdwin-workaround
     autocmd!
 augroup END
 
@@ -98,9 +95,8 @@ function! clever_f#find_with(map)
                 call s:remove_highlight()
                 if mode =~? '^[nvs]$'
                     augroup plugin-clever-f-finalizer
-                        autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
-                        autocmd InsertEnter * call s:finalize()
-                        autocmd CmdWinEnter * call s:do_workaround_for_cmdwin()
+                        autocmd CursorMoved <buffer> call s:maybe_finalize()
+                        autocmd InsertEnter <buffer> call s:finalize()
                     augroup END
                     call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
                 endif
@@ -209,21 +205,6 @@ function! s:maybe_finalize()
     if getpos('.')[1 : 2] != pp
         call s:finalize()
     endif
-endfunction
-
-function! s:set_finalizer_again()
-    autocmd! plugin-clever-f-finalizer-cmdwin-workaround
-    augroup plugin-clever-f-finalizer
-        autocmd!
-        autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
-        autocmd InsertEnter,BufLeave,WinEnter * call s:finalize()
-    augroup END
-endfunction
-
-function! s:do_workaround_for_cmdwin()
-    augroup plugin-clever-f-finalizer-cmdwin-workaround
-        autocmd CmdWinLeave * call s:set_finalizer_again()
-    augroup
 endfunction
 
 function! s:move_cmd_for_visualmode(map, char_num)

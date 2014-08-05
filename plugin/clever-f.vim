@@ -11,10 +11,18 @@ noremap <silent><expr><Plug>(clever-f-repeat-forward) clever_f#repeat(0)
 noremap <silent><expr><Plug>(clever-f-repeat-back)    clever_f#repeat(1)
 
 if ! exists('g:clever_f_not_overwrites_standard_mappings')
-    map f <Plug>(clever-f-f)
-    map F <Plug>(clever-f-F)
-    map t <Plug>(clever-f-t)
-    map T <Plug>(clever-f-T)
+    nmap f <Plug>(clever-f-f)
+    xmap f <Plug>(clever-f-f)
+    omap f <Plug>(clever-f-f)
+    nmap F <Plug>(clever-f-F)
+    xmap F <Plug>(clever-f-F)
+    omap F <Plug>(clever-f-F)
+    nmap t <Plug>(clever-f-t)
+    xmap t <Plug>(clever-f-t)
+    omap t <Plug>(clever-f-t)
+    nmap T <Plug>(clever-f-T)
+    xmap T <Plug>(clever-f-T)
+    omap T <Plug>(clever-f-T)
 endif
 
 let g:loaded_clever_f = 1

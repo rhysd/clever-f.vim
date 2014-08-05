@@ -107,7 +107,7 @@ function! clever_f#find_with(map)
                 if has_key(s:previous_char_num, s:last_mode)
                     let s:previous_char_num[mode] = s:previous_char_num[s:last_mode]
                 else
-                    echoerr 'Previous input not found.'
+                    echohl ErrorMsg | echo 'Previous input not found.' | echohl None
                     return ''
                 endif
             endif

@@ -31,5 +31,6 @@ let g:clever_f_timeout_ms              = get(g:, 'clever_f_timeout_ms', 0)
 let g:clever_f_mark_char               = get(g:, 'clever_f_mark_char', 1)
 let g:clever_f_mark_char_color         = get(g:, 'clever_f_mark_char_color', 'CleverFDefaultLabel')
 let g:clever_f_repeat_last_char_inputs = get(g:, 'clever_f_repeat_last_char_inputs', ["\<CR>"])
+let g:clever_f_clean_labels_eagerly    = get(g:, 'clever_f_clean_labels_eagerly', 1)
 
 let g:loaded_clever_f = 1

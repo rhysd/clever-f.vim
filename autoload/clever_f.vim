@@ -15,10 +15,12 @@ if g:clever_f_mark_char
     execute 'highlight link CleverFChar' g:clever_f_mark_char_color
 endif
 
-augroup plugin-clever-f-permanent-finalizer
-    autocmd!
-    autocmd WinEnter,WinLeave,CmdWinLeave * if g:clever_f_mark_char | call s:remove_highlight() | endif
-augroup END
+if g:clever_f_clean_labels_eagerly
+    augroup plugin-clever-f-permanent-finalizer
+        autocmd!
+        autocmd WinEnter,WinLeave,CmdWinLeave * if g:clever_f_mark_char | call s:remove_highlight() | endif
+    augroup END
+endif
 augroup plugin-clever-f-finalizer
     autocmd!
 augroup END

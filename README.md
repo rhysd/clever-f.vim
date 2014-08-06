@@ -9,9 +9,11 @@ At last, you can customize the behavior of the mappings and features.
 
 ![Screen shot](http://gifzo.net/zt6vvEOlhD.gif)
 
-I'll show some examples of usage. _ is the place of cursor, -> is a move of
-cursor, alphabets above -> is input by keyboard.
+I'll show some examples of usage. `_` is the place of cursor, `->` is a move of
+cursor, alphabets above `->` is input by keyboard.  Note that this is a part of
+clever-f.vim's features.
 
+### __`f`__
 
     input:       fh         f         f      e         fo         f
     move :  _---------->_------>_---------->_->_---------------->_->_
@@ -19,7 +21,10 @@ cursor, alphabets above -> is input by keyboard.
     move :                        _<-----------------------------_<-_
     text :  hoge        huga    hoo         hugu                ponyo
 
+![f](http://gifzo.net/2DGrzvlBpa.gif)
 
+
+### __`F`__
 
     input:        f        Fh       b     f                         Fo
     move :  _<----------_<------_<-_<-----------------------------_<-_
@@ -27,7 +32,10 @@ cursor, alphabets above -> is input by keyboard.
     move :  _---------->_------>_----------->_
     text :  hoge        huga    huyo         hugu                ponyo
 
+![F](http://gifzo.net/BAmt3Z9mPV.gif)
 
+
+### __`t`__
 
     input:       th         t         t      e         to         t
     move :  _--------->_------>_---------->_-->_--------------->_->_
@@ -35,6 +43,7 @@ cursor, alphabets above -> is input by keyboard.
     move :                         _<-----------------------------__
     text :  hoge        huga    hoo         hugu                ponyo
 
+![t](http://gifzo.net/ewaBqZXvj5.gif)
 
 
 ## CUSTOMIZE
@@ -55,9 +64,15 @@ Please set it to `1` in your vimrc to ignore case.
 If and only if you type a lower case character, clever-f.vim ignores case.
 Please set it to `1` in your vimrc to make smart case
 
-### Target character highlighting
+### Target character highlighting in current line
 
 clever-f.vim highlights the target character you input in current line.  The highlight is cleared automatically when the search ends.  If you want to change the highlight group, set your favorite highlight group to `g:clever_f_mark_char_color`.
+
+Below is an example using `ta` in description of clever-f.vim.
+
+![highlight example](http://gifzo.net/VOWpAKAhGP.gif)
+
+Here, `t{char}` searches forward then matches the character before `{char}` and `T{char}` searches backward then matches the character after `{char}`.  You can see the highlighted target is dynamically changed following the cursor's direction.
 
 ### Timeout
 

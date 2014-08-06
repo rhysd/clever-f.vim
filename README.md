@@ -21,7 +21,7 @@ clever-f.vim's features.
     move :                        _<-----------------------------_<-_
     text :  hoge        huga    hoo         hugu                ponyo
 
-![f](http://gifzo.net/2DGrzvlBpa.gif)
+![f](http://gifzo.net/j79BmpXUYo.gif)
 
 
 ### __`F`__
@@ -32,7 +32,7 @@ clever-f.vim's features.
     move :  _---------->_------>_----------->_
     text :  hoge        huga    huyo         hugu                ponyo
 
-![F](http://gifzo.net/BAmt3Z9mPV.gif)
+![F](http://gifzo.net/BOH8A5T1mOC.gif)
 
 
 ### __`t`__
@@ -43,7 +43,7 @@ clever-f.vim's features.
     move :                         _<-----------------------------__
     text :  hoge        huga    hoo         hugu                ponyo
 
-![t](http://gifzo.net/ewaBqZXvj5.gif)
+![t](http://gifzo.net/pUkZtMYN3Q.gif)
 
 
 ## CUSTOMIZE
@@ -70,9 +70,9 @@ clever-f.vim highlights the target character you input in current line.  The hig
 
 Below is an example using `ta` in description of clever-f.vim.
 
-![highlight example](http://gifzo.net/VOWpAKAhGP.gif)
+![highlight example](http://gifzo.net/BFhZkWivZ51.gif)
 
-Here, `t{char}` searches forward then matches the character before `{char}` and `T{char}` searches backward then matches the character after `{char}`.  You can see the highlighted target is dynamically changed following the cursor's direction.
+Here, `ta` searches `a` forward then matches the character before `a` and `Ta` searches `a` backward then matches the character after `a`.  You can see the highlighted target is dynamically changed following the cursor's direction.
 
 ### Timeout
 

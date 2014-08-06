@@ -79,6 +79,11 @@ Here, `ta` searches `a` forward then matches the character before `a` and `Ta` s
 You can specify the timeout for `f`, `F`, `t` and `T` mappings.  If the interval of these mappings is greater than the one you specified, clever-f.vim resets its state to make you input a new character.
 This feature is disabled by default.  If you want to use this feature, set `g:clever_f_timeout_ms` to proper value.
 
+### Repeat last input
+
+`<CR>` is easy to type but usually it isn't input as the target character of search.  So by default, when you input `<CR>` as `{char}`, the previous input is used instead of `<CR>`.  For example, when you previously input `fa` and then input `f<CR>`, `a` will be used as input instead of `<CR>`.
+You can specify characters to use previous input by setting `g:clever_f_repeat_last_char_inputs`.  Adding `<Tab>` may be handy.
+
 ### Migemo support
 
 In Japanese environment, it is convenient that `fa` matches `あ` in some cases. Originally, this feature is provided by [migemo](http://0xcc.net/migemo/).

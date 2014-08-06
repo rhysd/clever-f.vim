@@ -139,9 +139,11 @@ g:clever_f_chars_match_any_signs              *g:clever_f_chars_match_any_signs*
     matches all signs. You can jump signs whose keys are hard to press.
     The default value is ''.
 
+>
     input:   f;   f       f      f f       f       f
     move :  _-->_--->_--------->_>_>_------------>_>_
     text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
+<
 
 g:clever_f_mark_cursor                                  *g:clever_f_mark_cursor*
 
@@ -188,6 +190,17 @@ g:clever_f_mark_char_color                          *g:clever_f_mark_char_color*
     bold.  If you want to make an original label highlight, define your own
     highlight group.(See |:highlight|)
 
+g:clever_f_repeat_last_char_inputs          *g:clever_f_repeat_last_char_inputs*
+
+    This is a list of string value.  If one of the elements are input,
+    |clever-f| use the previous input instead of the input.
+    The default value is ["\<CR>"].  It means that previous input is used when
+    you input <CR>.  For example, when you previously input 'fa' and then
+    input 'f<CR>', 'a' will be used instead of '<CR>'.
+    If you want to add <Tab> to the element, please write below in your vimrc.
+>
+    let g:clever_f_repeat_last_char_inputs = ["\<CR>", "\<Tab>"]
+<
 
 ==============================================================================
 SPECIAL THANKS                                     *clever-f.vim-special-thanks*

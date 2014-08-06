@@ -25,12 +25,9 @@ describe 'Default settings'
     end
 
     it 'provide autoload functions'
-        try
-            " load autoload functions
-            runtime autoload/clever_f.vim
-            runtime autoload/clever_f/helper.vim
-        catch
-        endtry
+        " load autoload functions
+        silent! runtime autoload/clever_f.vim
+        silent! runtime autoload/clever_f/helper.vim
         Expect '*clever_f#find_with' to_exist
         Expect '*clever_f#reset' to_exist
         Expect '*clever_f#repeat' to_exist

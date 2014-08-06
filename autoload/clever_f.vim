@@ -1,9 +1,28 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+let g:clever_f_across_no_line          = get(g:, 'clever_f_across_no_line', 0)
+let g:clever_f_ignore_case             = get(g:, 'clever_f_ignore_case', 0)
+let g:clever_f_use_migemo              = get(g:, 'clever_f_use_migemo', 0)
+let g:clever_f_fix_key_direction       = get(g:, 'clever_f_fix_key_direction', 0)
+let g:clever_f_show_prompt             = get(g:, 'clever_f_show_prompt', 0)
+let g:clever_f_smart_case              = get(g:, 'clever_f_smart_case', 0)
+let g:clever_f_chars_match_any_signs   = get(g:, 'clever_f_chars_match_any_signs', '')
+let g:clever_f_mark_cursor             = get(g:, 'clever_f_mark_cursor', 1)
+let g:clever_f_mark_cursor_color       = get(g:, 'clever_f_mark_cursor_color', 'Cursor')
+let g:clever_f_hide_cursor_on_cmdline  = get(g:, 'clever_f_hide_cursor_on_cmdline', 1)
+let g:clever_f_timeout_ms              = get(g:, 'clever_f_timeout_ms', 0)
+let g:clever_f_mark_char               = get(g:, 'clever_f_mark_char', 1)
+let g:clever_f_mark_char_color         = get(g:, 'clever_f_mark_char_color', 'CleverFDefaultLabel')
+let g:clever_f_repeat_last_char_inputs = get(g:, 'clever_f_repeat_last_char_inputs', ["\<CR>"])
+let g:clever_f_clean_labels_eagerly    = get(g:, 'clever_f_clean_labels_eagerly', 1)
+
 " highlight labels
 augroup plugin-clever-f-highlight
     autocmd!
-    autocmd ColorScheme * highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold guifg=red guibg=NONE gui=bold
+    autocmd ColorScheme * highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold,underline guifg=red guibg=NONE gui=bold,underline
 augroup END
-highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold guifg=red guibg=NONE gui=bold
+highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold,underline guifg=red guibg=NONE gui=bold,underline
 
 if g:clever_f_mark_cursor
     execute 'highlight link CleverFCursor' g:clever_f_mark_cursor_color
@@ -12,17 +31,22 @@ if g:clever_f_mark_char
     execute 'highlight link CleverFChar' g:clever_f_mark_char_color
 endif
 
+if g:clever_f_clean_labels_eagerly
+    augroup plugin-clever-f-permanent-finalizer
+        autocmd!
+        autocmd WinEnter,WinLeave,CmdWinLeave * if g:clever_f_mark_char | call s:remove_highlight() | endif
+    augroup END
+endif
+augroup plugin-clever-f-finalizer
+    autocmd!
+augroup END
+
 " keys are mode string returned from mode()
 function! clever_f#reset()
-    call s:remove_highlight()
-
     let s:previous_map = {}
-    let s:previous_char_num = {}
     let s:previous_pos = {}
     let s:first_move = {}
     let s:migemo_dicts = {}
-    let s:last_mode = ''
-    let s:moved_forward = 0
 
     " Note:
     " [0, 0] may be invalid because the representation of
@@ -53,7 +77,7 @@ endfunction
 
 function! clever_f#find_with(map)
     if a:map !~# '^[fFtT]$'
-        echoerr 'invalid mapping: ' . a:map
+        echoerr 'Invalid mapping: ' . a:map
         return ''
     endif
 
@@ -74,9 +98,19 @@ function! clever_f#find_with(map)
         endif
         try
             if g:clever_f_show_prompt | echon "clever-f: " | endif
-            let s:previous_char_num[mode] = getchar()
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
+            let cn = getchar()
+            if index(map(deepcopy(g:clever_f_repeat_last_char_inputs), 'char2nr(v:val)'), cn) == -1
+                let s:previous_char_num[mode] = cn
+            else
+                if has_key(s:previous_char_num, s:last_mode)
+                    let s:previous_char_num[mode] = s:previous_char_num[s:last_mode]
+                else
+                    echohl ErrorMsg | echo 'Previous input not found.' | echohl None
+                    return ''
+                endif
+            endif
             let s:last_mode = mode
 
             if g:clever_f_timeout_ms > 0
@@ -87,8 +121,8 @@ function! clever_f#find_with(map)
                 call s:remove_highlight()
                 if mode =~? '^[nvs]$'
                     augroup plugin-clever-f-finalizer
-                        autocmd CursorMoved,CursorMovedI * call s:maybe_finalize()
-                        autocmd InsertEnter * call s:finalize()
+                        autocmd CursorMoved <buffer> call s:maybe_finalize()
+                        autocmd InsertEnter <buffer> call s:finalize()
                     augroup END
                     call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
                 endif
@@ -176,7 +210,7 @@ function! clever_f#find(map, char_num)
     let mode = mode(1)
     if g:clever_f_mark_char
         if next_pos[0] != before_pos[0]
-            \ || (a:map ==? 't' && !s:first_move[mode] && xor(s:moved_forward, moves_forward))
+            \ || (a:map ==? 't' && !s:first_move[mode] && clever_f#helper#xor(s:moved_forward, moves_forward))
             call s:remove_highlight()
             call s:mark_char_in_current_line(a:map, a:char_num)
         endif
@@ -189,7 +223,8 @@ endfunction
 
 function! s:finalize()
     autocmd! plugin-clever-f-finalizer
-    call clever_f#reset()
+    call s:remove_highlight()
+    let s:moved_forward = 0
 endfunction
 
 function! s:maybe_finalize()
@@ -241,7 +276,7 @@ function! s:load_migemo_dict()
         return clever_f#migemo#eucjp#load_dict()
     else
         let g:clever_f_use_migemo = 0
-        throw "Error: ".enc." is not supported. Migemo is made disabled."
+        throw "Error: " . enc . " is not supported. Migemo is disabled."
     endif
 endfunction
 
@@ -299,4 +334,9 @@ function! s:swapcase(char)
     return a:char =~# '\u' ? tolower(a:char) : toupper(a:char)
 endfunction
 
+let s:previous_char_num = {}
+let s:last_mode = ''
 call clever_f#reset()
+
+let &cpo = s:save_cpo
+unlet s:save_cpo

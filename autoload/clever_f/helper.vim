@@ -27,3 +27,13 @@ endif
 function! clever_f#helper#include_multibyte_char(str)
     return strlen(a:str) != clever_f#helper#strchars(a:str)
 endfunction
+
+if exists('*xor')
+    function! clever_f#helper#xor(a, b)
+        return xor(a:a, a:b)
+    endfunction
+else
+    function! clever_f#helper#xor(a, b)
+        return a:a && !a:b || !a:a && a:b
+    endfunction
+endif

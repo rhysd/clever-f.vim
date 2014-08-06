@@ -1,8 +1,8 @@
-## INTRODUCTION [![Build Status](https://travis-ci.org/rhysd/clever-f.vim.png?branch=master)](https://travis-ci.org/rhysd/clever-f.vim)
+clever-[f](https://github.com/vim-jp/vim/blob/e0e5dfe6148323785e843715d9f6a864bd61c704/runtime/doc/motion.txt#L248).vim [![Build Status](https://travis-ci.org/rhysd/clever-f.vim.png?branch=master)](https://travis-ci.org/rhysd/clever-f.vim)
+====================================================================================================================================
 
 clever-f.vim extends `f`, `F`, `t` and `T` mappings for more convenience.  Instead of `;`, `f` is available to repeat after you type `f{char}` or `F{char}`.  `F` after `f{char}` and `F{char}` is also available to undo a jump. `t{char}` and `T{char}` are ditto. This extension makes a repeat easier and makes you forget the existence of `;`. You can use `;` for other key mapping.  In addition, this extension provides many convenient features like target character highlighting, smart case matching and so on.  If you want to reset the searching character without moving cursor, map `<Plug>(clever-f-reset)` to your favorite key.
 At last, you can customize the behavior of the mappings and features.
-
 
 
 ## USAGE

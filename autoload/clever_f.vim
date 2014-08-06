@@ -20,9 +20,9 @@ let g:clever_f_clean_labels_eagerly    = get(g:, 'clever_f_clean_labels_eagerly'
 " highlight labels
 augroup plugin-clever-f-highlight
     autocmd!
-    autocmd ColorScheme * highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold guifg=red guibg=NONE gui=bold
+    autocmd ColorScheme * highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold,underline guifg=red guibg=NONE gui=bold,underline
 augroup END
-highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold guifg=red guibg=NONE gui=bold
+highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold,underline guifg=red guibg=NONE gui=bold,underline
 
 if g:clever_f_mark_cursor
     execute 'highlight link CleverFCursor' g:clever_f_mark_cursor_color

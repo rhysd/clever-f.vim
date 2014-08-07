@@ -50,8 +50,9 @@ describe 'Default settings'
         Expect 'g:clever_f_timeout_ms' to_exist_and_default_to 0
         Expect 'g:clever_f_mark_char' to_exist_and_default_to 1
         Expect 'g:clever_f_mark_char_color' to_exist_and_default_to 'CleverFDefaultLabel'
+        Expect 'g:clever_f_repeat_last_char_inputs' to_exist_and_default_to ["\<CR>"]
+        Expect 'g:clever_f_clean_labels_eagerly' to_exist_and_default_to 1
     end
-
 end
 
 
@@ -762,4 +763,43 @@ describe 'g:clever_f_mark_char'
     end
 end
 
+describe 'g:clever_f_repeat_last_char_inputs'
+    before
+        new
+        call clever_f#reset()
+        call AddLine('hoge huga hiyo hoyo')
+        normal! gg0
+    end
+
+    after
+        close!
+    end
+
+    it 'repeats previous input again'
+        normal fhl
+        Expect col('.') == 7
+        execute 'normal' "f\<CR>"
+        Expect col('.') == 11
+        normal lfyl
+        Expect col('.') == 14
+        execute 'normal' "f\<CR>"
+        Expect col('.') == 18
+        normal! $
+        execute 'normal' "F\<CR>"
+        Expect col('.') == 18
+    end
+
+    it 'does nothing when the specified characters are input at first'
+        call clever_f#_reset_all()
+        let p = getpos('.')
+        execute 'normal' "f\<CR>"
+        Expect getpos('.') == p
+        execute 'normal' "F\<CR>"
+        Expect getpos('.') == p
+        execute 'normal' "t\<CR>"
+        Expect getpos('.') == p
+        execute 'normal' "T\<CR>"
+        Expect getpos('.') == p
+    end
+end
 

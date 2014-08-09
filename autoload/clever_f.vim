@@ -99,6 +99,18 @@ function! s:mark_char_in_current_line(map, char)
     call matchadd('CleverFChar', regex , 999)
 endfunction
 
+" Note:
+" \x80\xfd` seems to be sent by a terminal.
+" Below is a workaround for the sequence.
+function! s:getchar()
+    while 1
+        let cn = getchar()
+        if type(cn) != type('') || cn !=# "\x80\xfd`"
+            return cn
+        endif
+    endwhile
+endfunction
+
 function! clever_f#find_with(map)
     if a:map !~# '^[fFtT]$'
         echoerr 'Invalid mapping: ' . a:map
@@ -124,7 +136,7 @@ function! clever_f#find_with(map)
             if g:clever_f_show_prompt | echon "clever-f: " | endif
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
-            let cn = getchar()
+            let cn = s:getchar()
             if index(map(deepcopy(g:clever_f_repeat_last_char_inputs), 'char2nr(v:val)'), cn) == -1
                 let s:previous_char_num[mode] = cn
             else

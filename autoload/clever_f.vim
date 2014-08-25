@@ -237,7 +237,6 @@ function! clever_f#find(map, char_num)
     let before_pos = getpos('.')[1 : 2]
     let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos == [0, 0]
-        call s:finalize()
         return
     endif
 

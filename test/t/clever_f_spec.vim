@@ -728,37 +728,37 @@ describe 'g:clever_f_mark_char'
     end
 
     it 'highlights the target characters and remove the highlight automatically'
-        SKIP because somehow getmatches() can't get matches
         normal! gg0
         normal fh
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
         normal f
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        normal! l
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') == []
-        normal! gg0
-        normal fhf
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        normal! j
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') == []
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
+
+        " Do not test to check the highlights are removed properly.
+        " Because vim-vspec uses Ex mode. In Ex mode, the window where
+        " highlights exist is different from the current window.
+        " It causes failure on removing highlights because matchdelete()
+        " can only remove highlights in current window.
     end
 
     it 'updates the highlight if the cursor moves to another line'
-        SKIP because somehow getmatches() can't get matches
         let old_across_no_line = g:clever_f_across_no_line
-        let g:clever_f_across_no_line = 1
+        let g:clever_f_across_no_line = 0
         call AddLine('oh huh')
         normal! gg0
         let l = line('.')
-        normal fhf
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        Expect getmatches()[0].pattern =~# l
+        normal fhff
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
+        Expect stridx(getmatches()[0].pattern, l) != -1
+        Expect len(getmatches()) == 1
         normal f
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        Expect getmatches()[0].pattern =~# l+1
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
+        Expect stridx(getmatches()[0].pattern, l+1) != -1
+        Expect len(getmatches()) == 1
         normal f
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        Expect getmatches()[0].pattern =~# l+1
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
+        Expect stridx(getmatches()[0].pattern, l+1) != -1
+        Expect len(getmatches()) == 1
         let g:clever_f_across_no_line = old_across_no_line
     end
 end

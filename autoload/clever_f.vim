@@ -155,7 +155,7 @@ function! clever_f#find_with(map)
 
             if g:clever_f_mark_char
                 call s:remove_highlight()
-                if mode =~? '^[nvs]$'
+                if index(['n', 'v', 'V', "\<C-v>", 's', 'ce'], mode) != -1
                     augroup plugin-clever-f-finalizer
                         autocmd CursorMoved <buffer> call s:maybe_finalize()
                         autocmd InsertEnter <buffer> call s:finalize()

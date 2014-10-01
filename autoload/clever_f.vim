@@ -276,8 +276,10 @@ function! s:move_cmd_for_visualmode(map, char_num)
         return ''
     endif
 
+    let m = mode(1)
     call setpos("''", [0] + next_pos + [0])
-    let s:previous_pos[mode(1)] = next_pos
+    let s:previous_pos[m] = next_pos
+    let s:first_move[m] = 0
 
     return "``"
 endfunction
@@ -350,6 +352,7 @@ function! s:next_pos(map, char_num, count)
     let pattern = s:generate_pattern(a:map, a:char_num)
 
     if a:map ==? 't' && get(s:first_move, mode, 1)
+
         if !s:search(pattern, search_flag . 'c')
             return [0, 0]
         endif

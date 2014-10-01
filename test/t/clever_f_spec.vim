@@ -147,7 +147,105 @@ describe 'f, F, t and T mappings'
     end
 
     it 'provide T mapping like builtin T'
-        normal! $
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        normal th
+        Expect CursorPos() == [l,5,' ']
+
+        normal t
+        Expect CursorPos() == [l,10,' ']
+
+        normal! e
+        Expect CursorPos() == [l,14,'o']
+
+        normal to
+        Expect CursorPos() == [l,16,'p']
+
+        normal t
+        Expect CursorPos() == [l,18,'y']
+
+        call AddLine('ab hbge huga')
+        normal! gg0
+        normal tb
+        Expect CursorPos() == [l,1,'a']
+        normal t
+        Expect CursorPos() == [l,4,'h']
+    end
+
+    it 'provide improved forward search like builtin f in visual mode'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        normal! v
+        normal fh
+        Expect CursorPos() == [l,6,'h']
+
+        normal f
+        Expect CursorPos() == [l,11,'h']
+
+        normal! e
+        Expect CursorPos() == [l,14,'o']
+
+        normal fo
+        Expect CursorPos() == [l,17,'o']
+
+        normal f
+        Expect CursorPos() == [l,19,'o']
+    end
+
+    it 'provide improved backward search like builtin F'
+        normal! $v
+        let l = line('.')
+        Expect CursorPos() == [l,19,'o']
+
+        normal Fo
+        Expect CursorPos() == [l,17,'o']
+
+        normal f
+        Expect CursorPos() == [l,14,'o']
+
+        normal! h
+
+        normal Fh
+        Expect CursorPos() == [l,11,'h']
+
+        normal f
+        Expect CursorPos() == [l,6,'h']
+    end
+
+    it 'provide t mapping like builtin t'
+        normal! 0v
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        normal th
+        Expect CursorPos() == [l,5,' ']
+
+        normal t
+        Expect CursorPos() == [l,10,' ']
+
+        normal! e
+        Expect CursorPos() == [l,14,'o']
+
+        normal to
+        Expect CursorPos() == [l,16,'p']
+
+        normal t
+        Expect CursorPos() == [l,18,'y']
+
+        call AddLine('ab hbge huga')
+        normal! gg0
+        normal tb
+        Expect CursorPos() == [l,1,'a']
+        normal t
+        Expect CursorPos() == [l,4,'h']
+    end
+
+    it 'provide T mapping like builtin T'
+        normal! $v
         let l = line('.')
         Expect CursorPos() == [l,19,'o']
 

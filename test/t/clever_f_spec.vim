@@ -50,8 +50,9 @@ describe 'Default settings'
         Expect 'g:clever_f_timeout_ms' to_exist_and_default_to 0
         Expect 'g:clever_f_mark_char' to_exist_and_default_to 1
         Expect 'g:clever_f_mark_char_color' to_exist_and_default_to 'CleverFDefaultLabel'
+        Expect 'g:clever_f_repeat_last_char_inputs' to_exist_and_default_to ["\<CR>"]
+        Expect 'g:clever_f_clean_labels_eagerly' to_exist_and_default_to 1
     end
-
 end
 
 
@@ -146,7 +147,105 @@ describe 'f, F, t and T mappings'
     end
 
     it 'provide T mapping like builtin T'
-        normal! $
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        normal th
+        Expect CursorPos() == [l,5,' ']
+
+        normal t
+        Expect CursorPos() == [l,10,' ']
+
+        normal! e
+        Expect CursorPos() == [l,14,'o']
+
+        normal to
+        Expect CursorPos() == [l,16,'p']
+
+        normal t
+        Expect CursorPos() == [l,18,'y']
+
+        call AddLine('ab hbge huga')
+        normal! gg0
+        normal tb
+        Expect CursorPos() == [l,1,'a']
+        normal t
+        Expect CursorPos() == [l,4,'h']
+    end
+
+    it 'provide improved forward search like builtin f in visual mode'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        normal! v
+        normal fh
+        Expect CursorPos() == [l,6,'h']
+
+        normal f
+        Expect CursorPos() == [l,11,'h']
+
+        normal! e
+        Expect CursorPos() == [l,14,'o']
+
+        normal fo
+        Expect CursorPos() == [l,17,'o']
+
+        normal f
+        Expect CursorPos() == [l,19,'o']
+    end
+
+    it 'provide improved backward search like builtin F'
+        normal! $v
+        let l = line('.')
+        Expect CursorPos() == [l,19,'o']
+
+        normal Fo
+        Expect CursorPos() == [l,17,'o']
+
+        normal f
+        Expect CursorPos() == [l,14,'o']
+
+        normal! h
+
+        normal Fh
+        Expect CursorPos() == [l,11,'h']
+
+        normal f
+        Expect CursorPos() == [l,6,'h']
+    end
+
+    it 'provide t mapping like builtin t'
+        normal! 0v
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        normal th
+        Expect CursorPos() == [l,5,' ']
+
+        normal t
+        Expect CursorPos() == [l,10,' ']
+
+        normal! e
+        Expect CursorPos() == [l,14,'o']
+
+        normal to
+        Expect CursorPos() == [l,16,'p']
+
+        normal t
+        Expect CursorPos() == [l,18,'y']
+
+        call AddLine('ab hbge huga')
+        normal! gg0
+        normal tb
+        Expect CursorPos() == [l,1,'a']
+        normal t
+        Expect CursorPos() == [l,4,'h']
+    end
+
+    it 'provide T mapping like builtin T'
+        normal! $v
         let l = line('.')
         Expect CursorPos() == [l,19,'o']
 
@@ -727,39 +826,78 @@ describe 'g:clever_f_mark_char'
     end
 
     it 'highlights the target characters and remove the highlight automatically'
-        SKIP because somehow getmatches() can't get matches
         normal! gg0
         normal fh
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
         normal f
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        normal! l
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') == []
-        normal! gg0
-        normal fhf
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        normal! j
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') == []
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
+
+        " Do not test to check the highlights are removed properly.
+        " Because vim-vspec uses Ex mode. In Ex mode, the window where
+        " highlights exist is different from the current window.
+        " It causes failure on removing highlights because matchdelete()
+        " can only remove highlights in current window.
     end
 
     it 'updates the highlight if the cursor moves to another line'
-        SKIP because somehow getmatches() can't get matches
         let old_across_no_line = g:clever_f_across_no_line
-        let g:clever_f_across_no_line = 1
+        let g:clever_f_across_no_line = 0
         call AddLine('oh huh')
         normal! gg0
         let l = line('.')
-        normal fhf
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        Expect getmatches()[0].pattern =~# l
+        normal fhff
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
+        Expect stridx(getmatches()[0].pattern, l) != -1
+        Expect len(getmatches()) == 1
         normal f
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        Expect getmatches()[0].pattern =~# l+1
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
+        Expect stridx(getmatches()[0].pattern, l+1) != -1
+        Expect len(getmatches()) == 1
         normal f
-        Expect filter(getmatches(), 'v:val.group=="CleverFChar"') != []
-        Expect getmatches()[0].pattern =~# l+1
+        Expect filter(getmatches(), 'v:val.group==#"CleverFChar"') != []
+        Expect stridx(getmatches()[0].pattern, l+1) != -1
+        Expect len(getmatches()) == 1
         let g:clever_f_across_no_line = old_across_no_line
     end
 end
 
+describe 'g:clever_f_repeat_last_char_inputs'
+    before
+        new
+        call clever_f#reset()
+        call AddLine('hoge huga hiyo hoyo')
+        normal! gg0
+    end
+
+    after
+        close!
+    end
+
+    it 'repeats previous input again'
+        normal fhl
+        Expect col('.') == 7
+        execute 'normal' "f\<CR>"
+        Expect col('.') == 11
+        normal lfyl
+        Expect col('.') == 14
+        execute 'normal' "f\<CR>"
+        Expect col('.') == 18
+        normal! $
+        execute 'normal' "F\<CR>"
+        Expect col('.') == 18
+    end
+
+    it 'does nothing when the specified characters are input at first'
+        call clever_f#_reset_all()
+        let p = getpos('.')
+        execute 'normal' "f\<CR>"
+        Expect getpos('.') == p
+        execute 'normal' "F\<CR>"
+        Expect getpos('.') == p
+        execute 'normal' "t\<CR>"
+        Expect getpos('.') == p
+        execute 'normal' "T\<CR>"
+        Expect getpos('.') == p
+    end
+end
 

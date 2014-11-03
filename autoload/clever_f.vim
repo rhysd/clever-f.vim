@@ -9,12 +9,14 @@ let g:clever_f_show_prompt             = get(g:, 'clever_f_show_prompt', 0)
 let g:clever_f_smart_case              = get(g:, 'clever_f_smart_case', 0)
 let g:clever_f_chars_match_any_signs   = get(g:, 'clever_f_chars_match_any_signs', '')
 let g:clever_f_mark_cursor             = get(g:, 'clever_f_mark_cursor', 1)
-let g:clever_f_mark_cursor_color       = get(g:, 'clever_f_mark_cursor_color', 'Cursor')
 let g:clever_f_hide_cursor_on_cmdline  = get(g:, 'clever_f_hide_cursor_on_cmdline', 1)
 let g:clever_f_timeout_ms              = get(g:, 'clever_f_timeout_ms', 0)
 let g:clever_f_mark_char               = get(g:, 'clever_f_mark_char', 1)
-let g:clever_f_mark_char_color         = get(g:, 'clever_f_mark_char_color', 'CleverFDefaultLabel')
 let g:clever_f_repeat_last_char_inputs = get(g:, 'clever_f_repeat_last_char_inputs', ["\<CR>"])
+
+" below variables must be set before loading this script
+let g:clever_f_mark_cursor_color       = get(g:, 'clever_f_mark_cursor_color', 'Cursor')
+let g:clever_f_mark_char_color         = get(g:, 'clever_f_mark_char_color', 'CleverFDefaultLabel')
 let g:clever_f_clean_labels_eagerly    = get(g:, 'clever_f_clean_labels_eagerly', 1)
 
 " highlight labels
@@ -41,6 +43,15 @@ augroup plugin-clever-f-finalizer
     autocmd!
 augroup END
 
+" initialize the internal state
+let s:last_mode = ''
+let s:previous_map = {}
+let s:previous_pos = {}
+let s:first_move = {}
+let s:migemo_dicts = {}
+let s:previous_char_num = {}
+let s:timestamp = [0, 0]
+
 " keys are mode string returned from mode()
 function! clever_f#reset()
     let s:previous_map = {}
@@ -53,7 +64,20 @@ function! clever_f#reset()
     " return value of reltime() is implentation-depended.
     let s:timestamp = [0, 0]
 
-    return ""
+    call s:remove_highlight()
+
+    return ''
+endfunction
+
+" hidden API for debug
+function! clever_f#_reset_all()
+    call clever_f#reset()
+    let s:last_mode = ''
+    let s:previous_char_num = {}
+    autocmd! plugin-clever-f-finalizer
+    unlet! s:moved_forward
+
+    return ''
 endfunction
 
 function! s:remove_highlight()
@@ -73,6 +97,18 @@ endfunction
 function! s:mark_char_in_current_line(map, char)
     let regex = '\%' . line('.') . 'l' . s:generate_pattern(a:map, a:char)
     call matchadd('CleverFChar', regex , 999)
+endfunction
+
+" Note:
+" \x80\xfd` seems to be sent by a terminal.
+" Below is a workaround for the sequence.
+function! s:getchar()
+    while 1
+        let cn = getchar()
+        if type(cn) != type('') || cn !=# "\x80\xfd`"
+            return cn
+        endif
+    endwhile
 endfunction
 
 function! clever_f#find_with(map)
@@ -100,7 +136,7 @@ function! clever_f#find_with(map)
             if g:clever_f_show_prompt | echon "clever-f: " | endif
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
-            let cn = getchar()
+            let cn = s:getchar()
             if index(map(deepcopy(g:clever_f_repeat_last_char_inputs), 'char2nr(v:val)'), cn) == -1
                 let s:previous_char_num[mode] = cn
             else
@@ -119,7 +155,7 @@ function! clever_f#find_with(map)
 
             if g:clever_f_mark_char
                 call s:remove_highlight()
-                if mode =~? '^[nvs]$'
+                if index(['n', 'v', 'V', "\<C-v>", 's', 'ce'], mode) != -1
                     augroup plugin-clever-f-finalizer
                         autocmd CursorMoved <buffer> call s:maybe_finalize()
                         autocmd InsertEnter <buffer> call s:finalize()
@@ -240,8 +276,10 @@ function! s:move_cmd_for_visualmode(map, char_num)
         return ''
     endif
 
+    let m = mode(1)
     call setpos("''", [0] + next_pos + [0])
-    let s:previous_pos[mode(1)] = next_pos
+    let s:previous_pos[m] = next_pos
+    let s:first_move[m] = 0
 
     return "``"
 endfunction
@@ -314,6 +352,7 @@ function! s:next_pos(map, char_num, count)
     let pattern = s:generate_pattern(a:map, a:char_num)
 
     if a:map ==? 't' && get(s:first_move, mode, 1)
+
         if !s:search(pattern, search_flag . 'c')
             return [0, 0]
         endif
@@ -333,10 +372,6 @@ endfunction
 function! s:swapcase(char)
     return a:char =~# '\u' ? tolower(a:char) : toupper(a:char)
 endfunction
-
-let s:previous_char_num = {}
-let s:last_mode = ''
-call clever_f#reset()
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

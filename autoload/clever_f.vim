@@ -179,6 +179,8 @@ function! clever_f#find_with(map)
 	let mark = a:map != s:previous_map[mode]
     endif
 
+    let s:previous_map[mode] = a:map
+
     " create/refresh mark
     if g:clever_f_mark_char && mark
 	call s:remove_highlight()
@@ -190,8 +192,6 @@ function! clever_f#find_with(map)
 	    call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
 	endif
     endif
-
-    let s:previous_map[mode] = a:map
 
     return clever_f#repeat(back)
 endfunction

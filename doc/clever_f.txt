@@ -158,6 +158,10 @@ g:clever_f_mark_cursor_color                      *g:clever_f_mark_cursor_color*
     used to mark cursor position.
     The default value is "Cursor".
 
+    Note:
+    |g:clever_f_mark_cursor_color| must be set before |clever-f| is loaded.
+    (e.g. in your |vimrc|)
+
 g:clever_f_hide_cursor_on_cmdline            *g:clever_f_hide_cursor_on_cmdline*
 
     If the value is equivalent to 1, a cursor is hidden on inputting {char}.
@@ -189,6 +193,10 @@ g:clever_f_mark_char_color                          *g:clever_f_mark_char_color*
     The default value is "CleverFDefaultLabel", which makes characters red and
     bold.  If you want to make an original label highlight, define your own
     highlight group.(See |:highlight|)
+
+    Note:
+    |g:clever_f_mark_char_color| must be set before |clever-f| is loaded.
+    (e.g. in your |vimrc|)
 
 g:clever_f_repeat_last_char_inputs          *g:clever_f_repeat_last_char_inputs*
 

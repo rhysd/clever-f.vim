@@ -2,6 +2,8 @@
 " https://github.com/kana/vim-vspec
 " https://github.com/rhysd/vim-vspec-matchers
 
+scriptencoding utf-8
+
 let s:root_dir = matchstr(system('git rev-parse --show-cdup'), '[^\n]\+')
 execute 'set' 'rtp +=./'.s:root_dir
 runtime! plugin/clever-f.vim

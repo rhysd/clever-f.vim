@@ -540,9 +540,9 @@ describe 'migemo support'
 
     it 'makes t and T mapping match multibyte characters'
         normal tb
-        Expect col('.') == 7
+        Expect col('.') == 10
         normal t
-        Expect col('.') == 28
+        Expect col('.') == 31
         normal T
         Expect col('.') == 13
         normal $
@@ -551,11 +551,26 @@ describe 'migemo support'
         normal t
         Expect col('.') == 13
         normal T
-        Expect col('.') == 28
+        Expect col('.') == 31
         normal t
         Expect col('.') == 13
     end
 
+    it 'doesn''t degrade issue #24'
+        let save = g:clever_f_across_no_line
+        let g:clever_f_across_no_line = 0
+        call AddLine('              sOS')
+        call AddLine('              sOS')
+        call AddLine('              sOS')
+        normal! gg^
+        normal fS
+        Expect CursorPos() == [1, 17, 'S']
+        normal f
+        Expect CursorPos() == [2, 17, 'S']
+        normal f
+        Expect CursorPos() == [3, 17, 'S']
+        let g:clever_f_across_no_line = save
+    end
 end
 
 

@@ -550,16 +550,16 @@ describe 'migemo support'
         normal t
         Expect col('.') == 28
         normal T
-        Expect col('.') == 13
+        Expect col('.') == 10
         normal $
         normal Tb
-        Expect col('.') == 34
+        Expect col('.') == 31
         normal t
-        Expect col('.') == 13
+        Expect col('.') == 10
         normal T
         Expect col('.') == 28
         normal t
-        Expect col('.') == 13
+        Expect col('.') == 10
     end
 
     it 'doesn''t degrade issue #24'

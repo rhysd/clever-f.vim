@@ -546,9 +546,9 @@ describe 'migemo support'
 
     it 'makes t and T mapping match multibyte characters'
         normal tb
-        Expect col('.') == 10
+        Expect col('.') == 7
         normal t
-        Expect col('.') == 31
+        Expect col('.') == 28
         normal T
         Expect col('.') == 13
         normal $
@@ -557,7 +557,7 @@ describe 'migemo support'
         normal t
         Expect col('.') == 13
         normal T
-        Expect col('.') == 31
+        Expect col('.') == 28
         normal t
         Expect col('.') == 13
     end

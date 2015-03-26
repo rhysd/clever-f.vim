@@ -327,7 +327,7 @@ function! s:generate_pattern(map, char_num)
         if !has_key(s:migemo_dicts, &l:encoding)
             let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
         endif
-        let regex = s:migemo_dicts[&l:encoding][regex]
+        let regex = s:migemo_dicts[&l:encoding][regex] . '\&\%(' . char . '\|\A\)'
     elseif stridx(g:clever_f_chars_match_any_signs, char) != -1
         let regex = '\[!"#$%&''()=~|\-^\\@`[\]{};:+*<>,.?_/]'
     endif

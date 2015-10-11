@@ -1,0 +1,14 @@
+{
+  "name": "clever-f.vim-demo-page",
+  "version": "0.0.0",
+  "dependencies": {
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "react-vimjs": "^0.1.0"
+  },
+  "devDependencies": {
+    "babelify": "^6.3.0",
+    "browserify": "^11.2.0",
+    "uglifyjs": "^2.4.10"
+  }
+}

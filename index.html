@@ -3,16 +3,39 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes" />
-    <title>clever-f.vim online demo</title>
+    <meta name="description" content="clever-f.vim demo using Vim.js">
+    <meta name="author" content="rhysd">
+
+    <title>clever-f.vim Online Demo</title>
 
     <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Source+Code+Pro'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="node_modules/react-vimjs/dist/vim.css">
+
+    <!-- Custom styles for this template -->
+    <link href="jumbotron-narrow.css" rel="stylesheet">
 
     <style>
       body {
         background-color: #e3e3e3;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: 14px;
+      }
+      .header-title {
+        margin-left: 8px;
+      }
+      .loading {
+        color: #e3e3e3;
+        line-height: 600px;
+      }
+      .vimjs-demo {
+        text-align: center;
+        flex: none;
+        font-family: "Source Code Pro", monospace;
+        width: 800px;
+        margin: auto;
       }
       .avatar {
         height: 1.2em;
@@ -25,21 +48,47 @@
   </head>
 
   <body>
-    <h1 class="title">
-      Try clever-f.vim on your browser <a href="https://github.com/rhysd/react-vimjs"><i class="fa fa-github"></i></a>
-    </h1>
-    <div class="vimjs-demo">
-    </div>
-    <footer>
-      <p>
-        Created by <a href="https://github.com/rhysd"><img class="avatar" src="https://avatars2.githubusercontent.com/u/823277?v=3" alt="@rhysd"/></a>
-      </p>
-      <p>
-        Copyright &copy; 2015 rhysd
-      </p>
-    </footer>
+    <a href="https://github.com/rhysd/clever-f.vim"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
 
-    <script src="index.js"></script>
+    <div class="container">
+
+      <div class="jumbotron">
+        <h1>Try clever-f.vim</h1>
+        <h3>Enter <code>fs</code> at first line and repeat <code>f</code>.</h3>
+        <div class="vimjs-demo">
+        </div>
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-6">
+          <h4>Repeatable <code>f</code>, <code>F</code>, <code>t</code> and <code>T</code></h4>
+          <p>First, you can search char with <code>f{char}</code> as normal Vim.  And then you can repeat it with <code>f</code> and <code>F</code>.When you move the cursor with another key, the repeatablity ends. <code>t</code> and <code>T</code> have the same behavior.</p>
+
+          <h4>Highlight Characters</h4>
+          <p>The target character is highlighted.  You can know where the cursor can move.</p>
+        </div>
+
+        <div class="col-lg-6">
+          <h4>Try <code>fsffff...</code> at first line!</h4>
+          <p><code>fs</code> jumps cursor to first <code>s</code>. Succeeding <code>f</code> repeats jumping cursor to next <code>s</code>.  All <code>s</code> in current line is highlighted hence you can know where cursor may jump.
+
+          <h4>Customize <code>.vimrc</code> with <code>:e .vimrc</code></h4>
+          <p>You can customize config. (e.g. When you write <code>let g:clever_f_ignore_case = 1</code> to <code>.vimrc</code>, clever-f.vim ignores the letter's case.) Please see <a href="https://github.com/rhysd/clever-f.vim#customize">document</a> for more detail.<br/>
+          <code>.vimrc</code> is stored to local storage, preserved after you close this page.</p>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>Created by <a href="https://github.com/rhysd"><img class="avatar" src="https://avatars2.githubusercontent.com/u/823277?v=3" alt="@rhysd"/></a> using <a href="https://github.com/coolwanglu/vim.js">Vim.js</a></p>
+        <p>&copy; rhysd 2015</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="ie10-viewport-bug-workaround.js"></script>
+
+    <script src="index.min.js"></script>
     <script src="node_modules/react-vimjs/dist/vim.js"></script>
   </body>
 </html>

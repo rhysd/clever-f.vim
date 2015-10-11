@@ -468,7 +468,7 @@ const props = {
 
 ReactDOM.render(
     <Vim {...props}>
-        Loading Vim.js...
+        <h1 className="loading"><i className="fa fa-spinner fa-pulse" /> Now Loading...</h1>
     </Vim>,
     document.querySelector('.vimjs-demo')
 );

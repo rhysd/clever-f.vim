@@ -2,6 +2,12 @@
 " https://github.com/kana/vim-vspec
 " https://github.com/rhysd/vim-vspec-matchers
 
+set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+
+scriptencoding utf-8
+
 let s:root_dir = matchstr(system('git rev-parse --show-cdup'), '[^\n]\+')
 execute 'set' 'rtp +=./'.s:root_dir
 runtime! plugin/clever-f.vim
@@ -544,18 +550,33 @@ describe 'migemo support'
         normal t
         Expect col('.') == 28
         normal T
-        Expect col('.') == 13
+        Expect col('.') == 10
         normal $
         normal Tb
-        Expect col('.') == 34
+        Expect col('.') == 31
         normal t
-        Expect col('.') == 13
+        Expect col('.') == 10
         normal T
         Expect col('.') == 28
         normal t
-        Expect col('.') == 13
+        Expect col('.') == 10
     end
 
+    it 'doesn''t degrade issue #24'
+        let save = g:clever_f_across_no_line
+        let g:clever_f_across_no_line = 0
+        call AddLine('              sOS')
+        call AddLine('              sOS')
+        call AddLine('              sOS')
+        normal! gg^
+        normal fS
+        Expect CursorPos() == [1, 17, 'S']
+        normal f
+        Expect CursorPos() == [2, 17, 'S']
+        normal f
+        Expect CursorPos() == [3, 17, 'S']
+        let g:clever_f_across_no_line = save
+    end
 end
 
 

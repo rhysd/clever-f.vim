@@ -5,10 +5,11 @@ clever-[f](https://github.com/vim-jp/vim/blob/e0e5dfe6148323785e843715d9f6a864bd
 clever-f.vim extends `f`, `F`, `t` and `T` mappings for more convenience.  Instead of `;`, `f` is available to repeat after you type `f{char}` or `F{char}`.  `F` after `f{char}` and `F{char}` is also available to undo a jump. `t{char}` and `T{char}` are ditto. This extension makes a repeat easier and makes you forget the existence of `;`. You can use `;` for other key mapping.  In addition, this extension provides many convenient features like target character highlighting, smart case matching and so on.  If you want to reset the searching character without moving cursor, map `<Plug>(clever-f-reset)` to your favorite key.
 At last, you can customize the behavior of the mappings and features.
 
+### [Try Online Demo](http://rhysd.github.io/clever-f.vim/) using [vim.js](https://github.com/coolwanglu/vim.js/)
 
 ## USAGE
 
-![Screen shot](http://gifzo.net/zt6vvEOlhD.gif)
+![Screen shot](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_main.gif)
 
 I'll show some examples of usage. `_` is the place of cursor, `->` is a move of
 cursor, alphabets above `->` is input by keyboard.  Note that this is a part of
@@ -22,7 +23,7 @@ clever-f.vim's features.
     move :                        _<-----------------------------_<-_
     text :  hoge        huga    hoo         hugu                ponyo
 
-![f](http://gifzo.net/j79BmpXUYo.gif)
+![f](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_1.gif)
 
 
 ### __`F`__
@@ -33,7 +34,7 @@ clever-f.vim's features.
     move :  _---------->_------>_----------->_
     text :  hoge        huga    huyo         hugu                ponyo
 
-![F](http://gifzo.net/BOH8A5T1mOC.gif)
+![F](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_2.gif)
 
 
 ### __`t`__
@@ -44,7 +45,7 @@ clever-f.vim's features.
     move :                         _<-----------------------------__
     text :  hoge        huga    hoo         hugu                ponyo
 
-![t](http://gifzo.net/pUkZtMYN3Q.gif)
+![t](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_3.gif)
 
 
 ## CUSTOMIZE
@@ -71,7 +72,7 @@ clever-f.vim highlights the target character you input in current line.  The hig
 
 Below is an example using `ta` in description of clever-f.vim.
 
-![highlight example](http://gifzo.net/BFhZkWivZ51.gif)
+![highlight example](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_4.gif)
 
 Here, `ta` searches `a` forward then matches the character before `a` and `Ta` searches `a` backward then matches the character after `a`.  You can see the highlighted target is dynamically changed following the cursor's direction.
 

@@ -137,6 +137,9 @@ function! clever_f#find_with(map)
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
             let cn = s:getchar()
+            if cn == char2nr("\<Esc>")
+                return "\<Esc>"
+            endif
             if index(map(deepcopy(g:clever_f_repeat_last_char_inputs), 'char2nr(v:val)'), cn) == -1
                 let s:previous_char_num[mode] = cn
             else

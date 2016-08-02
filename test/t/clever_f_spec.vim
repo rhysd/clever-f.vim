@@ -631,7 +631,6 @@ describe 'g:clever_f_fix_key_direction'
 
 end
 
-
 describe 'Special characters'
 
     before
@@ -650,12 +649,44 @@ describe 'Special characters'
         execute 'normal' "f\<F1>"
         execute 'normal' "f\<Left>"
         execute 'normal' "f\<BS>"
-        execute 'normal' "f\<Esc>"
         Expect pos == getpos('.')
     end
-
 end
 
+describe '<Esc>'
+
+    before
+        new
+        call clever_f#reset()
+        call AddLine("poge huga \<Esc> poyo")
+        normal! gg0
+    end
+
+    after
+        close!
+    end
+
+    it 'resets the state on f'
+        let pos = getpos('.')
+        execute 'normal' "f\<Esc>"
+        Expect getpos('.') == pos
+
+        " Check that the state is reset
+        normal fe
+        Expect col('.') == 4
+    end
+
+    it 'resets the state on T'
+        normal! $
+        let pos = getpos('.')
+        execute 'normal' "T\<Esc>"
+        Expect getpos('.') == pos
+
+        " Check that the state is reset
+        normal Th
+        Expect col('.') == 7
+    end
+end
 
 describe 'g:clever_f_smart_case'
 
@@ -921,4 +952,3 @@ describe 'g:clever_f_repeat_last_char_inputs'
         Expect getpos('.') == p
     end
 end
-

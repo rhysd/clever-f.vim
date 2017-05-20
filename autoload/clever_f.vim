@@ -336,9 +336,9 @@ function! s:generate_pattern(map, char_num)
     endif
 
     if a:map ==# 't'
-        let regex = '\_.\ze' . regex
+        let regex = '\_.\ze\%(' . regex . '\)'
     elseif a:map ==# 'T'
-        let regex = regex . '\@<=\_.'
+        let regex = '\%(' . regex . '\)\@<=\_.'
     endif
 
     if !should_use_migemo

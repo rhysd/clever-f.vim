@@ -254,6 +254,11 @@ function! clever_f#find(map, char_num)
         endif
     endif
 
+    " open folds if necessary to maintain cursor visibility
+    if foldlevel('.') > 0
+        call feedkeys('zv')
+    endif
+
     let s:moved_forward = moves_forward
     let s:previous_pos[mode] = next_pos
     let s:first_move[mode] = 0

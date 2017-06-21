@@ -1,11 +1,11 @@
-clever-[f](https://github.com/vim-jp/vim/blob/e0e5dfe6148323785e843715d9f6a864bd61c704/runtime/doc/motion.txt#L248).vim
+clever-[f][].vim
 ====================================================================================================================================
-[![Build Status](https://travis-ci.org/rhysd/clever-f.vim.png?branch=master)](https://travis-ci.org/rhysd/clever-f.vim)
+[![Build Status][]][]
 
 clever-f.vim extends `f`, `F`, `t` and `T` mappings for more convenience.  Instead of `;`, `f` is available to repeat after you type `f{char}` or `F{char}`.  `F` after `f{char}` and `F{char}` is also available to undo a jump. `t{char}` and `T{char}` are ditto. This extension makes a repeat easier and makes you forget the existence of `;`. You can use `;` for other key mapping.  In addition, this extension provides many convenient features like target character highlighting, smart case matching and so on.  If you want to reset the searching character without moving cursor, map `<Plug>(clever-f-reset)` to your favorite key.
 At last, you can customize the behavior of the mappings and features.
 
-### [Try Online Demo](http://rhysd.github.io/clever-f.vim/) using [vim.js](https://github.com/coolwanglu/vim.js/)
+### [Try Online Demo][] using [vim.js][]
 
 ## USAGE
 
@@ -23,7 +23,7 @@ clever-f.vim's features.
     move :                        _<-----------------------------_<-_
     text :  hoge        huga    hoo         hugu                ponyo
 
-![f](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_1.gif)
+![f screencast](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_1.gif)
 
 
 ### __`F`__
@@ -34,7 +34,7 @@ clever-f.vim's features.
     move :  _---------->_------>_----------->_
     text :  hoge        huga    huyo         hugu                ponyo
 
-![F](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_2.gif)
+![F screencast](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_2.gif)
 
 
 ### __`t`__
@@ -45,7 +45,7 @@ clever-f.vim's features.
     move :                         _<-----------------------------__
     text :  hoge        huga    hoo         hugu                ponyo
 
-![t](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_3.gif)
+![t screencast](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_3.gif)
 
 
 ## CUSTOMIZE
@@ -115,12 +115,14 @@ Many sign(`{`, `(`, `"`, and so on) keys are hard to press. If you want to match
     text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
 
 
-## UNSTABLE VERSION
-
-If you want to use the latest version, please use [dev branch](https://github.com/rhysd/clever-f.vim/tree/dev).
-
-
 
 ## LICENSE
 
 Distributed under MIT License. See `doc/clever_f.txt`
+
+
+[f]: https://github.com/vim-jp/vim/blob/e0e5dfe6148323785e843715d9f6a864bd61c704/runtime/doc/motion.txt#L248
+[Build Status]: https://travis-ci.org/rhysd/clever-f.vim.svg?branch=master
+[Travis CI]: https://travis-ci.org/rhysd/clever-f.vim
+[Try Online Demo]: http://rhysd.github.io/clever-f.vim/
+[vim.js]: https://github.com/coolwanglu/vim.js/

@@ -60,8 +60,7 @@ function! clever_f#reset()
     let s:migemo_dicts = {}
 
     " Note:
-    " [0, 0] may be invalid because the representation of
-    " return value of reltime() is implentation-depended.
+    " [0, 0] may be invalid because the representation of return value of reltime() depends on implementation.
     let s:timestamp = [0, 0]
 
     call s:remove_highlight()

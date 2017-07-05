@@ -116,9 +116,11 @@ function! clever_f#find_with(map)
         return ''
     endif
 
-    while foldclosed(line('.')) >= 0
-        foldopen
-    endwhile
+    if &foldopen =~# '\<\%(all\|hor\)\>'
+        while foldclosed(line('.')) >= 0
+            foldopen
+        endwhile
+    endif
 
     let current_pos = getpos('.')[1 : 2]
 

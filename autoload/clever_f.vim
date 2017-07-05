@@ -116,7 +116,7 @@ function! clever_f#find_with(map)
         return ''
     endif
 
-    while foldclosed(line('.')) > 0
+    while foldclosed(line('.')) >= 0
         foldopen
     endwhile
 

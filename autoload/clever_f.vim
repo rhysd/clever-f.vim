@@ -116,6 +116,10 @@ function! clever_f#find_with(map)
         return ''
     endif
 
+    while foldclosed(line('.')) > 0
+        foldopen
+    endwhile
+
     let current_pos = getpos('.')[1 : 2]
 
     let mode = mode(1)

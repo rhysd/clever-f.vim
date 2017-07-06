@@ -299,8 +299,19 @@ describe 'f, F, t and T mappings'
         Expect CursorPos() == [l, 2, 'o']
     end
 
-end
+    it 'opens folding automatically'
+        let l = getline(1)
+        call setline(1, ['{{{', l, '}}}'])
+        setl foldmethod=marker
 
+        " Move to closed folding
+        normal! ggjzM
+
+        normal fh
+        Expect foldclosed('.') == -1
+        Expect CursorPos() == [2,6,'h']
+    end
+end
 
 describe 'f and F mappings'' context'
 

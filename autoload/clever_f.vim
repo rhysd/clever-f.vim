@@ -340,8 +340,11 @@ function! s:generate_pattern(map, char_num)
         let regex = '\[!"#$%&''()=~|\-^\\@`[\]{};:+*<>,.?_/]'
     endif
 
-    if a:map ==# 't'
+    let is_exclusive_visual = &selection ==# 'exclusive' && mode(1) ==? 'v'
+    if a:map ==# 't' && !is_exclusive_visual
         let regex = '\_.\ze\%(' . regex . '\)'
+    elseif is_exclusive_visual && a:map ==# 'f'
+        let regex = '\%(' . regex . '\)\zs\_.'
     elseif a:map ==# 'T'
         let regex = '\%(' . regex . '\)\@<=\_.'
     endif
@@ -360,7 +363,6 @@ function! s:next_pos(map, char_num, count)
     let pattern = s:generate_pattern(a:map, a:char_num)
 
     if a:map ==? 't' && get(s:first_move, mode, 1)
-
         if !s:search(pattern, search_flag . 'c')
             return [0, 0]
         endif

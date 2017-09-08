@@ -963,3 +963,60 @@ describe 'g:clever_f_repeat_last_char_inputs'
         Expect getpos('.') == p
     end
 end
+
+describe 'selection=exclusive'
+    before
+        new
+        call AddLine('poge huga hiyo poyo')
+        let s:selection = &selection
+        set selection=exclusive
+        call clever_f#reset()
+        normal! gg0
+    end
+
+    after
+        close!
+        let &selection = s:selection
+    end
+
+    it 'does not change `f` behavior when not in visual mode'
+        normal fh
+        Expect col('.') == 6
+        normal f
+        Expect col('.') == 11
+
+        normal! 0
+
+        normal th
+        Expect col('.') == 5
+        normal t
+        Expect col('.') == 10
+    end
+
+    it 'changes selection of `f` or `t` in visual mode'
+        normal vfh
+        Expect col('.') == 7
+        normal f
+        Expect col('.') == 12
+
+        execute 'normal!' "\<Esc>0"
+        normal vth
+        Expect col('.') == 6
+        normal t
+        Expect col('.') == 11
+    end
+
+    it 'does not change `T` and `F` behavior'
+        normal! $
+        normal vFh
+        Expect col('.') == 11
+        normal f
+        Expect col('.') == 6
+
+        execute 'normal!' "\<Esc>$"
+        normal vTh
+        Expect col('.') == 12
+        normal t
+        Expect col('.') == 7
+    end
+end

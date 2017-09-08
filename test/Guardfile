@@ -1,28 +1,27 @@
 # encoding: utf-8
 
 def notify m
-  msg = "'#{m}\\n#{Time.now.to_s}'"
-  case
-  when which('terminal-notifier')
-    `terminal-notifier -message #{msg}`
-  when which('notify-send')
-    `notify-send #{msg}`
-  when which('tmux')
-    `tmux display-message #{msg}` if `tmux list-clients 1>/dev/null 2>&1` && $?.success?
+  msg = "'#{m} at #{Time.now.to_s}'"
+  if system "terminal-notifier -message #{msg}"
+    return
   end
+
+  if system "notify-send #{msg}"
+    return
+  end
+
+  if system "tmux display-message #{msg}"
+    return
+  end
+
+  STDERR.puts 'Sending notification failed'
 end
 
-
 guard :shell do
-  watch /^(.+\.vim)$/ do |m|
-    v = Vspec.new
-    v.run "t/vspec.vim", autoloads: ['~/.vim/bundle/vim-vspec-matchers']
-    if v.success?
-      failed = v.count_failed
-      notify("#{failed} test#{failed>1 ? 's' : ''} failed") unless failed==0
-    else
-      notify "vspec occurs an error"
+  watch /^(?:\.\.\/(?:autoload|plugin)|t)\/.+\.vim$/ do |m|
+    puts "FOO!: #{m[0]}"
+    unless system 'rake test'
+      notify 'vim-flavor: Some test failed'
     end
-    v.result
   end
 end

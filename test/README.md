@@ -11,4 +11,7 @@ $ rake test
 $ rake guard
 ```
 
-[guard](https://github.com/guard/guard) is assumed to be installed globally.
+[guard][] and [guard-shell][] are assumed to be installed globally.
+
+[guard]: https://github.com/guard/guard
+[guard-shell]: https://github.com/hawx/guard-shell

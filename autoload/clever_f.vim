@@ -139,7 +139,6 @@ function! clever_f#find_with(map)
         endif
         try
             if g:clever_f_show_prompt | echon "clever-f: " | endif
-            let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
             let cn = s:getchar()
             if cn == char2nr("\<Esc>")
@@ -161,16 +160,7 @@ function! clever_f#find_with(map)
                 let s:timestamp = reltime()
             endif
 
-            if g:clever_f_mark_char
-                call s:remove_highlight()
-                if index(['n', 'v', 'V', "\<C-v>", 's', 'ce'], mode) != -1
-                    augroup plugin-clever-f-finalizer
-                        autocmd CursorMoved <buffer> call s:maybe_finalize()
-                        autocmd InsertEnter <buffer> call s:finalize()
-                    augroup END
-                    call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
-                endif
-            endif
+	    let mark = 1
 
             if g:clever_f_show_prompt | redraw! | endif
         finally
@@ -185,7 +175,7 @@ function! clever_f#find_with(map)
         " when repeated
         let back = a:map =~# '\u'
         if g:clever_f_fix_key_direction
-            let back = s:previous_map[mode] =~# '\u' ? !back : back
+            let back = a:map =~# '\u' ? !back : back
         endif
 
         " reset and retry if timed out
@@ -193,6 +183,22 @@ function! clever_f#find_with(map)
             call clever_f#reset()
             return clever_f#find_with(a:map)
         endif
+	
+	let mark = a:map != s:previous_map[mode]
+    endif
+
+    let s:previous_map[mode] = a:map
+
+    " create/refresh mark
+    if g:clever_f_mark_char && mark
+	call s:remove_highlight()
+	if index(['n', 'v', 'V', "\<C-v>", 's', 'ce'], mode) != -1
+	    augroup plugin-clever-f-finalizer
+		autocmd CursorMoved <buffer> call s:maybe_finalize()
+		autocmd InsertEnter <buffer> call s:finalize()
+	    augroup END
+	    call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
+	endif
     endif
 
     return clever_f#repeat(back)

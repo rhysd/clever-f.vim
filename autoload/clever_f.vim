@@ -53,7 +53,7 @@ let s:previous_char_num = {}
 let s:timestamp = [0, 0]
 
 " keys are mode string returned from mode()
-function! clever_f#reset()
+function! clever_f#reset() abort
     let s:previous_map = {}
     let s:previous_pos = {}
     let s:first_move = {}
@@ -69,7 +69,7 @@ function! clever_f#reset()
 endfunction
 
 " hidden API for debug
-function! clever_f#_reset_all()
+function! clever_f#_reset_all() abort
     call clever_f#reset()
     let s:last_mode = ''
     let s:previous_char_num = {}
@@ -79,13 +79,13 @@ function! clever_f#_reset_all()
     return ''
 endfunction
 
-function! s:remove_highlight()
+function! s:remove_highlight() abort
     for h in filter(getmatches(), 'v:val.group ==# "CleverFChar"')
         call matchdelete(h.id)
     endfor
 endfunction
 
-function! s:is_timedout()
+function! s:is_timedout() abort
     let cur = reltime()
     let rel = reltimestr(reltime(s:timestamp, cur))
     let elapsed_ms = float2nr(str2float(rel) * 1000.0)
@@ -93,7 +93,7 @@ function! s:is_timedout()
     return elapsed_ms > g:clever_f_timeout_ms
 endfunction
 
-function! s:mark_char_in_current_line(map, char)
+function! s:mark_char_in_current_line(map, char) abort
     let regex = '\%' . line('.') . 'l' . s:generate_pattern(a:map, a:char)
     call matchadd('CleverFChar', regex , 999)
 endfunction
@@ -101,7 +101,7 @@ endfunction
 " Note:
 " \x80\xfd` seems to be sent by a terminal.
 " Below is a workaround for the sequence.
-function! s:getchar()
+function! s:getchar() abort
     while 1
         let cn = getchar()
         if type(cn) != type('') || cn !=# "\x80\xfd`"
@@ -110,7 +110,7 @@ function! s:getchar()
     endwhile
 endfunction
 
-function! clever_f#find_with(map)
+function! clever_f#find_with(map) abort
     if a:map !~# '^[fFtT]$'
         echoerr 'Invalid mapping: ' . a:map
         return ''
@@ -138,7 +138,7 @@ function! clever_f#find_with(map)
             set t_ve=
         endif
         try
-            if g:clever_f_show_prompt | echon "clever-f: " | endif
+            if g:clever_f_show_prompt | echon 'clever-f: ' | endif
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
             let cn = s:getchar()
@@ -198,9 +198,9 @@ function! clever_f#find_with(map)
     return clever_f#repeat(back)
 endfunction
 
-function! clever_f#repeat(back)
+function! clever_f#repeat(back) abort
     let mode = mode(1)
-    let pmap = get(s:previous_map, mode, "")
+    let pmap = get(s:previous_map, mode, '')
     let prev_char_num = get(s:previous_char_num, mode, 0)
 
     if pmap ==# ''
@@ -208,7 +208,7 @@ function! clever_f#repeat(back)
     endif
 
     " ignore special characters like \<Left>
-    if type(prev_char_num) == type("") && char2nr(prev_char_num) == 128
+    if type(prev_char_num) == type('') && char2nr(prev_char_num) == 128
         return ''
     endif
 
@@ -229,7 +229,7 @@ function! clever_f#repeat(back)
 endfunction
 
 " absolutely moved forward?
-function! s:moves_forward(p, n)
+function! s:moves_forward(p, n) abort
     if a:p[0] != a:n[0]
         return a:p[0] < a:n[0]
     endif
@@ -241,7 +241,7 @@ function! s:moves_forward(p, n)
     return 0
 endfunction
 
-function! clever_f#find(map, char_num)
+function! clever_f#find(map, char_num) abort
     let before_pos = getpos('.')[1 : 2]
     let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos == [0, 0]
@@ -265,20 +265,20 @@ function! clever_f#find(map, char_num)
     let s:first_move[mode] = 0
 endfunction
 
-function! s:finalize()
+function! s:finalize() abort
     autocmd! plugin-clever-f-finalizer
     call s:remove_highlight()
     let s:moved_forward = 0
 endfunction
 
-function! s:maybe_finalize()
+function! s:maybe_finalize() abort
     let pp = get(s:previous_pos, s:last_mode, [0, 0])
     if getpos('.')[1 : 2] != pp
         call s:finalize()
     endif
 endfunction
 
-function! s:move_cmd_for_visualmode(map, char_num)
+function! s:move_cmd_for_visualmode(map, char_num) abort
     let next_pos = s:next_pos(a:map, a:char_num, v:count1)
     if next_pos == [0, 0]
         return ''
@@ -289,10 +289,10 @@ function! s:move_cmd_for_visualmode(map, char_num)
     let s:previous_pos[m] = next_pos
     let s:first_move[m] = 0
 
-    return "``"
+    return '``'
 endfunction
 
-function! s:search(pat, flag)
+function! s:search(pat, flag) abort
     if g:clever_f_across_no_line
         return search(a:pat, a:flag, line('.'))
     else
@@ -300,7 +300,7 @@ function! s:search(pat, flag)
     endif
 endfunction
 
-function! s:should_use_migemo(char)
+function! s:should_use_migemo(char) abort
     if !g:clever_f_use_migemo || a:char !~# '^\a$'
         return 0
     endif
@@ -312,7 +312,7 @@ function! s:should_use_migemo(char)
     return clever_f#helper#include_multibyte_char(getline('.'))
 endfunction
 
-function! s:load_migemo_dict()
+function! s:load_migemo_dict() abort
     let enc = &l:encoding
     if enc ==# 'utf-8'
         return clever_f#migemo#utf8#load_dict()
@@ -322,11 +322,11 @@ function! s:load_migemo_dict()
         return clever_f#migemo#eucjp#load_dict()
     else
         let g:clever_f_use_migemo = 0
-        throw "Error: " . enc . " is not supported. Migemo is disabled."
+        throw 'Error: ' . enc . ' is not supported. Migemo is disabled.'
     endif
 endfunction
 
-function! s:generate_pattern(map, char_num)
+function! s:generate_pattern(map, char_num) abort
     let char = type(a:char_num) == type(0) ? nr2char(a:char_num) : a:char_num
     let regex = char
 
@@ -356,7 +356,7 @@ function! s:generate_pattern(map, char_num)
     return ((g:clever_f_smart_case && char =~# '\l') || g:clever_f_ignore_case ? '\c' : '\C') . regex
 endfunction
 
-function! s:next_pos(map, char_num, count)
+function! s:next_pos(map, char_num, count) abort
     let mode = mode(1)
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
@@ -379,7 +379,7 @@ function! s:next_pos(map, char_num, count)
     return getpos('.')[1 : 2]
 endfunction
 
-function! s:swapcase(char)
+function! s:swapcase(char) abort
     return a:char =~# '\u' ? tolower(a:char) : toupper(a:char)
 endfunction
 

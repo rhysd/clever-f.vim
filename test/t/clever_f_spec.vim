@@ -664,6 +664,34 @@ describe 'Special characters'
     end
 end
 
+describe 'Backslash'
+
+    before
+        new
+        call clever_f#reset()
+        call AddLine('poge\huga\hiyo\poyo')
+        normal! gg0
+    end
+
+    after
+        close!
+    end
+
+    it 'does not cause any search errors'
+        normal f\
+        Expect col('.') == 5
+        normal! $
+        normal F\
+        Expect col('.') == 15
+        normal! gg0
+        normal t\
+        Expect col('.') == 4
+        normal! $
+        normal T\
+        Expect col('.') == 16
+    end
+end
+
 describe '<Esc>'
 
     before

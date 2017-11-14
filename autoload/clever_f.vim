@@ -338,6 +338,8 @@ function! s:generate_pattern(map, char_num) abort
         let regex = s:migemo_dicts[&l:encoding][regex] . '\&\%(' . char . '\|\A\)'
     elseif stridx(g:clever_f_chars_match_any_signs, char) != -1
         let regex = '\[!"#$%&''()=~|\-^\\@`[\]{};:+*<>,.?_/]'
+    elseif char ==# '\'
+        let regex = '\\'
     endif
 
     let is_exclusive_visual = &selection ==# 'exclusive' && mode(1) ==? 'v'

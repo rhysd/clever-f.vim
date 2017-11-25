@@ -1,6 +1,7 @@
 clever-[f][].vim
-====================================================================================================================================
+================
 [![Build Status][]][Travis CI]
+[![Coverage Status][]][Codecov]
 
 clever-f.vim extends `f`, `F`, `t` and `T` mappings for more convenience.  Instead of `;`, `f` is available
 to repeat after you type `f{char}` or `F{char}`.  `F` after `f{char}` and `F{char}` is also available
@@ -143,5 +144,7 @@ Distributed under MIT License. See `doc/clever_f.txt`
 [f]: https://github.com/vim-jp/vim/blob/e0e5dfe6148323785e843715d9f6a864bd61c704/runtime/doc/motion.txt#L248
 [Build Status]: https://travis-ci.org/rhysd/clever-f.vim.svg?branch=master
 [Travis CI]: https://travis-ci.org/rhysd/clever-f.vim
+[Coverage Status]: https://codecov.io/gh/rhysd/clever-f.vim/branch/master/graph/badge.svg
+[Codecov]: https://codecov.io/gh/rhysd/clever-f.vim
 [Try Online Demo]: http://rhysd.github.io/clever-f.vim/
 [vim.js]: https://github.com/coolwanglu/vim.js/

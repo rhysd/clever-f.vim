@@ -1,19 +1,3 @@
-function! s:has_vimproc() abort
-    if !exists('s:exists_vimproc')
-        try
-            silent call vimproc#version()
-            let s:exists_vimproc = 1
-        catch
-            let s:exists_vimproc = 0
-        endtry
-    endif
-    return s:exists_vimproc
-endfunction
-
-function! clever_f#helper#system(...) abort
-    return call(s:has_vimproc() ? 'vimproc#system' : 'system', a:000)
-endfunction
-
 if exists('*strchars')
     function! clever_f#helper#strchars(str) abort
         return strchars(a:str)

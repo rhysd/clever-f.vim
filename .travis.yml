@@ -8,16 +8,29 @@ osx_image: xcode9
 dist: trusty
 
 install:
-    - git clone --depth 1 https://github.com/thinca/vim-themis && (cd vim-themis && git show HEAD)
-    - |
-      if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
-        brew update
-        HOMEBREW_NO_AUTO_UPDATE=1 brew install macvim
-      fi
+  - git clone --depth 1 https://github.com/thinca/vim-themis && (cd vim-themis && git show HEAD)
+  - |
+    if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
+      brew update
+      export HOMEBREW_NO_AUTO_UPDATE=1
+      brew install python3
+      brew install macvim --with-override-system-vim 
+      pip3 install codecov covimerage
+    else
+      pip install codecov covimerage --user
+    fi
 
 before_script:
-    - uname -a
-    - vim --version
+  - uname -a
+  - vim --version
+  - covimerage --version
 
 script:
-    - ./vim-themis/bin/themis test/
+  - cd test/ && PROFILE_LOG=profile.txt ../vim-themis/bin/themis .
+
+after_success:
+  - covimerage write_coverage profile.txt
+  - coverage xml
+  - bash <(curl -s https://codecov.io/bash)
+
+cache: pip

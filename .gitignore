@@ -1,5 +1,3 @@
-.bundle
-.vim-flavor
-Gemfile.lock
-VimFlavor.lock
-doc/tags
+/doc/tags
+/test/profile.txt
+/test/.coverage.covimerage

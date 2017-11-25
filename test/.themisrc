@@ -1,0 +1,8 @@
+let g:Expect = themis#helper('expect')
+let g:repo_root = fnamemodify(expand('<sfile>'), ':h:h')
+
+call themis#option('exclude', g:repo_root . '/test/README.md')
+call themis#option('exclude', g:repo_root . '/test/Guardfile')
+call themis#helper('command').with(themis#helper('assert'))
+
+call themis#option('runtimepath', expand(g:repo_root))

@@ -355,7 +355,6 @@ function! s:next_pos(map, char_num, count)
     let pattern = s:generate_pattern(a:map, a:char_num)
 
     if a:map ==? 't' && get(s:first_move, mode, 1)
-
         if !s:search(pattern, search_flag . 'c')
             return [0, 0]
         endif

@@ -272,6 +272,19 @@ Describe f, F, t and T mappings
         Assert Equals(getline('.'), "poyo")
         Assert Equals(CursorPos(), [l, 2, 'o'])
     End
+
+    It should open folding automatically
+        let l = getline(1)
+        call setline(1, ['{{{', l, '}}}'])
+        setl foldmethod=marker
+
+        " Move to closed folding
+        normal! ggjzM
+
+        normal fh
+        Assert Equals(foldclosed('.'), -1)
+        Assert Equals(CursorPos(), [2,6,'h'])
+    End
 End
 
 Describe f and F mappings' contexts
@@ -906,3 +919,86 @@ Describe g:clever_f_repeat_last_char_inputs
     End
 End
 
+Describe Backslash
+    Before
+        new
+        call clever_f#reset()
+        call AddLine('poge\huga\hiyo\poyo')
+        normal! gg0
+    End
+
+    After
+        close!
+    End
+
+    It should not cause any search errors (#35)
+        normal f\
+        Assert Equals(col('.'), 5)
+        normal! $
+        normal F\
+        Assert Equals(col('.'), 15)
+        normal! gg0
+        normal t\
+        Assert Equals(col('.'), 4)
+        normal! $
+        normal T\
+        Assert Equals(col('.'), 16)
+    End
+End
+
+Describe selection=exclusive
+    Before
+        new
+        call AddLine('poge huga hiyo poyo')
+        let s:selection = &selection
+        set selection=exclusive
+        call clever_f#reset()
+        normal! gg0
+    End
+
+    After
+        close!
+        let &selection = s:selection
+    End
+
+    It should not change `f` behavior when not in visual mode
+        normal fh
+        Assert Equals(col('.'), 6)
+        normal f
+        Assert Equals(col('.'), 11)
+
+        normal! 0
+
+        normal th
+        Assert Equals(col('.'), 5)
+        normal t
+        Assert Equals(col('.'), 10)
+    End
+
+    It should change selection of `f` or `t` in visual mode
+        normal vfh
+        Assert Equals(col('.'), 7)
+        normal f
+        Assert Equals(col('.'), 12)
+
+        execute 'normal!' "\<Esc>0"
+        normal vth
+        Assert Equals(col('.'), 6)
+        normal t
+        Assert Equals(col('.'), 11)
+    End
+
+    It should not change `T` and `F` behavior
+        normal! $
+        normal vFh
+        Assert Equals(col('.'), 11)
+        normal f
+        Assert Equals(col('.'), 6)
+
+        execute 'normal!' "\<Esc>$"
+        normal vTh
+        Assert Equals(col('.'), 12)
+        normal t
+        Assert Equals(col('.'), 7)
+    End
+End

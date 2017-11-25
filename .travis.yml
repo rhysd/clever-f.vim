@@ -1,6 +1,23 @@
-language: ruby
-rvm:
-  - 1.9.3
-script: rake ci
+language: generic
+
+os:
+  - linux
+  - osx
+
+osx_image: xcode9
+dist: trusty
+
 install:
-    - cd test && bundle install
+    - git clone --depth 1 https://github.com/thinca/vim-themis && (cd vim-themis && git show HEAD)
+    - |
+      if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
+        brew update
+        HOMEBREW_NO_AUTO_UPDATE=1 brew install macvim
+      fi
+
+before_script:
+    - uname -a
+    - vim --version
+
+script:
+    - ./vim-themis/bin/themis test/

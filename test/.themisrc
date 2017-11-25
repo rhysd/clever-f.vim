@@ -9,6 +9,7 @@ if $PROFILE_LOG !=# ''
     execute 'profile!' 'file' g:repo_root . '/autoload/clever_f.vim'
     execute 'profile!' 'file' g:repo_root . '/autoload/clever_f/helper.vim'
     execute 'profile!' 'file' g:repo_root . '/plugin/*'
+    " Note: covimerage causes UTF-8 decode error in autoload/clever_f/migemo
 endif
 
 call themis#option('runtimepath', expand(g:repo_root))

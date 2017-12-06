@@ -1,17 +1,21 @@
 ## How to execute tests
 
-```console
-$ bundle install --path=.bundle
-$ rake test
-```
-
-## How to watch file changes and run tests automatically
+It requires [vim-themis](https://github.com/thinca/vim-themis).
 
 ```console
-$ rake guard
+$ cd /path/to/clever-f.vim/test
+$ git clone https://github.com/thinca/vim-themis
+$ ./vim-themis/bin/themis .
 ```
 
-[guard][] and [guard-shell][] are assumed to be installed globally.
+## How to measure code coverage
 
-[guard]: https://github.com/guard/guard
-[guard-shell]: https://github.com/hawx/guard-shell
+It requires [covimerage](https://github.com/Vimjas/covimerage).
+
+```console
+$ cd /path/to/clever-f.vim/test
+$ pip install covimerage
+$ PROFILE_LOG=profile.txt ./vim-themis/bin/themis .
+$ covimerage write_coverage profile.txt
+$ coverage html
+```

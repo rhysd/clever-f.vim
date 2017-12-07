@@ -6,10 +6,15 @@ call themis#helper('command').with(themis#helper('assert'))
 
 if $PROFILE_LOG !=# ''
     execute 'profile' 'start' $PROFILE_LOG
-    execute 'profile!' 'file' g:repo_root . '/autoload/clever_f.vim'
-    execute 'profile!' 'file' g:repo_root . '/autoload/clever_f/helper.vim'
-    execute 'profile!' 'file' g:repo_root . '/plugin/*'
     " Note: covimerage causes UTF-8 decode error in autoload/clever_f/migemo
+    " before 8.0.1372
+    if has('patch-8.0.1372')
+        execute 'profile!' 'file' g:repo_root . '/autoload/*'
+    else
+        execute 'profile!' 'file' g:repo_root . '/autoload/clever_f.vim'
+        execute 'profile!' 'file' g:repo_root . '/autoload/clever_f/helper.vim'
+    endif
+    execute 'profile!' 'file' g:repo_root . '/plugin/*'
 endif
 
 call themis#option('runtimepath', expand(g:repo_root))

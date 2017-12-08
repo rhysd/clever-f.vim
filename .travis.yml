@@ -4,7 +4,6 @@ os:
   - linux
   - osx
 
-osx_image: xcode9
 dist: trusty
 
 install:
@@ -13,8 +12,8 @@ install:
     if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
       brew update
       export HOMEBREW_NO_AUTO_UPDATE=1
-      brew install python3
       brew install macvim --with-override-system-vim
+      brew install python3
       pip3 install codecov covimerage
     else
       pip install codecov covimerage --user

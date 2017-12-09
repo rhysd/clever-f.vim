@@ -8,7 +8,7 @@ osx_image: xcode9
 dist: trusty
 
 install:
-  - git clone --depth 1 https://github.com/thinca/vim-themis && (cd vim-themis && git show HEAD)
+  - git clone --depth 1 --single-branch https://github.com/thinca/vim-themis && (cd vim-themis && git rev-parse HEAD)
   - |
     if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
       brew update

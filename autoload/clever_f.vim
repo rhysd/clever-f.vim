@@ -254,7 +254,7 @@ function! clever_f#find(map, char_num) abort
     let mode = mode(1)
     if g:clever_f_mark_char
         if next_pos[0] != before_pos[0]
-            \ || (a:map ==? 't' && !s:first_move[mode] && clever_f#helper#xor(s:moved_forward, moves_forward))
+            \ || (a:map ==? 't' && !s:first_move[mode] && clever_f#compat#xor(s:moved_forward, moves_forward))
             call s:remove_highlight()
             call s:mark_char_in_current_line(a:map, a:char_num)
         endif
@@ -309,7 +309,7 @@ function! s:should_use_migemo(char) abort
         return 1
     endif
 
-    return clever_f#helper#include_multibyte_char(getline('.'))
+    return clever_f#compat#include_multibyte_char(getline('.'))
 endfunction
 
 function! s:load_migemo_dict() abort

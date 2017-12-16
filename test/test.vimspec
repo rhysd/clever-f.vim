@@ -468,18 +468,18 @@ describe g:clever_f_ignore_case
     End
 End
 
-Describe clever_f#helper#include_multibyte_char
+Describe clever_f#compat#include_multibyte_char
     It should return true when the argument includes multibyte char
-        Assert clever_f#helper#include_multibyte_char("あいうえお")
-        Assert clever_f#helper#include_multibyte_char("aiueoあ")
-        Assert clever_f#helper#include_multibyte_char("１２3ABC４5")
+        Assert clever_f#compat#include_multibyte_char("あいうえお")
+        Assert clever_f#compat#include_multibyte_char("aiueoあ")
+        Assert clever_f#compat#include_multibyte_char("１２3ABC４5")
     End
 
     It should return false when the argument does not include multibyte char
-        Assert !clever_f#helper#include_multibyte_char('aiueo')
-        Assert !clever_f#helper#include_multibyte_char('this_is_a_pen.')
-        Assert !clever_f#helper#include_multibyte_char("!#$%&'()'")
-        Assert !clever_f#helper#include_multibyte_char('')
+        Assert !clever_f#compat#include_multibyte_char('aiueo')
+        Assert !clever_f#compat#include_multibyte_char('this_is_a_pen.')
+        Assert !clever_f#compat#include_multibyte_char("!#$%&'()'")
+        Assert !clever_f#compat#include_multibyte_char('')
     End
 End
 

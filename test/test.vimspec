@@ -468,18 +468,17 @@ describe g:clever_f_ignore_case
     End
 End
 
-Describe clever_f#compat#include_multibyte_char
-    It should return true when the argument includes multibyte char
-        Assert clever_f#compat#include_multibyte_char("あいうえお")
-        Assert clever_f#compat#include_multibyte_char("aiueoあ")
-        Assert clever_f#compat#include_multibyte_char("１２3ABC４5")
+Describe clever_f#compat#strchars
+    It should return different value from strlen() when multibyte character strings given
+        for str in ['あいうえお', 'aiueoあ', '１２3ABC４5']
+            Assert NotEquals(clever_f#compat#strchars(str), strlen(str))
+        endfor
     End
 
-    It should return false when the argument does not include multibyte char
-        Assert !clever_f#compat#include_multibyte_char('aiueo')
-        Assert !clever_f#compat#include_multibyte_char('this_is_a_pen.')
-        Assert !clever_f#compat#include_multibyte_char("!#$%&'()'")
-        Assert !clever_f#compat#include_multibyte_char('')
+    It should return the same value as strlen() when given string contains no multibyte character
+        for str in ['aiueo', 'this_is_a_pen', "!#$%&'()'", '']
+            Assert Equals(clever_f#compat#strchars(str), strlen(str))
+        endfor
     End
 End
 

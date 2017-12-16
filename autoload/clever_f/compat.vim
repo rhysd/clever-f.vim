@@ -8,10 +8,6 @@ else
     endfunction
 endif
 
-function! clever_f#compat#include_multibyte_char(str) abort
-    return strlen(a:str) != clever_f#compat#strchars(a:str)
-endfunction
-
 if exists('*xor')
     function! clever_f#compat#xor(a, b) abort
         return xor(a:a, a:b)

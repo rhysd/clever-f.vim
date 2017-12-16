@@ -110,6 +110,10 @@ function! s:getchar() abort
     endwhile
 endfunction
 
+function! s:include_multibyte_char(str) abort
+    return strlen(a:str) != clever_f#compat#strchars(a:str)
+endfunction
+
 function! clever_f#find_with(map) abort
     if a:map !~# '^[fFtT]$'
         echoerr 'Invalid mapping: ' . a:map
@@ -309,7 +313,7 @@ function! s:should_use_migemo(char) abort
         return 1
     endif
 
-    return clever_f#compat#include_multibyte_char(getline('.'))
+    return s:include_multibyte_char(getline('.'))
 endfunction
 
 function! s:load_migemo_dict() abort

@@ -482,10 +482,17 @@ Describe clever_f#compat#strchars
     End
 End
 
+Describe clever_f#find_with()
+    It should raise an error when invalid map is given
+        Throws /Invalid mapping:/ clever_f#find_with('x')
+    End
+End
+
 Describe migemo support
     Before
         new
         let g:clever_f_use_migemo = 1
+        let g:clever_f_across_no_line = 1
         call AddLine('はー，ビムかわいいよビム')
         call clever_f#reset()
         normal! gg0
@@ -493,6 +500,7 @@ Describe migemo support
 
     After
         close!
+        let g:clever_f_across_no_line = 0
         let g:clever_f_use_migemo = 0
     End
 

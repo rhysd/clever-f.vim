@@ -313,6 +313,53 @@ Describe f and F mappings' contexts
     End
 End
 
+Describe g:clever_f_across_no_line
+    Before
+        new
+        let g:clever_f_across_no_line = 1
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+        call AddLine('poge huga hiyo poyo')
+    End
+
+    After
+        let g:clever_f_across_no_line = 0
+        close!
+    End
+
+    It should not move cursor to next line
+        normal! gg0
+        let l = line('.')
+
+        normal fhf
+        Assert Equals(CursorPos(), [l,11,'h'])
+        normal f
+        Assert Equals(CursorPos(), [l,11,'h'])
+
+        normal! gg0
+        normal tht
+        Assert Equals(CursorPos(), [l,10,' '])
+        normal t
+        Assert Equals(CursorPos(), [l,10,' '])
+    End
+
+    It should not move cursor to previous line
+        normal! ggj$
+        let l = line('.')
+
+        normal Fpf
+        Assert Equals(CursorPos(), [l,1,'p'])
+        normal f
+        Assert Equals(CursorPos(), [l,1,'p'])
+
+        normal! ggj$
+        normal Tpt
+        Assert Equals(CursorPos(), [l,2,'o'])
+        normal t
+        Assert Equals(CursorPos(), [l,2,'o'])
+    End
+End
+
 Describe a non-existent char
     Before
         new
@@ -1009,3 +1056,5 @@ Describe selection=exclusive
         Assert Equals(col('.'), 7)
     End
 End
+
+" vim:foldmethod=marker

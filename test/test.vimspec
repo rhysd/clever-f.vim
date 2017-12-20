@@ -885,6 +885,11 @@ Describe g:clever_f_timeout_ms
     End
 End
 
+" Do not test to check the highlights are removed properly
+" because vim-themis uses Ex mode. In Ex mode, the window where
+" highlights exis is different from the current window.
+" It causes failure on removing highlights because matchdelete()
+" can only remove highlights in current window.
 Describe g:clever_f_mark_char
     Before
         new
@@ -897,18 +902,12 @@ Describe g:clever_f_mark_char
         close!
     End
 
-    It should highlight the target characters and remove the highlight automatically
+    It should highlight the target characters automatically
         normal! gg0
         normal fh
         Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
         normal f
         Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
-
-        " Do not test to check the highlights are removed properly.
-        " Because vim-vspec uses Ex mode. In Ex mode, the window where
-        " highlights exist is different from the current window.
-        " It causes failure on removing highlights because matchdelete()
-        " can only remove highlights in current window.
     End
 
     It should update the highlight if the cursor moves to another line

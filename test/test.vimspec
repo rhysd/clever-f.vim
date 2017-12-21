@@ -885,21 +885,23 @@ Describe g:clever_f_timeout_ms
     End
 End
 
-" Do not test to check the highlights are removed properly
-" because vim-themis uses Ex mode. In Ex mode, the window where
-" highlights exis is different from the current window.
-" It causes failure on removing highlights because matchdelete()
-" can only remove highlights in current window.
+" Do not test to check the highlights are removed properly because vim-themis
+" uses Ex mode. In Ex mode, the window where highlights exist is different
+" from the current window. It causes failure on removing highlights because
+" matchdelete() can only remove highlights in current window.
 Describe g:clever_f_mark_char
     Before
         new
         let g:clever_f_mark_char = 1
         call clever_f#reset()
         call AddLine('poge huga hiyo poyo')
+        let old_across_no_line = g:clever_f_across_no_line
+        let g:clever_f_across_no_line = 0
     End
 
     After
         close!
+        let g:clever_f_across_no_line = old_across_no_line
     End
 
     It should highlight the target characters automatically
@@ -911,8 +913,6 @@ Describe g:clever_f_mark_char
     End
 
     It should update the highlight if the cursor moves to another line
-        let old_across_no_line = g:clever_f_across_no_line
-        let g:clever_f_across_no_line = 0
         call AddLine('oh huh')
         normal! gg0
         let l = line('.')
@@ -928,7 +928,18 @@ Describe g:clever_f_mark_char
         Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
         Assert NotEquals(stridx(getmatches()[0].pattern, l+1), -1)
         Assert Equals(len(getmatches()), 1)
-        let g:clever_f_across_no_line = old_across_no_line
+    End
+
+    Describe clever_f#reset()
+        It should remove target highlights
+            call AddLine('oh huh')
+            normal! gg0
+            let l = line('.')
+            normal fhff
+            Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+            call clever_f#reset()
+            Assert Equals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+        End
     End
 End
 

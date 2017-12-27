@@ -824,7 +824,7 @@ Describe Cursor mark on user input
         close!
     End
 
-    It 'ensures to remove highlight properly'
+    It 'ensures to remove highlight of cursor properly'
         normal fh
         Assert Equals(filter(getmatches(), 'v:val.group=="CleverFCursor"'), [])
         normal fq
@@ -885,10 +885,6 @@ Describe g:clever_f_timeout_ms
     End
 End
 
-" Do not test to check the highlights are removed properly because vim-themis
-" uses Ex mode. In Ex mode, the window where highlights exist is different
-" from the current window. It causes failure on removing highlights because
-" matchdelete() can only remove highlights in current window.
 Describe g:clever_f_mark_char
     Before
         new
@@ -928,6 +924,29 @@ Describe g:clever_f_mark_char
         Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
         Assert NotEquals(stridx(getmatches()[0].pattern, l+1), -1)
         Assert Equals(len(getmatches()), 1)
+    End
+
+    It should remove highlights when moving cursor to another place
+        call AddLine('oh huh')
+        call AddLine('oh huh')
+        normal! gg0
+        normal fhff
+        normal! j
+        " XXX: Hack! While running test, CursorMoved is not fired
+        " automatically. To test the event, we need to cause it manually.
+        doautocmd CursorMoved
+        Assert Equals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+    End
+
+    It should remove highlights when entering insert mode
+        call AddLine('oh huh')
+        call AddLine('oh huh')
+        normal! gg0
+        normal fhff
+        " XXX: Hack! While running test, InsertEnter is not fired
+        " automatically. To test the event, we need to cause it manually.
+        doautocmd InsertEnter
+        Assert Equals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
     End
 
     Describe clever_f#reset()

@@ -1,7 +1,7 @@
 *clever-f.txt*                                      Make |f|, |F|, |t| and |T| cleverer.
 
 Author : rhysd <lin90162@yahoo.co.jp>
-Version : 1.3
+Version : 1.5
 
 CONTENTS          *clever-f.vim-contents*
 

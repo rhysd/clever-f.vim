@@ -16,13 +16,14 @@ install:
       brew install python3
       pip3 install codecov covimerage
     else
-      pip install codecov covimerage --user
+      pip3 install codecov covimerage --user
     fi
 
 before_script:
   - uname -a
   - vim --version
   - covimerage --version
+  - python3 --version
 
 script:
   - cd test/ && PROFILE_LOG=profile.txt ../vim-themis/bin/themis .
@@ -33,3 +34,9 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 
 cache: pip
+
+addons:
+  apt:
+    packages:
+      - python3
+      - python3-pip

@@ -135,6 +135,14 @@ you can use `g:clever_f_chars_match_any_signs`. If you set it to `';'`, `f;` mat
     move :  _-->_--->_--------->_>_>_------------>_>_
     text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
 
+### Continue to use `;` and `,` via mapping
+
+You might have get used to using `;` and `,` for forward and backward searching, but still want the functionalities provided by this plugin. You can simply map it:
+
+```
+map ; <Plug>(clever-f-repeat-forward)
+map , <Plug>(clever-f-repeat-back)
+```
 
 ## LICENSE
 

@@ -12,7 +12,7 @@ many convenient features like target character highlighting, smart case matching
 If you want to reset the searching character without moving cursor, map `<Plug>(clever-f-reset)` to your
 favorite key.
 
-At last, you can customize the behavior of the mappings and features.
+Lastly, you can customize the behavior of the mappings and features.
 
 ### [Try Online Demo][] using [vim.js][]
 
@@ -66,13 +66,12 @@ to `1` in your vimrc to search a character only in current line.
 
 ### Ignore case
 
-`g:clever_f_ignore_case` controls to make a search case-insensitive or not. Please set it to `1` in
-your vimrc to ignore case.
+`g:clever_f_ignore_case` controls whether or not searches are case-insensitive. If you want searches
+to be case-insensitive, set it to `1` in your vimrc.
 
 ### Smart case
 
-`g:clever_f_smart_case` controls make smart case or not. If and only if you type a lower case character,
-clever-f.vim ignores case. Please set it to `1` in your vimrc to make smart case
+`g:clever_f_smart_case` controls whether searches are smart case or not. If you type a lower case character, the case will be ignored however if you type an upper case character it will only search for upper case characters. Please set it to `1` in your vimrc to enable searching by smart case.
 
 ### Target character highlighting in current line
 
@@ -126,18 +125,18 @@ set `g:clever_f_fix_key_direction` to `1`.
 If you want to show a prompt when you input a character for clever-f, set `g:clever_f_show_prompt`
 to `1`. The prompt is disposed after a character is input.
 
-### Match all signs with one char
+### Match all symbols with one char
 
-Many sign(`{`, `(`, `"`, and so on) keys are hard to press. If you want to match `;` key to all signs,
-you can use `g:clever_f_chars_match_any_signs`. If you set it to `';'`, `f;` matches all signs.
+Many symbol (`{`, `(`, `"`, and so on) keys are hard to press. If you want to match `;` key to all symbols,
+you can use `g:clever_f_chars_match_any_signs`. If you set it to `';'`, `f;` matches all symbols.
 
     input:   f;   f       f      f f       f       f
     move :  _-->_--->_--------->_>_>_------------>_>_
     text :  hoge.huga( autoloads: %w{ aaa bbb ccc } )
 
-### Continue to use `;` and `,` via mapping
+### Keeping the functionality of `;` and `,` via mappings
 
-You might have get used to using `;` and `,` for forward and backward searching, but still want the functionalities provided by this plugin. You can simply map it:
+If you are used to using `;` and `,` for forward and backward searching, but still want these to work the same way with clever-f, you can simply remap `;`and `,` to use this plugin:
 
 ```
 map ; <Plug>(clever-f-repeat-forward)

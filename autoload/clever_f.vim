@@ -167,7 +167,7 @@ function! clever_f#find_with(map) abort
 
             if g:clever_f_mark_char
                 call s:remove_highlight()
-                if index(['n', 'v', 'V', "\<C-v>", 's', 'ce'], mode) != -1
+                if mode =~# "^\\%([nvV\<C-v>s]\\|ce\\)"
                     augroup plugin-clever-f-finalizer
                         autocmd CursorMoved <buffer> call s:maybe_finalize()
                         autocmd InsertEnter <buffer> call s:finalize()
@@ -220,7 +220,7 @@ function! clever_f#repeat(back) abort
         let pmap = s:swapcase(pmap)
     endif
 
-    if mode ==? 'v' || mode ==# "\<C-v>"
+    if mode[0] ==? 'v' || mode[0] ==# "\<C-v>"
         let cmd = s:move_cmd_for_visualmode(pmap, prev_char_num)
     else
         let inclusive = mode ==# 'no' && pmap =~# '\l'
@@ -346,7 +346,7 @@ function! s:generate_pattern(map, char_num) abort
         let regex = '\\'
     endif
 
-    let is_exclusive_visual = &selection ==# 'exclusive' && s:mode() ==? 'v'
+    let is_exclusive_visual = &selection ==# 'exclusive' && s:mode()[0] ==? 'v'
     if a:map ==# 't' && !is_exclusive_visual
         let regex = '\_.\ze\%(' . regex . '\)'
     elseif is_exclusive_visual && a:map ==# 'f'

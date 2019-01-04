@@ -251,6 +251,15 @@ Describe f, F, t and T mappings
         Assert Equals(CursorPos(), [l,7,'e'])
     End
 
+    It should work with Vim 8.1.0648
+        normal! 0
+        let l = line('.')
+        Assert Equals(CursorPos(), [l,1,'p'])
+
+        normal dth
+        Assert Equals(CursorPos(), [l,1,'h'])
+    End
+
     It should have different context in normal mode and visual mode
         let l = line('.')
         Assert Equals(CursorPos(), [l, 1, 'p'])

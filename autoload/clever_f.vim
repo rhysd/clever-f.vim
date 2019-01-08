@@ -128,7 +128,7 @@ function! clever_f#find_with(map) abort
 
     let current_pos = getpos('.')[1 : 2]
 
-    let mode = mode(1)
+    let mode = s:mode()
     if current_pos != get(s:previous_pos, mode, [0, 0])
         let back = 0
         if g:clever_f_mark_cursor
@@ -167,7 +167,7 @@ function! clever_f#find_with(map) abort
 
             if g:clever_f_mark_char
                 call s:remove_highlight()
-                if index(['n', 'v', 'V', "\<C-v>", 's', 'ce'], mode) != -1
+                if mode =~# "^\\%([nvV\<C-v>s]\\|ce\\)"
                     augroup plugin-clever-f-finalizer
                         autocmd CursorMoved <buffer> call s:maybe_finalize()
                         autocmd InsertEnter <buffer> call s:finalize()
@@ -203,7 +203,7 @@ function! clever_f#find_with(map) abort
 endfunction
 
 function! clever_f#repeat(back) abort
-    let mode = mode(1)
+    let mode = s:mode()
     let pmap = get(s:previous_map, mode, '')
     let prev_char_num = get(s:previous_char_num, mode, 0)
 
@@ -220,7 +220,7 @@ function! clever_f#repeat(back) abort
         let pmap = s:swapcase(pmap)
     endif
 
-    if mode ==? 'v' || mode ==# "\<C-v>"
+    if mode[0] ==? 'v' || mode[0] ==# "\<C-v>"
         let cmd = s:move_cmd_for_visualmode(pmap, prev_char_num)
     else
         let inclusive = mode ==# 'no' && pmap =~# '\l'
@@ -255,7 +255,7 @@ function! clever_f#find(map, char_num) abort
     let moves_forward = s:moves_forward(before_pos, next_pos)
 
     " update highlight when cursor moves across lines
-    let mode = mode(1)
+    let mode = s:mode()
     if g:clever_f_mark_char
         if next_pos[0] != before_pos[0]
             \ || (a:map ==? 't' && !s:first_move[mode] && clever_f#compat#xor(s:moved_forward, moves_forward))
@@ -288,7 +288,7 @@ function! s:move_cmd_for_visualmode(map, char_num) abort
         return ''
     endif
 
-    let m = mode(1)
+    let m = s:mode()
     call setpos("''", [0] + next_pos + [0])
     let s:previous_pos[m] = next_pos
     let s:first_move[m] = 0
@@ -346,7 +346,7 @@ function! s:generate_pattern(map, char_num) abort
         let regex = '\\'
     endif
 
-    let is_exclusive_visual = &selection ==# 'exclusive' && mode(1) ==? 'v'
+    let is_exclusive_visual = &selection ==# 'exclusive' && s:mode()[0] ==? 'v'
     if a:map ==# 't' && !is_exclusive_visual
         let regex = '\_.\ze\%(' . regex . '\)'
     elseif is_exclusive_visual && a:map ==# 'f'
@@ -363,7 +363,7 @@ function! s:generate_pattern(map, char_num) abort
 endfunction
 
 function! s:next_pos(map, char_num, count) abort
-    let mode = mode(1)
+    let mode = s:mode()
     let search_flag = a:map =~# '\l' ? 'W' : 'bW'
     let cnt = a:count
     let pattern = s:generate_pattern(a:map, a:char_num)
@@ -387,6 +387,15 @@ endfunction
 
 function! s:swapcase(char) abort
     return a:char =~# '\u' ? tolower(a:char) : toupper(a:char)
+endfunction
+
+" Drop forced visual mode charcter ('nov' -> 'no')
+function! s:mode() abort
+    let mode = mode(1)
+    if mode =~# '^no'
+        let mode = mode[0 : 1]
+    endif
+    return mode
 endfunction
 
 let &cpo = s:save_cpo

@@ -12,8 +12,8 @@ install:
     if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
       brew update
       export HOMEBREW_NO_AUTO_UPDATE=1
-      brew install macvim --with-override-system-vim
-      brew install python3
+      brew install macvim
+      brew list python3 &>/dev/null || brew install python3
       pip3 install codecov covimerage
     else
       pip3 install codecov covimerage --user

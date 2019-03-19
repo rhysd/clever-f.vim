@@ -1,8 +1,15 @@
 language: generic
 
-os:
-  - linux
-  - osx
+matrix:
+  include:
+    - os: linux
+      env: TARGET=vim
+    - os: linux
+      env: TARGET=nvim
+    - os: osx
+      env: TARGET=vim
+    - os: osx
+      env: TARGET=nvim
 
 dist: xenial
 
@@ -10,23 +17,37 @@ install:
   - git clone --depth 1 --single-branch https://github.com/thinca/vim-themis && (cd vim-themis && git rev-parse HEAD)
   - |
     if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
-      brew update
-      export HOMEBREW_NO_AUTO_UPDATE=1
-      brew install macvim
-      brew list python3 &>/dev/null || brew install python3
+      if [[ "$TARGET" == 'vim' ]]; then
+        brew update
+        export HOMEBREW_NO_AUTO_UPDATE=1
+        brew install macvim
+        brew list python3 &>/dev/null || brew install python3
+      else
+        curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz
+        tar xzf nvim-macos.tar.gz
+      fi
+    else
+      if [[ "$TARGET" == 'nvim' ]]; then
+        curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+        tar xzf nvim-linux64.tar.gz
+      fi
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
       pip3 install codecov covimerage
     else
       pip3 install codecov covimerage --user
     fi
+  - export PATH=$(pwd)/nvim-${TRAVIS_OS_NAME}64/bin:$PATH
 
 before_script:
   - uname -a
-  - vim --version
+  - $TARGET --version
   - covimerage --version
   - python3 --version
 
 script:
-  - cd test/ && PROFILE_LOG=profile.txt ../vim-themis/bin/themis .
+  - cd test/ && THEMIS_VIM=$TARGET PROFILE_LOG=profile.txt ../vim-themis/bin/themis .
 
 after_success:
   - covimerage write_coverage profile.txt

@@ -9,7 +9,7 @@ let g:clever_f_show_prompt             = get(g:, 'clever_f_show_prompt', 0)
 let g:clever_f_smart_case              = get(g:, 'clever_f_smart_case', 0)
 let g:clever_f_chars_match_any_signs   = get(g:, 'clever_f_chars_match_any_signs', '')
 let g:clever_f_mark_cursor             = get(g:, 'clever_f_mark_cursor', 1)
-let g:clever_f_hide_cursor_on_cmdline  = get(g:, 'clever_f_hide_cursor_on_cmdline', has('nvim') ? 0 : 1)
+let g:clever_f_hide_cursor_on_cmdline  = get(g:, 'clever_f_hide_cursor_on_cmdline', 1)
 let g:clever_f_timeout_ms              = get(g:, 'clever_f_timeout_ms', 0)
 let g:clever_f_mark_char               = get(g:, 'clever_f_mark_char', 1)
 let g:clever_f_repeat_last_char_inputs = get(g:, 'clever_f_repeat_last_char_inputs', ["\<CR>"])
@@ -42,6 +42,9 @@ endif
 augroup plugin-clever-f-finalizer
     autocmd!
 augroup END
+
+" constants
+let s:ON_NVIM = has('nvim')
 
 " initialize the internal state
 let s:last_mode = ''
@@ -137,9 +140,12 @@ function! clever_f#find_with(map) abort
         endif
         if g:clever_f_hide_cursor_on_cmdline
             let guicursor_save = &guicursor
-            set guicursor=n:block-NONE
-            let t_ve_save = &t_ve
-            set t_ve=
+            set guicursor=n-o:block-NONE
+            if !s:ON_NVIM
+                " Neovim does not have t_xx
+                let t_ve_save = &t_ve
+                set t_ve=
+            endif
         endif
         try
             if g:clever_f_show_prompt | echon 'clever-f: ' | endif
@@ -180,9 +186,15 @@ function! clever_f#find_with(map) abort
         finally
             if g:clever_f_mark_cursor | call matchdelete(cursor_marker) | endif
             if g:clever_f_hide_cursor_on_cmdline
-                set guicursor&
-                let &guicursor = guicursor_save
-                let &t_ve = t_ve_save
+                if s:ON_NVIM && mode ==# 'no'
+                    " Do not preserve previous value at operator-pending mode on Neovim (#44)
+                    set guicursor&
+                else
+                    let &guicursor = guicursor_save
+                endif
+                if !s:ON_NVIM
+                    let &t_ve = t_ve_save
+                endif
             endif
         endtry
     else

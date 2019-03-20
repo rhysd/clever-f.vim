@@ -11,8 +11,6 @@ matrix:
       env: TARGET=vim
     - os: osx
       env: TARGET=nvim
-    - os: osx
-      env: TARGET=nvim
 
 dist: xenial
 

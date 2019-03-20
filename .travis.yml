@@ -1,5 +1,6 @@
 language: generic
 
+# TEMPORARY: Allow failure since macos binary for nightly is not provided for now
 matrix:
   include:
     - os: linux
@@ -8,6 +9,9 @@ matrix:
       env: TARGET=nvim
     - os: osx
       env: TARGET=vim
+    - os: osx
+      env: TARGET=nvim
+  allow_failures:
     - os: osx
       env: TARGET=nvim
 

@@ -20,18 +20,11 @@ dist: xenial
 install:
   - git clone --depth 1 --single-branch https://github.com/thinca/vim-themis && (cd vim-themis && git rev-parse HEAD)
   - |
-    if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
-      if [[ "$TARGET" == 'vim' ]]; then
-        brew update
-        export HOMEBREW_NO_AUTO_UPDATE=1
-        brew install macvim
-        brew list python3 &>/dev/null || brew install python3
-      else
+    if [[ "$TARGET" == 'nvim' ]]; then
+      if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
         curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz
         tar xzf nvim-macos.tar.gz
-      fi
-    else
-      if [[ "$TARGET" == 'nvim' ]]; then
+      else
         curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
         tar xzf nvim-linux64.tar.gz
       fi
@@ -65,3 +58,8 @@ addons:
     packages:
       - python3
       - python3-pip
+  homebrew:
+    packages:
+      - macvim
+      - python3
+    update: true

@@ -19,10 +19,8 @@ Describe default config
 
     It should override original mappings by default
         for m in ['f', 'F', 't', 'T']
-            Assert hasmapto('f', 'nxo')
-            Assert hasmapto('F', 'nxo')
-            Assert hasmapto('t', 'nxo')
-            Assert hasmapto('T', 'nxo')
+            let mapped = mapcheck(m, 'nxo')
+            Assert True(stridx(mapped, 'clever-f') >= 0, m . ' -> ' . mapped)
         endfor
     End
 

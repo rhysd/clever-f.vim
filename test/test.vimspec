@@ -41,6 +41,8 @@ Describe default config
         Assert Equals(g:clever_f_mark_char_color, 'CleverFDefaultLabel')
         Assert Equals(g:clever_f_repeat_last_char_inputs, ["\<CR>"])
         Assert Equals(g:clever_f_clean_labels_eagerly, 1)
+        Assert Equals(g:clever_f_mark_direct, 0)
+        Assert Equals(g:clever_f_mark_direct_color, 'CleverFDefaultLabel')
     End
 End
 
@@ -1093,4 +1095,79 @@ Describe selection=exclusive
     End
 End
 
+Describe g:clever_f_mark_direct
+    Before
+        new
+        let g:clever_f_mark_direct = 1
+        call clever_f#reset()
+        highlight link CleverFDirect CleverFDefaultLabel
+        call AddLine('pOge huga Hiyo poyo')
+        let old_across_no_line = g:clever_f_across_no_line
+        let g:clever_f_across_no_line = 0
+    End
+
+    After
+        close!
+        let g:clever_f_mark_direct = 0
+        let g:clever_f_across_no_line = old_across_no_line
+    End
+
+    It should highlight target characters automatically
+        normal! gg0
+        normal f
+        Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 11)
+    End
+
+    It should remove target highlights
+        normal! gg0
+        normal fh
+        Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
+    End
+
+    It should finish with no error
+        normal! gg$
+        normal fp
+        Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
+    End
+
+    Describe <Esc>
+        It should remove target highlights
+            normal! gg0
+            execute 'normal' "f\<Esc>"
+            Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
+        End
+    End
+
+    Describe g:clever_f_smart_case
+        Before
+            let g:clever_f_smart_case = 1
+        End
+
+        After
+            let g:clever_f_smart_case = 0
+        End
+
+        It should make less characters highlighted
+            normal! gg0
+            normal f
+            Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 10)
+        End
+    End
+
+    Describe g:clever_f_ignore_case
+        Before
+            let g:clever_f_ignore_case = 1
+        End
+
+        After
+            let g:clever_f_ignore_case = 0
+        End
+
+        It should make less characters highlighted
+            normal! gg0
+            normal f
+            Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 9)
+        End
+    End
+End
 " vim:foldmethod=marker

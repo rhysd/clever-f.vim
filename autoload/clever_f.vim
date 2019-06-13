@@ -123,7 +123,6 @@ function! s:mark_direct(forward, count) abort
     for i in r
         let ch = line[i]
         let ch_lower = tolower(ch)
-        " TODO: migemo suport
         if ch !~ '^\a$' | continue | endif
         let d[ch] = get(d, ch, 0)+1
         if g:clever_f_smart_case && ch =~# '\L'

@@ -108,8 +108,8 @@ function! s:mark_direct(forward, count) abort
     let l = line('.')
 
     if (a:forward && c_start+1 > len(line)-1) ||
-        \(!a:forward && c_end + 1 < 0)
-        return
+        \(!a:forward && c_end+1 < 0)
+        return []
     endif
 
     if g:clever_f_ignore_case
@@ -120,8 +120,8 @@ function! s:mark_direct(forward, count) abort
         \             : range(c_end, 0, -1)
     let d = {}
     let ms = []
-    for c in r
-        let ch = line[c]
+    for i in r
+        let ch = line[i]
         let ch_lower = tolower(ch)
         " TODO: migemo suport
         if ch !~ '^\a$' | continue | endif
@@ -132,7 +132,7 @@ function! s:mark_direct(forward, count) abort
         if d[ch] == a:count || (g:clever_f_smart_case && d[ch_lower] == a:count)
             " NOTE: should not use `matchaddpos(group, [...position])`,
             " because the maximum number of position is 8
-            let m = matchaddpos('CleverFDirect', [[l, c+1]])
+            let m = matchaddpos('CleverFDirect', [[l, i+1]])
             call add(ms, m)
         endif
     endfor

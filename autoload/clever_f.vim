@@ -121,11 +121,13 @@ function! s:mark_direct(forward, count) abort
     let matches = []
     for i in range(i_start, i_end, i_step)
         let ch = line[i]
+        " only matches to ASCII
+        if ch !~ '^[\x00-\x7F]$' | continue | endif
         let ch_lower = tolower(ch)
-        if ch !~ '^\a$' | continue | endif
 
         let char_count[ch] = get(char_count, ch, 0) + 1
-        if g:clever_f_smart_case && ch =~# '\L'
+        if g:clever_f_smart_case && ch =~# '\u'
+            " uppercase characters are doubly counted
             let char_count[ch_lower] = get(char_count, ch_lower, 0) + 1
         endif
 

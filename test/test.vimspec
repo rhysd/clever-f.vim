@@ -1114,7 +1114,7 @@ End
 
 Describe clever_f#_mark_direct()
     function! GetHighlightedPositions()
-        let cols = sort(map(getmatches(), {_, m -> m.pos1[1]}), 'n')
+        let cols = sort(map(getmatches(), 'v:val.pos1[1]'), 'n')
         let chars = []
         for c in range(1, 19)
             if len(cols) > 0 && cols[0] == c
@@ -1176,7 +1176,7 @@ Describe clever_f#_mark_direct()
         "               _    _
         call clever_f#_mark_direct(1, 1)
         let cols = [22, 29]
-        Assert Equals(sort(map(getmatches(), {_, m -> m.pos1[1]}), 'n'), cols)
+        Assert Equals(sort(map(getmatches(), 'v:val.pos1[1]'), 'n'), cols)
     End
 
     Context with g:clever_f_smart_case
@@ -1268,13 +1268,13 @@ Describe g:clever_f_mark_direct
     It should remove target highlights
         normal! gg0
         normal fh
-        Assert Equals(len(filter(getmatches(), {_, m -> m.group ==# 'CleverFDirect'})), 0)
+        Assert Equals(len(filter(getmatches(), 'v:val.group ==# "CleverFDirect"')), 0)
     End
 
     It should finish with no error
         normal! gg$
         normal fp
-        Assert Equals(len(filter(getmatches(), {_, m -> m.group ==# 'CleverFDirect'})), 0)
+        Assert Equals(len(filter(getmatches(), 'v:val.group ==# "CleverFDirect"')), 0)
     End
 End
 " vim:foldmethod=marker

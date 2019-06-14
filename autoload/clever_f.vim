@@ -139,6 +139,10 @@ function! s:mark_direct(forward, count) abort
     endfor
     return matches
 endfunction
+
+" introduce public function for test
+function! clever_f#_mark_direct(forward, count) abort
+    return s:mark_direct(a:forward, a:count)
 endfunction
 
 function! s:mark_char_in_current_line(map, char) abort

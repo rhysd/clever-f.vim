@@ -713,6 +713,23 @@ Describe <Esc>
         normal Th
         Assert Equals(col('.'), 7)
     End
+
+    Context with g:clever_f_mark_direct
+        Before
+            let g:clever_f_mark_direct = 1
+            highlight link CleverFDirect CleverFDefaultLabel
+        End
+
+        After
+            let g:clever_f_mark_direct = 0
+        End
+
+        It should remove target highlights
+            normal! gg0
+            execute 'normal' "f\<Esc>"
+            Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
+        End
+    End
 End
 
 Describe g:clever_f_smart_case
@@ -1095,13 +1112,13 @@ Describe selection=exclusive
     End
 End
 
-Describe g:clever_f_mark_direct
+Describe clever_f#_mark_direct()
     Before
         new
-        let g:clever_f_mark_direct = 1
         call clever_f#reset()
         highlight link CleverFDirect CleverFDefaultLabel
-        call AddLine('pOge huga Hiyo poyo')
+        call AddLine('ビムかわいいよzビムx')
+        call AddLine('pOge huga Hiyo pOyo')
         let old_across_no_line = g:clever_f_across_no_line
         let g:clever_f_across_no_line = 0
     End
@@ -1112,10 +1129,115 @@ Describe g:clever_f_mark_direct
         let g:clever_f_across_no_line = old_across_no_line
     End
 
-    It should highlight target characters automatically
+    It should highlight characters to which the cursor can be moved directly
         normal! gg0
-        normal f
-        Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 11)
+        " #: cursor position, _: highlighted char
+        "
+        "     pOge huga Hiyo pOyo
+        " len(#______ _ ____ _   ) = 12
+        Assert Equals(len(clever_f#_mark_direct(1, 1)), 12)
+    End
+
+    It should highlight backward characters
+        normal! gg$
+        "     pOge huga Hiyo pOyo
+        " len(   _ ____ __ _____#) = 12
+        Assert Equals(len(clever_f#_mark_direct(0, 1)), 12)
+    End
+
+    It should highlight characters to which the cursor can be moved by one hop
+        normal! gg0
+        "     pOge huga Hiyo pOyo
+        " len(#      _ _      ___) = 5
+        Assert Equals(len(clever_f#_mark_direct(1, 2)), 5)
+    End
+
+    It should not highlight multibyte characters
+        normal! 2gg0
+        "     ビムかわいいよzビムx
+        " len(##            _    _) = 2
+        Assert Equals(len(clever_f#_mark_direct(1, 1)), 2)
+    End
+
+    Context with g:clever_f_smart_case
+        Before
+            let g:clever_f_smart_case = 1
+        End
+
+        After
+            let g:clever_f_smart_case = 0
+        End
+
+        It should highlight characters to which the cursor can be moved directly
+            normal! gg0
+            "     pOge huga Hiyo pOyo
+            " len(#______ _ ___  _   ) = 11
+            Assert Equals(len(clever_f#_mark_direct(1, 1)), 11)
+        End
+
+        It should highlight backward characters
+            normal! gg$
+            "     pOge huga Hiyo pOyo
+            " len(   _  ___ __  ____#) = 10
+            Assert Equals(len(clever_f#_mark_direct(0, 1)), 10)
+        End
+
+        It should highlight characters to which the cursor can be moved by one hop
+            normal! gg0
+            "     pOge huga Hiyo pOyo
+            " len(#      _ __  _  __ ) = 6
+            Assert Equals(len(clever_f#_mark_direct(1, 2)), 6)
+        End
+    End
+
+    Context with g:clever_f_ignore_case
+        Before
+            let g:clever_f_ignore_case = 1
+        End
+
+        After
+            let g:clever_f_ignore_case = 0
+        End
+
+        It should highlight characters to which the cursor can be moved directly
+            normal! gg0
+            "     pOge huga Hiyo pOyo
+            " len(#______ _  __  _   ) = 10
+            Assert Equals(len(clever_f#_mark_direct(1, 1)), 10)
+        End
+
+        It should highlight backward characters
+            normal! gg$
+            "     pOge huga Hiyo pOyo
+            " len(   _  ___ __  ____#) = 10
+            Assert Equals(len(clever_f#_mark_direct(0, 1)), 10)
+        End
+
+        It should highlight characters to which the cursor can be moved by one hop
+            normal! gg0
+            "     pOge huga Hiyo pOyo
+            " len(#      _ __  _   _ ) = 5
+            Assert Equals(len(clever_f#_mark_direct(1, 2)), 5)
+        End
+    End
+End
+
+Describe g:clever_f_mark_direct
+    Before
+        new
+        let g:clever_f_mark_direct = 1
+        call clever_f#reset()
+        highlight link CleverFDirect CleverFDefaultLabel
+        call AddLine('ビムかわいいよzビムx')
+        call AddLine('pOge huga Hiyo poyo')
+        let old_across_no_line = g:clever_f_across_no_line
+        let g:clever_f_across_no_line = 0
+    End
+
+    After
+        close!
+        let g:clever_f_mark_direct = 0
+        let g:clever_f_across_no_line = old_across_no_line
     End
 
     It should remove target highlights
@@ -1128,46 +1250,6 @@ Describe g:clever_f_mark_direct
         normal! gg$
         normal fp
         Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
-    End
-
-    Describe <Esc>
-        It should remove target highlights
-            normal! gg0
-            execute 'normal' "f\<Esc>"
-            Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
-        End
-    End
-
-    Describe g:clever_f_smart_case
-        Before
-            let g:clever_f_smart_case = 1
-        End
-
-        After
-            let g:clever_f_smart_case = 0
-        End
-
-        It should make less characters highlighted
-            normal! gg0
-            normal f
-            Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 10)
-        End
-    End
-
-    Describe g:clever_f_ignore_case
-        Before
-            let g:clever_f_ignore_case = 1
-        End
-
-        After
-            let g:clever_f_ignore_case = 0
-        End
-
-        It should make less characters highlighted
-            normal! gg0
-            normal f
-            Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 9)
-        End
     End
 End
 " vim:foldmethod=marker

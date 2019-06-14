@@ -101,14 +101,13 @@ function! s:is_timedout() abort
     return elapsed_ms > g:clever_f_timeout_ms
 endfunction
 
+" highlight characters to which the cursor can be moved directly
 function! s:mark_direct(forward, count) abort
     let line = getline('.')
-    let c_start = col('.')
-    let c_end = col('.')-2
-    let l = line('.')
+    let [_, l, c, _] = getpos('.')
 
-    if (a:forward && c_start+1 > len(line)-1) ||
-        \(!a:forward && c_end+1 < 0)
+    if (a:forward && c == len(line)) || (!a:forward && c == 1)
+        " there is no matching characters
         return []
     endif
 
@@ -116,26 +115,30 @@ function! s:mark_direct(forward, count) abort
         let line = tolower(line)
     endif
 
-    let r = a:forward ? range(c_start, len(line)-1)
-        \             : range(c_end, 0, -1)
-    let d = {}
-    let ms = []
-    for i in r
+    let [i_start, i_end, i_step] = a:forward ? [c, len(line) - 1, 1]
+        \                                    : [c - 2, 0, -1]
+    let char_count = {}
+    let matches = []
+    for i in range(i_start, i_end, i_step)
         let ch = line[i]
         let ch_lower = tolower(ch)
         if ch !~ '^\a$' | continue | endif
-        let d[ch] = get(d, ch, 0)+1
+
+        let char_count[ch] = get(char_count, ch, 0) + 1
         if g:clever_f_smart_case && ch =~# '\L'
-            let d[ch_lower] = get(d, ch_lower, 0)+1
+            let char_count[ch_lower] = get(char_count, ch_lower, 0) + 1
         endif
-        if d[ch] == a:count || (g:clever_f_smart_case && d[ch_lower] == a:count)
+
+        if char_count[ch] == a:count ||
+            \ (g:clever_f_smart_case && char_count[ch_lower] == a:count)
             " NOTE: should not use `matchaddpos(group, [...position])`,
             " because the maximum number of position is 8
-            let m = matchaddpos('CleverFDirect', [[l, i+1]])
-            call add(ms, m)
+            let m = matchaddpos('CleverFDirect', [[l, i + 1]])
+            call add(matches, m)
         endif
     endfor
-    return ms
+    return matches
+endfunction
 endfunction
 
 function! s:mark_char_in_current_line(map, char) abort

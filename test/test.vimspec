@@ -1113,6 +1113,21 @@ Describe selection=exclusive
 End
 
 Describe clever_f#_mark_direct()
+    function! GetHighlightedPositions()
+        let cols = sort(map(getmatches(), {_, m -> m.pos1[1]}), 'n')
+        let chars = []
+        for c in range(1, 19)
+            if len(cols) > 0 && cols[0] == c
+                let ch = '_'
+                call remove(cols, 0)
+            else
+                let ch = ' '
+            endif
+            call add(chars, ch)
+        endfor
+        return join(chars, '')
+    endfunction
+
     Before
         new
         call clever_f#reset()
@@ -1133,30 +1148,35 @@ Describe clever_f#_mark_direct()
         normal! gg0
         " #: cursor position, _: highlighted char
         "
-        "     pOge huga Hiyo pOyo
-        " len(#______ _ ____ _   ) = 12
-        Assert Equals(len(clever_f#_mark_direct(1, 1)), 12)
+        "        #Oge huga Hiyo pOyo
+        let s = ' ______ _ ____ _   '
+        call clever_f#_mark_direct(1, 1)
+        Assert Equals(GetHighlightedPositions(), s)
     End
 
     It should highlight backward characters
         normal! gg$
-        "     pOge huga Hiyo pOyo
-        " len(   _ ____ __ _____#) = 12
-        Assert Equals(len(clever_f#_mark_direct(0, 1)), 12)
+        "        pOge huga Hiyo pOy#
+        let s = '   _ ____ __ _____ '
+        call clever_f#_mark_direct(0, 1)
+        Assert Equals(GetHighlightedPositions(), s)
     End
 
     It should highlight characters to which the cursor can be moved by one hop
         normal! gg0
-        "     pOge huga Hiyo pOyo
-        " len(#      _ _      ___) = 5
-        Assert Equals(len(clever_f#_mark_direct(1, 2)), 5)
+        "        #Oge huga Hiyo pOyo
+        let s = '       _ _      ___'
+        call clever_f#_mark_direct(1, 2)
+        Assert Equals(GetHighlightedPositions(), s)
     End
 
     It should not highlight multibyte characters
         normal! 2gg0
-        "     ビムかわいいよzビムx
-        " len(##            _    _) = 2
-        Assert Equals(len(clever_f#_mark_direct(1, 1)), 2)
+        " ＃ムかわいいよzビムx
+        "               _    _
+        call clever_f#_mark_direct(1, 1)
+        let cols = [22, 29]
+        Assert Equals(sort(map(getmatches(), {_, m -> m.pos1[1]}), 'n'), cols)
     End
 
     Context with g:clever_f_smart_case
@@ -1170,23 +1190,26 @@ Describe clever_f#_mark_direct()
 
         It should highlight characters to which the cursor can be moved directly
             normal! gg0
-            "     pOge huga Hiyo pOyo
-            " len(#______ _ ___  _   ) = 11
-            Assert Equals(len(clever_f#_mark_direct(1, 1)), 11)
+            "        #Oge huga Hiyo pOyo
+            let s = ' ______ _ ___  _   '
+            call clever_f#_mark_direct(1, 1)
+            Assert Equals(GetHighlightedPositions(), s)
         End
 
         It should highlight backward characters
             normal! gg$
-            "     pOge huga Hiyo pOyo
-            " len(   _  ___ __  ____#) = 10
-            Assert Equals(len(clever_f#_mark_direct(0, 1)), 10)
+            "        pOge huga Hiyo pOy#
+            let s = '   _  ___ __  ____ '
+            call clever_f#_mark_direct(0, 1)
+            Assert Equals(GetHighlightedPositions(), s)
         End
 
         It should highlight characters to which the cursor can be moved by one hop
             normal! gg0
-            "     pOge huga Hiyo pOyo
-            " len(#      _ __  _  __ ) = 6
-            Assert Equals(len(clever_f#_mark_direct(1, 2)), 6)
+            "        #Oge huga Hiyo pOyo
+            let s = '       _ __  _  __ '
+            call clever_f#_mark_direct(1, 2)
+            Assert Equals(GetHighlightedPositions(), s)
         End
     End
 
@@ -1201,23 +1224,26 @@ Describe clever_f#_mark_direct()
 
         It should highlight characters to which the cursor can be moved directly
             normal! gg0
-            "     pOge huga Hiyo pOyo
-            " len(#______ _  __  _   ) = 10
-            Assert Equals(len(clever_f#_mark_direct(1, 1)), 10)
+            "        #Oge huga Hiyo pOyo
+            let s = ' ______ _  __  _   '
+            call clever_f#_mark_direct(1, 1)
+            Assert Equals(GetHighlightedPositions(), s)
         End
 
         It should highlight backward characters
             normal! gg$
-            "     pOge huga Hiyo pOyo
-            " len(   _  ___ __  ____#) = 10
-            Assert Equals(len(clever_f#_mark_direct(0, 1)), 10)
+            "        pOge huga Hiyo pOy#
+            let s = '   _  ___ __  ____ '
+            call clever_f#_mark_direct(0, 1)
+            Assert Equals(GetHighlightedPositions(), s)
         End
 
         It should highlight characters to which the cursor can be moved by one hop
             normal! gg0
-            "     pOge huga Hiyo pOyo
-            " len(#      _ __  _   _ ) = 5
-            Assert Equals(len(clever_f#_mark_direct(1, 2)), 5)
+            "        #Oge huga Hiyo pOyo
+            let s = '       _ __  _   _ '
+            call clever_f#_mark_direct(1, 2)
+            Assert Equals(GetHighlightedPositions(), s)
         End
     End
 End
@@ -1228,7 +1254,6 @@ Describe g:clever_f_mark_direct
         let g:clever_f_mark_direct = 1
         call clever_f#reset()
         highlight link CleverFDirect CleverFDefaultLabel
-        call AddLine('ビムかわいいよzビムx')
         call AddLine('pOge huga Hiyo poyo')
         let old_across_no_line = g:clever_f_across_no_line
         let g:clever_f_across_no_line = 0
@@ -1243,13 +1268,13 @@ Describe g:clever_f_mark_direct
     It should remove target highlights
         normal! gg0
         normal fh
-        Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
+        Assert Equals(len(filter(getmatches(), {_, m -> m.group ==# 'CleverFDirect'})), 0)
     End
 
     It should finish with no error
         normal! gg$
         normal fp
-        Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
+        Assert Equals(len(filter(getmatches(), {_, m -> m.group ==# 'CleverFDirect'})), 0)
     End
 End
 " vim:foldmethod=marker

@@ -402,7 +402,7 @@ function! s:swapcase(char) abort
     return a:char =~# '\u' ? tolower(a:char) : toupper(a:char)
 endfunction
 
-" Drop forced visual mode charcter ('nov' -> 'no')
+" Drop forced visual mode character ('nov' -> 'no')
 function! s:mode() abort
     let mode = mode(1)
     if mode =~# '^no'

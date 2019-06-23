@@ -23,7 +23,7 @@ Instead of |;|, |f| is available to repeat after you type |f|{char} or |F|{char}
 after |f|{char} and |F|{char} is also available to undo a jump. |t|{char} and
 |T|{char} are ditto. This extension makes a repeat easier and makes you forget
 the existence of |;|. You can use |;| for other key mapping.
-In addition, many handy features (target highlignting, smartcase matching, and
+In addition, many handy features (target highlighting, smartcase matching, and
 so on) are provided and you can customize behavior of the mappings.
 Please check |clever-f.vim-variables|.
 

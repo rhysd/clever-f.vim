@@ -207,6 +207,27 @@ g:clever_f_repeat_last_char_inputs          *g:clever_f_repeat_last_char_inputs*
 >
     let g:clever_f_repeat_last_char_inputs = ["\<CR>", "\<Tab>"]
 <
+g:clever_f_mark_direct                                  *g:clever_f_mark_direct*
+
+    If the value is equivalent to 1, characters to which the cursor can be
+    moved directly are highlighted until you input a character.  Highlighting
+    is enabled in normal and visual mode.
+    The default value is 0.
+
+g:clever_f_mark_direct_color                      *g:clever_f_mark_direct_color*
+
+    If |g:clever_f_mark_direct| is enabled, |clever-f| highlights characters
+    using the highlight group which |g:clever_f_mark_direct_color| specifies.
+    If you want to change the highlight group |clever-f| uses, set
+    your favorite highlight group to this variable.
+    The default value is "CleverFDefaultLabel", which makes characters red and
+    bold.  If you want to make an original label highlight, define your own
+    highlight group.(See |:highlight|)
+
+    Note:
+    |g:clever_f_mark_direct_color| must be set before |clever-f| is loaded.
+    (e.g. in your |vimrc|)
+
 
 ==============================================================================
 SPECIAL THANKS                                     *clever-f.vim-special-thanks*

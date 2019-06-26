@@ -13,10 +13,12 @@ let g:clever_f_hide_cursor_on_cmdline  = get(g:, 'clever_f_hide_cursor_on_cmdlin
 let g:clever_f_timeout_ms              = get(g:, 'clever_f_timeout_ms', 0)
 let g:clever_f_mark_char               = get(g:, 'clever_f_mark_char', 1)
 let g:clever_f_repeat_last_char_inputs = get(g:, 'clever_f_repeat_last_char_inputs', ["\<CR>"])
+let g:clever_f_mark_direct             = get(g:, 'clever_f_mark_direct', 0)
 
 " below variables must be set before loading this script
 let g:clever_f_mark_cursor_color       = get(g:, 'clever_f_mark_cursor_color', 'Cursor')
 let g:clever_f_mark_char_color         = get(g:, 'clever_f_mark_char_color', 'CleverFDefaultLabel')
+let g:clever_f_mark_direct_color       = get(g:, 'clever_f_mark_direct_color', 'CleverFDefaultLabel')
 let g:clever_f_clean_labels_eagerly    = get(g:, 'clever_f_clean_labels_eagerly', 1)
 
 " highlight labels
@@ -31,6 +33,9 @@ if g:clever_f_mark_cursor
 endif
 if g:clever_f_mark_char
     execute 'highlight link CleverFChar' g:clever_f_mark_char_color
+endif
+if g:clever_f_mark_direct
+    execute 'highlight link CleverFDirect' g:clever_f_mark_direct_color
 endif
 
 if g:clever_f_clean_labels_eagerly
@@ -96,6 +101,52 @@ function! s:is_timedout() abort
     return elapsed_ms > g:clever_f_timeout_ms
 endfunction
 
+" highlight characters to which the cursor can be moved directly
+function! s:mark_direct(forward, count) abort
+    let line = getline('.')
+    let [_, l, c, _] = getpos('.')
+
+    if (a:forward && c == len(line)) || (!a:forward && c == 1)
+        " there is no matching characters
+        return []
+    endif
+
+    if g:clever_f_ignore_case
+        let line = tolower(line)
+    endif
+
+    let [i_start, i_end, i_step] = a:forward ? [c, len(line) - 1, 1]
+        \                                    : [c - 2, 0, -1]
+    let char_count = {}
+    let matches = []
+    for i in range(i_start, i_end, i_step)
+        let ch = line[i]
+        " only matches to ASCII
+        if ch !~ '^[\x00-\x7F]$' | continue | endif
+        let ch_lower = tolower(ch)
+
+        let char_count[ch] = get(char_count, ch, 0) + 1
+        if g:clever_f_smart_case && ch =~# '\u'
+            " uppercase characters are doubly counted
+            let char_count[ch_lower] = get(char_count, ch_lower, 0) + 1
+        endif
+
+        if char_count[ch] == a:count ||
+            \ (g:clever_f_smart_case && char_count[ch_lower] == a:count)
+            " NOTE: should not use `matchaddpos(group, [...position])`,
+            " because the maximum number of position is 8
+            let m = matchaddpos('CleverFDirect', [[l, i + 1]])
+            call add(matches, m)
+        endif
+    endfor
+    return matches
+endfunction
+
+" introduce public function for test
+function! clever_f#_mark_direct(forward, count) abort
+    return s:mark_direct(a:forward, a:count)
+endfunction
+
 function! s:mark_char_in_current_line(map, char) abort
     let regex = '\%' . line('.') . 'l' . s:generate_pattern(a:map, a:char)
     call matchadd('CleverFChar', regex , 999)
@@ -148,6 +199,10 @@ function! clever_f#find_with(map) abort
             endif
         endif
         try
+            if g:clever_f_mark_direct
+                let direct_markers = s:mark_direct(a:map =~# '\l', v:count1)
+                redraw
+            endif
             if g:clever_f_show_prompt | echon 'clever-f: ' | endif
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
@@ -186,6 +241,11 @@ function! clever_f#find_with(map) abort
             if g:clever_f_show_prompt | redraw! | endif
         finally
             if g:clever_f_mark_cursor | call matchdelete(cursor_marker) | endif
+            if g:clever_f_mark_direct
+                for m in direct_markers
+                    call matchdelete(m)
+                endfor
+            endif
             if g:clever_f_hide_cursor_on_cmdline
                 if s:ON_NVIM && mode ==# 'no'
                     " Do not preserve previous value at operator-pending mode on Neovim (#44)

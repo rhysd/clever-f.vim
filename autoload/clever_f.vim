@@ -247,10 +247,13 @@ function! clever_f#find_with(map) abort
                 endfor
             endif
             if g:clever_f_hide_cursor_on_cmdline
-                if s:ON_NVIM && mode ==# 'no'
-                    " Do not preserve previous value at operator-pending mode on Neovim (#44)
-                    set guicursor&
-                else
+                " Set default value at first then restore (#49)
+                " For example, when the value is a:blinkon0, it does not affect cursor shape so cursor
+                " shape continues to disappear.
+                set guicursor&
+
+                " Note: Do not preserve previous value at operator-pending mode on Neovim (#44)
+                if !(s:ON_NVIM && mode ==# 'no') && &guicursor !=# guicursor_save
                     let &guicursor = guicursor_save
                 endif
                 if !s:ON_NVIM

@@ -16,7 +16,7 @@ let g:clever_f_repeat_last_char_inputs = get(g:, 'clever_f_repeat_last_char_inpu
 let g:clever_f_mark_direct             = get(g:, 'clever_f_mark_direct', 0)
 
 " below variable must be set before loading this script
-let g:clever_f_clean_labels_eagerly = get(g:, 'clever_f_clean_labels_eagerly', 1)
+let g:clever_f_clean_labels_eagerly    = get(g:, 'clever_f_clean_labels_eagerly', 1)
 
 " highlight labels
 augroup plugin-clever-f-highlight
@@ -29,21 +29,21 @@ if g:clever_f_mark_cursor
     if exists('g:clever_f_mark_cursor_color')
         execute 'highlight! link CleverFCursor' g:clever_f_mark_cursor_color
     else
-        execute 'highlight link CleverFCursor Cursor'
+        highlight link CleverFCursor Cursor
     endif
 endif
 if g:clever_f_mark_char
     if exists('g:clever_f_mark_char_color')
         execute 'highlight! link CleverFChar' g:clever_f_mark_char_color
     else
-        execute 'highlight link CleverFChar CleverFDefaultLabel'
+        highlight link CleverFChar CleverFDefaultLabel
     endif
 endif
 if g:clever_f_mark_direct
     if exists('g:clever_f_mark_direct_color')
         execute 'highlight! link CleverFDirect' g:clever_f_mark_direct_color
     else
-        execute 'highlight link CleverFDirect CleverFDefaultLabel'
+        highlight link CleverFDirect CleverFDefaultLabel
     endif
 endif
 

@@ -15,10 +15,7 @@ let g:clever_f_mark_char               = get(g:, 'clever_f_mark_char', 1)
 let g:clever_f_repeat_last_char_inputs = get(g:, 'clever_f_repeat_last_char_inputs', ["\<CR>"])
 let g:clever_f_mark_direct             = get(g:, 'clever_f_mark_direct', 0)
 
-" below variables must be set before loading this script
-let g:clever_f_mark_cursor_color       = get(g:, 'clever_f_mark_cursor_color', 'Cursor')
-let g:clever_f_mark_char_color         = get(g:, 'clever_f_mark_char_color', 'CleverFDefaultLabel')
-let g:clever_f_mark_direct_color       = get(g:, 'clever_f_mark_direct_color', 'CleverFDefaultLabel')
+" below variable must be set before loading this script
 let g:clever_f_clean_labels_eagerly    = get(g:, 'clever_f_clean_labels_eagerly', 1)
 
 " highlight labels
@@ -29,13 +26,25 @@ augroup END
 highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold,underline guifg=red guibg=NONE gui=bold,underline
 
 if g:clever_f_mark_cursor
-    execute 'highlight link CleverFCursor' g:clever_f_mark_cursor_color
+    if exists('g:clever_f_mark_cursor_color')
+        execute 'highlight! link CleverFCursor' g:clever_f_mark_cursor_color
+    else
+        highlight link CleverFCursor Cursor
+    endif
 endif
 if g:clever_f_mark_char
-    execute 'highlight link CleverFChar' g:clever_f_mark_char_color
+    if exists('g:clever_f_mark_char_color')
+        execute 'highlight! link CleverFChar' g:clever_f_mark_char_color
+    else
+        highlight link CleverFChar CleverFDefaultLabel
+    endif
 endif
 if g:clever_f_mark_direct
-    execute 'highlight link CleverFDirect' g:clever_f_mark_direct_color
+    if exists('g:clever_f_mark_direct_color')
+        execute 'highlight! link CleverFDirect' g:clever_f_mark_direct_color
+    else
+        highlight link CleverFDirect CleverFDefaultLabel
+    endif
 endif
 
 if g:clever_f_clean_labels_eagerly

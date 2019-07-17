@@ -33,16 +33,13 @@ Describe default config
         Assert Equals(g:clever_f_show_prompt, 0)
         Assert Equals(g:clever_f_smart_case, 0)
         Assert Equals(g:clever_f_chars_match_any_signs, '')
-        Assert Equals(g:clever_f_mark_cursor_color, 'Cursor')
         Assert Equals(g:clever_f_mark_cursor, 1)
         Assert Equals(g:clever_f_hide_cursor_on_cmdline, 1)
         Assert Equals(g:clever_f_timeout_ms, 0)
         Assert Equals(g:clever_f_mark_char, 1)
-        Assert Equals(g:clever_f_mark_char_color, 'CleverFDefaultLabel')
         Assert Equals(g:clever_f_repeat_last_char_inputs, ["\<CR>"])
         Assert Equals(g:clever_f_clean_labels_eagerly, 1)
         Assert Equals(g:clever_f_mark_direct, 0)
-        Assert Equals(g:clever_f_mark_direct_color, 'CleverFDefaultLabel')
     End
 End
 

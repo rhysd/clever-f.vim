@@ -25,6 +25,12 @@ augroup plugin-clever-f-highlight
 augroup END
 highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold,underline guifg=red guibg=NONE gui=bold,underline
 
+" Priority of highlight customization is:
+"   High:   When g:clever_f_*_color
+"   Middle: :highlight in a colorscheme
+"   Low:    Default highlights
+" When the variable is defined, it should be linked with :hi! since :hi does
+" not overwrite existing highlight group. (#50)
 if g:clever_f_mark_cursor
     if exists('g:clever_f_mark_cursor_color')
         execute 'highlight! link CleverFCursor' g:clever_f_mark_cursor_color

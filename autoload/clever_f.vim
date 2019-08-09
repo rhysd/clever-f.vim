@@ -1,6 +1,10 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+" constants
+let s:ON_NVIM = has('nvim')
+
+" configurations
 let g:clever_f_across_no_line          = get(g:, 'clever_f_across_no_line', 0)
 let g:clever_f_ignore_case             = get(g:, 'clever_f_ignore_case', 0)
 let g:clever_f_use_migemo              = get(g:, 'clever_f_use_migemo', 0)
@@ -62,9 +66,6 @@ endif
 augroup plugin-clever-f-finalizer
     autocmd!
 augroup END
-
-" constants
-let s:ON_NVIM = has('nvim')
 
 " initialize the internal state
 let s:last_mode = ''
@@ -204,14 +205,12 @@ function! clever_f#find_with(map) abort
             let cursor_marker = matchadd('CleverFCursor', '\%#', 999)
             redraw
         endif
-        if g:clever_f_hide_cursor_on_cmdline
+        " block-NONE does not work on Neovim
+        if g:clever_f_hide_cursor_on_cmdline && !s:ON_NVIM
             let guicursor_save = &guicursor
             set guicursor=n-o:block-NONE
-            if !s:ON_NVIM
-                " Neovim does not have t_xx
-                let t_ve_save = &t_ve
-                set t_ve=
-            endif
+            let t_ve_save = &t_ve
+            set t_ve=
         endif
         try
             if g:clever_f_mark_direct
@@ -261,19 +260,16 @@ function! clever_f#find_with(map) abort
                     call matchdelete(m)
                 endfor
             endif
-            if g:clever_f_hide_cursor_on_cmdline
+            if g:clever_f_hide_cursor_on_cmdline && !s:ON_NVIM
                 " Set default value at first then restore (#49)
                 " For example, when the value is a:blinkon0, it does not affect cursor shape so cursor
                 " shape continues to disappear.
                 set guicursor&
 
-                " Note: Do not preserve previous value at operator-pending mode on Neovim (#44)
-                if !(s:ON_NVIM && mode ==# 'no') && &guicursor !=# guicursor_save
+                if &guicursor !=# guicursor_save
                     let &guicursor = guicursor_save
                 endif
-                if !s:ON_NVIM
-                    let &t_ve = t_ve_save
-                endif
+                let &t_ve = t_ve_save
             endif
         endtry
     else

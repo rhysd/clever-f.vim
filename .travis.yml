@@ -35,10 +35,10 @@ install:
   - |
     if [[ "$TARGET" == 'nvim' ]]; then
       if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
-        curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz
+        curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-macos.tar.gz
         tar xzf nvim-macos.tar.gz
       else
-        curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+        curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
         tar xzf nvim-linux64.tar.gz
       fi
     fi

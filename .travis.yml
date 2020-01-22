@@ -1,6 +1,7 @@
 language: generic
+# `language: python` is not available:
+#   https://travis-ci.community/t/python-3-6-3-7-and-3-8-binaries-cant-be-downloaded-on-arm/5641
 
-# TEMPORARY: Allow failure since macos binary for nightly is not provided for now
 matrix:
   include:
     - os: linux
@@ -17,6 +18,7 @@ dist: xenial
 # Avoid the default old macOS 10.13
 osx_image: xcode11.3
 
+# Speed up `brew install` on macOS worker
 env:
   global:
     - HOMEBREW_NO_INSTALL_CLEANUP=1
@@ -24,7 +26,9 @@ env:
 install:
   - |
     if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then
-      brew unlink python@2
+      # This is necessary because python@2 prevents python@3 installation
+      # Homebrew addon is not available because unlinking python@2 is necessary before `brew install` :(
+      brew unlink python@2 || true
       brew install macvim python
     fi
   - git clone --depth 1 --single-branch https://github.com/thinca/vim-themis && (cd vim-themis && git rev-parse HEAD)

@@ -136,7 +136,8 @@ you can use `g:clever_f_chars_match_any_signs`. If you set it to `';'`, `f;` mat
 
 ### Keeping the functionality of `;` and `,` via mappings
 
-If you are used to using `;` and `,` for forward and backward searching, but still want these to work the same way with clever-f, you can simply remap `;`and `,` to use this plugin:
+If you are used to using `;` and `,` for forward and backward searching, but still want these to work
+the same way with clever-f, you can simply remap `;`and `,` to use this plugin:
 
 ```
 map ; <Plug>(clever-f-repeat-forward)
@@ -148,7 +149,7 @@ map , <Plug>(clever-f-repeat-back)
 Distributed under MIT License. See `doc/clever_f.txt`
 
 
-[f]: https://github.com/vim/vim/blob/b1c9198afb7ff902588b45fbe44f0760a9f48375/runtime/doc/motion.txt#L250
+[f]: https://github.com/vim/vim/blob/0d76683e094c6cac2e879601aff3acf1163cbe0b/runtime/doc/motion.txt#L254-L262
 [Build Status]: https://github.com/rhysd/clever-f.vim/workflows/CI/badge.svg?branch=master&event=push
 [CI]: https://github.com/rhysd/clever-f.vim/actions?query=workflow%3ACI+branch%3Amaster
 [Coverage Status]: https://codecov.io/gh/rhysd/clever-f.vim/branch/master/graph/badge.svg

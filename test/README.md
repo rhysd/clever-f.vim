@@ -18,13 +18,16 @@ It requires [covimerage](https://github.com/Vimjas/covimerage).
 $ pip install covimerage
 $ cd /path/to/clever-f.vim/test
 
-$ # Run tests with profiling
+# Run tests with profiling
 $ PROFILE_LOG=profile.txt ./vim-themis/bin/themis .
 
-$ # Create a coverage file using profile results
+# Create a coverage file using profile results
 $ covimerage write_coverage profile.txt
 
-$ # See the coverage results in your local
+# See the coverage results in console output
+$ coverage report
+
+# See the coverage results in test/htmlcov/index.html
 $ coverage html
 ```
 

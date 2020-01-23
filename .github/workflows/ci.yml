@@ -48,9 +48,10 @@ jobs:
       - name: Run unit tests
         run: |
           set -x
+          cd ./test
           echo $THEMIS_VIM
           $THEMIS_VIM --version
-          PROFILE_LOG=profile.txt ./vim-themis/bin/themis ./test
+          PROFILE_LOG=profile.txt ../vim-themis/bin/themis .
       - name: Install Python
         uses: actions/setup-python@v1
       - name: Report coverage

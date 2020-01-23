@@ -1,6 +1,6 @@
 clever-[f][].vim
 ================
-[![Build Status][]][Travis CI]
+[![Build Status][]][CI]
 [![Coverage Status][]][Codecov]
 
 clever-f.vim extends `f`, `F`, `t` and `T` mappings for more convenience. Instead of `;`, `f` is available
@@ -149,8 +149,8 @@ Distributed under MIT License. See `doc/clever_f.txt`
 
 
 [f]: https://github.com/vim/vim/blob/b1c9198afb7ff902588b45fbe44f0760a9f48375/runtime/doc/motion.txt#L250
-[Build Status]: https://travis-ci.org/rhysd/clever-f.vim.svg?branch=master
-[Travis CI]: https://travis-ci.org/rhysd/clever-f.vim
+[Build Status]: https://github.com/rhysd/clever-f.vim/workflows/CI/badge.svg?branch=master&event=push
+[CI]: https://github.com/rhysd/clever-f.vim/actions?query=workflow%3ACI+branch%3Amaster
 [Coverage Status]: https://codecov.io/gh/rhysd/clever-f.vim/branch/master/graph/badge.svg
 [Codecov]: https://codecov.io/gh/rhysd/clever-f.vim
 [Try Online Demo]: http://rhysd.github.io/clever-f.vim/

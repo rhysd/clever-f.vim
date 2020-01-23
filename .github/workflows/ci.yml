@@ -57,6 +57,7 @@ jobs:
       - name: Report coverage
         run: |
           set -x
+          cd ./test
           pip install covimerage
           covimerage --version
           covimerage write_coverage profile.txt
@@ -66,6 +67,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./test/coverage.xml
 
   vint:
     name: Run vint

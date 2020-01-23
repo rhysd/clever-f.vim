@@ -138,7 +138,7 @@ function! s:mark_direct(forward, count) abort
     for i in range(i_start, i_end, i_step)
         let ch = line[i]
         " only matches to ASCII
-        if ch !~ '^[\x00-\x7F]$' | continue | endif
+        if ch !~# '^[\x00-\x7F]$' | continue | endif
         let ch_lower = tolower(ch)
 
         let char_count[ch] = get(char_count, ch, 0) + 1

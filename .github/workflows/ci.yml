@@ -20,8 +20,7 @@ jobs:
         if: matrix.os == 'macos-latest' && matrix.editor == 'vim'
         run: |
           brew install macvim
-          export THEMIS_VIM=vim
-          vim --version
+          echo '::set-env name=THEMIS_VIM::vim'
       - name: Install Vim on Linux
         if: matrix.os == 'ubuntu-latest' && matrix.editor == 'vim'
         run: |
@@ -32,14 +31,12 @@ jobs:
           make -j
           make install
           cd ../../
-          export THEMIS_VIM=$(pwd)/vim/bin/vim
-          ./vim/bin/vim --version
+          echo "::set-env name=THEMIS_VIM::$(pwd)/vim/bin/vim"
       - name: Install Neovim on macOS
         if: matrix.os == 'macos-latest' && matrix.editor == 'neovim'
         run: |
           brew install neovim
-          export THEMIS_VIM=nvim
-          nvim --version
+          echo '::set-env name=THEMIS_VIM::nvim'
       - name: Install Neovim on Linux
         if: matrix.os == 'ubuntu-latest' && matrix.editor == 'neovim'
         run: |
@@ -47,12 +44,12 @@ jobs:
           curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
           tar xzf nvim-linux64.tar.gz
           mv ./nvim-linux64 ./nvim
-          export THEMIS_VIM=$(pwd)/nvim/bin/nvim
-          ./nvim/bin/nvim --version
+          echo "::set-env name=THEMIS_VIM::$(pwd)/nvim/bin/nvim"
       - name: Run unit tests
         run: |
           set -x
           echo $THEMIS_VIM
+          $THEMIS_VIM --version
           PROFILE_LOG=profile.txt ./vim-themis/bin/themis ./test
       - name: Install Python
         uses: actions/setup-python@v1

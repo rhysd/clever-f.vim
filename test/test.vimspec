@@ -537,7 +537,7 @@ End
 
 Describe clever_f#find_with()
     It should raise an error when invalid map is given
-        Throws /Invalid mapping:/ clever_f#find_with('x')
+        Throws /Error: Invalid mapping/ clever_f#find_with('x')
     End
 End
 

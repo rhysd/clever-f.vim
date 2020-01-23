@@ -185,8 +185,7 @@ endfunction
 
 function! clever_f#find_with(map) abort
     if a:map !~# '^[fFtT]$'
-        echoerr 'Invalid mapping: ' . a:map
-        return ''
+        throw "Error: Invalid mapping '" . a:map . "'"
     endif
 
     if &foldopen =~# '\<\%(all\|hor\)\>'

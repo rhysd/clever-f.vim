@@ -131,11 +131,10 @@ function! s:mark_direct(forward, count) abort
         let line = tolower(line)
     endif
 
-    let [i_start, i_end, i_step] = a:forward ? [c, len(line) - 1, 1]
-        \                                    : [c - 2, 0, -1]
     let char_count = {}
     let matches = []
-    for i in range(i_start, i_end, i_step)
+    let indices = a:forward ? range(c, len(line) - 1, 1) : range(c - 2, 0, -1)
+    for i in indices
         let ch = line[i]
         " only matches to ASCII
         if ch !~# '^[\x00-\x7F]$' | continue | endif

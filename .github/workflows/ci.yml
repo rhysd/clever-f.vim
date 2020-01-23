@@ -50,7 +50,10 @@ jobs:
           export THEMIS_VIM=$(pwd)/nvim/bin/nvim
           ./nvim/bin/nvim --version
       - name: Run unit tests
-        run: PROFILE_LOG=profile.txt ./vim-themis/bin/themis ./test
+        run: |
+          set -x
+          echo $THEMIS_VIM
+          PROFILE_LOG=profile.txt ./vim-themis/bin/themis ./test
       - name: Install Python
         uses: actions/setup-python@v1
       - name: Report coverage

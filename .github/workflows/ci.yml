@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        editor: [vim, neovim]
+        neovim: [false, true]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -16,36 +16,14 @@ jobs:
         with:
           repository: thinca/vim-themis
           path: vim-themis
-      - name: Install Vim on macOS
-        if: matrix.os == 'macos-latest' && matrix.editor == 'vim'
-        run: |
-          brew install macvim
-          echo '::set-env name=THEMIS_VIM::vim'
-      - name: Install Vim on Linux
-        if: matrix.os == 'ubuntu-latest' && matrix.editor == 'vim'
-        run: |
-          set -x
-          git clone --depth 1 --single-branch --no-tags https://github.com/vim/vim.git build/vim
-          cd ./build/vim
-          ./configure --prefix="$(pwd)/../../vim" --with-features=huge --enable-fail-if-missing
-          make -j
-          make install
-          cd ../../
-          echo "::set-env name=THEMIS_VIM::$(pwd)/vim/bin/vim"
-      - name: Install Neovim on macOS
-        if: matrix.os == 'macos-latest' && matrix.editor == 'neovim'
-        run: |
-          brew install neovim
-          echo '::set-env name=THEMIS_VIM::nvim'
-      - name: Install Neovim on Linux
-        if: matrix.os == 'ubuntu-latest' && matrix.editor == 'neovim'
-        run: |
-          set -x
-          curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz
-          tar xzf nvim-linux64.tar.gz
-          mv ./nvim-linux64 ./nvim
-          echo "::set-env name=THEMIS_VIM::$(pwd)/nvim/bin/nvim"
+      - name: Install Vim or Neovim
+        uses: rhysd/action-setup-vim@v1
+        id: vim
+        with:
+          neovim: ${{ matrix.neovim }}
       - name: Run unit tests
+        env:
+          THEMIS_VIM: ${{ steps.vim.outputs.executable }}
         run: |
           set -x
           cd ./test

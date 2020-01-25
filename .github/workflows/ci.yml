@@ -6,7 +6,7 @@ jobs:
     name: Unit tests
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         neovim: [false, true]
     runs-on: ${{ matrix.os }}
     steps:
@@ -20,28 +20,31 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         id: vim
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           neovim: ${{ matrix.neovim }}
       - name: Run unit tests
         env:
           THEMIS_VIM: ${{ steps.vim.outputs.executable }}
+          PROFILE_LOG: profile.txt
         run: |
-          set -x
           cd ./test
           echo $THEMIS_VIM
-          $THEMIS_VIM --version
-          PROFILE_LOG=profile.txt ../vim-themis/bin/themis .
+          ../vim-themis/bin/themis .
+      # On windows `covimerage write_coverage` exit with non-zero status
       - name: Install Python
+        if: matrix.os != 'windows-latest'
         uses: actions/setup-python@v1
       - name: Report coverage
+        if: matrix.os != 'windows-latest'
         run: |
-          set -x
-          cd ./test
           pip install covimerage
           covimerage --version
+          cd ./test
           covimerage write_coverage profile.txt
           coverage report
           coverage xml
       - name: Upload coverage to codecov
+        if: matrix.os != 'windows-latest'
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

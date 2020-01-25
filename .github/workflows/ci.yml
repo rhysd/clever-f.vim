@@ -32,19 +32,29 @@ jobs:
           ../vim-themis/bin/themis .
       # On windows `covimerage write_coverage` exit with non-zero status
       - name: Install Python
-        if: matrix.os != 'windows-latest'
         uses: actions/setup-python@v1
-      - name: Report coverage
-        if: matrix.os != 'windows-latest'
+      - name: Install covimerage
         run: |
           pip install covimerage
           covimerage --version
+      - name: Run covimerage
+        if: matrix.os != 'windows-latest'
+        run: |
           cd ./test
           covimerage write_coverage profile.txt
+      - name: Run covimerage (workaround for Windows)
+        if: matrix.os == 'windows-latest'
+        # Set SilentlyContinue to solve this issue: https://github.com/Vimjas/covimerage/issues/90
+        run: |
+          $ErrorActionPreference = 'SilentlyContinue'
+          cd ./test
+          covimerage write_coverage profile.txt
+      - name: Take coverage
+        run: |
+          cd ./test
           coverage report
           coverage xml
       - name: Upload coverage to codecov
-        if: matrix.os != 'windows-latest'
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

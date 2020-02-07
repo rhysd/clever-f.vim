@@ -20,7 +20,6 @@ jobs:
         uses: rhysd/action-setup-vim@v1
         id: vim
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           neovim: ${{ matrix.neovim }}
       - name: Run unit tests
         env:

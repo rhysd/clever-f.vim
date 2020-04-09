@@ -357,6 +357,7 @@ endfunction
 function! s:finalize() abort
     autocmd! plugin-clever-f-finalizer
     call s:remove_highlight()
+    let s:previous_pos = {}
     let s:moved_forward = 0
 endfunction
 

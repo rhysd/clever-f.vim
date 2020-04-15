@@ -291,6 +291,26 @@ Describe f, F, t and T mappings
         Assert Equals(foldclosed('.'), -1)
         Assert Equals(CursorPos(), [2,6,'h'])
     End
+
+    It does not reproduce #54
+        normal! 0
+        let l = line('.')
+
+        normal fh
+        Assert Equals(CursorPos(), [l,6,'h'])
+
+        " Back to the position after reset
+        normal! 0
+        " XXX: Hack! While running test, InsertEnter is not fired
+        " automatically. To test the event, we need to cause it manually.
+        doautocmd CursorMoved
+
+        normal! 5l
+        Assert Equals(CursorPos(), [l,6,'h'])
+
+        normal fo
+        Assert Equals(CursorPos(), [l,14,'o'])
+    End
 End
 
 Describe f and F mappings' contexts

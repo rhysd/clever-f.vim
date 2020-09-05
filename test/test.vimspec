@@ -746,6 +746,15 @@ Describe <Esc>
             execute 'normal' "f\<Esc>"
             Assert Equals(len(filter(getmatches(), 'v:val.group==#"CleverFDirect"')), 0)
         End
+
+        It does nothing on empty line (#55)
+            call AddLine('')
+            normal! G0
+            Assert Equals(getline('.'), '')
+            Assert Equals(col('.'), 1)
+            normal fa
+            Assert Equals(col('.'), 1)
+        End
     End
 End
 

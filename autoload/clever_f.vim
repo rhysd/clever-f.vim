@@ -122,7 +122,7 @@ function! s:mark_direct(forward, count) abort
     let line = getline('.')
     let [_, l, c, _] = getpos('.')
 
-    if (a:forward && c == len(line)) || (!a:forward && c == 1)
+    if (a:forward && c >= len(line)) || (!a:forward && c == 1)
         " there is no matching characters
         return []
     endif

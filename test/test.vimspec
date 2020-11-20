@@ -311,6 +311,21 @@ Describe f, F, t and T mappings
         normal fo
         Assert Equals(CursorPos(), [l,14,'o'])
     End
+
+    It should work while running in macro
+        for _ in range(10)
+            call AddLine('poge huga hiyo poyo')
+        endfor
+        normal! gg0
+
+        " Macro to change the line from 'poge huga hiyo poyo' to 'poge'
+        let @a = 'thDj'
+        normal 10@a
+
+        for l in range(2, 10)
+            Assert Equals(getline(l), 'poge')
+        endfor
+    End
 End
 
 Describe f and F mappings' contexts

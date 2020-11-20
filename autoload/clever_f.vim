@@ -183,6 +183,17 @@ function! s:include_multibyte_char(str) abort
     return strlen(a:str) != clever_f#compat#strchars(a:str)
 endfunction
 
+if exists('*reg_executing')
+    function! s:should_redraw() abort
+        return reg_executing() ==# ''
+    endfunction
+else
+    " reg_executing() was introduced at Vim 8.2.0020 and Neovim 0.4.0
+    function! s:should_redraw() abort
+        return 1
+    endfunction
+endif
+
 function! clever_f#find_with(map) abort
     if a:map !~# '^[fFtT]$'
         throw "Error: Invalid mapping '" . a:map . "'"
@@ -201,7 +212,9 @@ function! clever_f#find_with(map) abort
         let back = 0
         if g:clever_f_mark_cursor
             let cursor_marker = matchadd('CleverFCursor', '\%#', 999)
-            redraw
+            if s:should_redraw()
+                redraw
+            endif
         endif
         " block-NONE does not work on Neovim
         if g:clever_f_hide_cursor_on_cmdline && !s:ON_NVIM
@@ -211,7 +224,7 @@ function! clever_f#find_with(map) abort
             set t_ve=
         endif
         try
-            if g:clever_f_mark_direct
+            if g:clever_f_mark_direct && s:should_redraw()
                 let direct_markers = s:mark_direct(a:map =~# '\l', v:count1)
                 redraw
             endif
@@ -250,7 +263,7 @@ function! clever_f#find_with(map) abort
                 endif
             endif
 
-            if g:clever_f_show_prompt | redraw! | endif
+            if g:clever_f_show_prompt && s:should_redraw() | redraw! | endif
         finally
             if g:clever_f_mark_cursor | call matchdelete(cursor_marker) | endif
             if g:clever_f_mark_direct

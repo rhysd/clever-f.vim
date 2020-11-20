@@ -274,7 +274,7 @@ Describe f, F, t and T mappings
         Assert Equals(getline('.'), "piyo poyo")
         Assert Equals(CursorPos(), [l, 2, 'i'])
 
-        normal! dfp
+        normal dfp
         Assert Equals(getline('.'), "poyo")
         Assert Equals(CursorPos(), [l, 2, 'o'])
     End

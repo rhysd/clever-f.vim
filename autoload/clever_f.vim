@@ -266,7 +266,7 @@ function! clever_f#find_with(map) abort
             if g:clever_f_show_prompt && s:should_redraw() | redraw! | endif
         finally
             if g:clever_f_mark_cursor | call matchdelete(cursor_marker) | endif
-            if g:clever_f_mark_direct
+            if g:clever_f_mark_direct && exists('l:direct_markers')
                 for m in direct_markers
                     call matchdelete(m)
                 endfor

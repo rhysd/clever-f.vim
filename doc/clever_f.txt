@@ -214,6 +214,10 @@ g:clever_f_mark_direct                                  *g:clever_f_mark_direct*
     is enabled in normal and visual mode.
     The default value is 0.
 
+    Note:
+    |g:clever_f_mark_direct| must be set before |clever-f| is loaded. Setting
+    to 1 in your |vimrc| is recommended.
+
 g:clever_f_mark_direct_color                      *g:clever_f_mark_direct_color*
 
     If |g:clever_f_mark_direct| is enabled, |clever-f| highlights characters

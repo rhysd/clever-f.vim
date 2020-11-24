@@ -3,6 +3,7 @@ set cpo&vim
 
 " constants
 let s:ON_NVIM = has('nvim')
+let s:ESC_CODE = char2nr("\<Esc>")
 
 " configurations
 let g:clever_f_across_no_line          = get(g:, 'clever_f_across_no_line', 0)
@@ -228,11 +229,13 @@ function! clever_f#find_with(map) abort
                 let direct_markers = s:mark_direct(a:map =~# '\l', v:count1)
                 redraw
             endif
-            if g:clever_f_show_prompt | echon 'clever-f: ' | endif
+            if g:clever_f_show_prompt
+                echon 'clever-f: '
+            endif
             let s:previous_map[mode] = a:map
             let s:first_move[mode] = 1
             let cn = s:getchar()
-            if cn == char2nr("\<Esc>")
+            if cn == s:ESC_CODE
                 return "\<Esc>"
             endif
             if index(map(deepcopy(g:clever_f_repeat_last_char_inputs), 'char2nr(v:val)'), cn) == -1
@@ -263,7 +266,9 @@ function! clever_f#find_with(map) abort
                 endif
             endif
 
-            if g:clever_f_show_prompt && s:should_redraw() | redraw! | endif
+            if g:clever_f_show_prompt && s:should_redraw()
+                redraw!
+            endif
         finally
             if g:clever_f_mark_cursor | call matchdelete(cursor_marker) | endif
             if g:clever_f_mark_direct && exists('l:direct_markers')
@@ -286,8 +291,8 @@ function! clever_f#find_with(map) abort
     else
         " when repeated
         let back = a:map =~# '\u'
-        if g:clever_f_fix_key_direction
-            let back = s:previous_map[mode] =~# '\u' ? !back : back
+        if g:clever_f_fix_key_direction && s:previous_map[mode] =~# '\u'
+            let back = !back
         endif
 
         " reset and retry if timed out

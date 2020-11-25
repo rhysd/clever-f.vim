@@ -210,10 +210,11 @@ function! clever_f#find_with(map) abort
 
     let mode = s:mode()
     if current_pos != get(s:previous_pos, mode, [0, 0])
+        let should_redraw = s:should_redraw()
         let back = 0
         if g:clever_f_mark_cursor
             let cursor_marker = matchadd('CleverFCursor', '\%#', 999)
-            if s:should_redraw()
+            if should_redraw
                 redraw
             endif
         endif
@@ -225,7 +226,7 @@ function! clever_f#find_with(map) abort
             set t_ve=
         endif
         try
-            if g:clever_f_mark_direct && s:should_redraw()
+            if g:clever_f_mark_direct && should_redraw
                 let direct_markers = s:mark_direct(a:map =~# '\l', v:count1)
                 redraw
             endif
@@ -266,7 +267,7 @@ function! clever_f#find_with(map) abort
                 endif
             endif
 
-            if g:clever_f_show_prompt && s:should_redraw()
+            if g:clever_f_show_prompt && should_redraw
                 redraw!
             endif
         finally

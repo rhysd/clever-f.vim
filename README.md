@@ -71,7 +71,9 @@ to be case-insensitive, set it to `1` in your vimrc.
 
 ### Smart case
 
-`g:clever_f_smart_case` controls whether searches are smart case or not. If you type a lower case character, the case will be ignored however if you type an upper case character it will only search for upper case characters. Please set it to `1` in your vimrc to enable searching by smart case.
+`g:clever_f_smart_case` controls whether searches are smart case or not. If you type a lower case character,
+the case will be ignored however if you type an upper case character it will only search for upper case characters.
+Please set it to `1` in your vimrc to enable searching by smart case.
 
 ### Target character highlighting in current line
 
@@ -86,6 +88,17 @@ Below is an example using `ta` in description of clever-f.vim.
 Here, `ta` searches `a` forward then matches the character before `a` and `Ta` searches `a` backward
 then matches the character after `a`. You can see the highlighted target is dynamically changed following
 the cursor's direction.
+
+### Highlighting characters which can be directly jumped to
+
+clever-f.vim can highlight the characters in the line which can be directly jumped to. With this feature, you
+can easily understand where cursor can move by the `f{char}` input before inputting `{char}`.
+
+For example, when 'aba' is in the current line, cursor can reach the first 'a' with `fa` but cannot reach the second 'a'.
+In this case, the first 'a' is highlighted but the second 'a' is not when typing `f`.
+
+To enable this feature, set `1` to `g:clever_f_mark_direct`  in your vimrc. Note that setting `1` after Vim
+starts does not work.
 
 ### Timeout
 

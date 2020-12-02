@@ -19,7 +19,7 @@ Lastly, you can customize the behavior of the mappings and features.
 
 ## USAGE
 
-![Screen shot](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_main.gif)
+![Screen shot](https://raw.githubusercontent.com/rhysd/ss/master/clever-f.vim/cleverf_main.gif)
 
 I'll show some examples of usage. `_` is the place of cursor, `->` is a move of cursor, alphabets above
 `->` is input by keyboard. Note that this is a part of clever-f.vim's features.
@@ -32,7 +32,7 @@ I'll show some examples of usage. `_` is the place of cursor, `->` is a move of 
     move :                        _<-----------------------------_<-_
     text :  hoge        huga    hoo         hugu                ponyo
 
-![f screencast](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_1.gif)
+![f screencast](https://raw.githubusercontent.com/rhysd/ss/master/clever-f.vim/cleverf_1.gif)
 
 
 ### __`F`__
@@ -43,7 +43,7 @@ I'll show some examples of usage. `_` is the place of cursor, `->` is a move of 
     move :  _---------->_------>_----------->_
     text :  hoge        huga    huyo         hugu                ponyo
 
-![F screencast](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_2.gif)
+![F screencast](https://raw.githubusercontent.com/rhysd/ss/master/clever-f.vim/cleverf_2.gif)
 
 
 ### __`t`__
@@ -54,7 +54,7 @@ I'll show some examples of usage. `_` is the place of cursor, `->` is a move of 
     move :                         _<-----------------------------__
     text :  hoge        huga    hoo         hugu                ponyo
 
-![t screencast](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_3.gif)
+![t screencast](https://raw.githubusercontent.com/rhysd/ss/master/clever-f.vim/cleverf_3.gif)
 
 
 ## CUSTOMIZE
@@ -83,7 +83,7 @@ group to `g:clever_f_mark_char_color`.
 
 Below is an example using `ta` in description of clever-f.vim.
 
-![highlight example](https://raw.githubusercontent.com/rhysd/screenshots/master/clever-f.vim/cleverf_4.gif)
+![highlight example](https://raw.githubusercontent.com/rhysd/ss/master/clever-f.vim/cleverf_4.gif)
 
 Here, `ta` searches `a` forward then matches the character before `a` and `Ta` searches `a` backward
 then matches the character after `a`. You can see the highlighted target is dynamically changed following

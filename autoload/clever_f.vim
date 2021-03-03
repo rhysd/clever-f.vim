@@ -4,6 +4,7 @@ set cpo&vim
 " constants
 let s:ON_NVIM = has('nvim')
 let s:ESC_CODE = char2nr("\<Esc>")
+let s:HAS_TIMER = has('timers')
 
 " configurations
 let g:clever_f_across_no_line          = get(g:, 'clever_f_across_no_line', 0)
@@ -19,6 +20,7 @@ let g:clever_f_timeout_ms              = get(g:, 'clever_f_timeout_ms', 0)
 let g:clever_f_mark_char               = get(g:, 'clever_f_mark_char', 1)
 let g:clever_f_repeat_last_char_inputs = get(g:, 'clever_f_repeat_last_char_inputs', ["\<CR>"])
 let g:clever_f_mark_direct             = get(g:, 'clever_f_mark_direct', 0)
+let g:clever_f_highlight_timeout_ms    = get(g:, 'clever_f_highlight_timeout_ms', 0)
 
 " below variable must be set before loading this script
 let g:clever_f_clean_labels_eagerly    = get(g:, 'clever_f_clean_labels_eagerly', 1)
@@ -76,6 +78,7 @@ let s:first_move = {}
 let s:migemo_dicts = {}
 let s:previous_char_num = {}
 let s:timestamp = [0, 0]
+let s:highlight_timer = -1
 
 " keys are mode string returned from mode()
 function! clever_f#reset() abort
@@ -105,6 +108,10 @@ function! clever_f#_reset_all() abort
 endfunction
 
 function! s:remove_highlight() abort
+    if s:highlight_timer >= 0
+        call timer_stop(s:highlight_timer)
+        let s:highlight_timer = -1
+    endif
     for h in filter(getmatches(), 'v:val.group ==# "CleverFChar"')
         call matchdelete(h.id)
     endfor
@@ -116,6 +123,14 @@ function! s:is_timedout() abort
     let elapsed_ms = float2nr(str2float(rel) * 1000.0)
     let s:timestamp = cur
     return elapsed_ms > g:clever_f_timeout_ms
+endfunction
+
+function! s:on_highlight_timer_expired(timer) abort
+    if s:highlight_timer != a:timer
+        return
+    endif
+    let s:highlight_timer = -1
+    call s:remove_highlight()
 endfunction
 
 " highlight characters to which the cursor can be moved directly
@@ -307,6 +322,13 @@ function! clever_f#find_with(map) abort
             call clever_f#reset()
             return clever_f#find_with(a:map)
         endif
+    endif
+
+    if g:clever_f_highlight_timeout_ms > 0 && s:HAS_TIMER
+        if s:highlight_timer >= 0
+            call timer_stop(s:highlight_timer)
+        endif
+        let s:highlight_timer = timer_start(g:clever_f_highlight_timeout_ms, funcref('s:on_highlight_timer_expired'))
     endif
 
     return clever_f#repeat(back)

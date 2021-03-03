@@ -89,6 +89,8 @@ Here, `ta` searches `a` forward then matches the character before `a` and `Ta` s
 then matches the character after `a`. You can see the highlighted target is dynamically changed following
 the cursor's direction.
 
+Highlight can be cleared after timeout. See below section.
+
 ### Highlighting characters which can be directly jumped to
 
 clever-f.vim can highlight the characters in the line which can be directly jumped to. With this feature, you
@@ -100,12 +102,22 @@ In this case, the first 'a' is highlighted but the second 'a' is not when typing
 To enable this feature, set `1` to `g:clever_f_mark_direct`  in your vimrc. Note that setting `1` after Vim
 starts does not work.
 
-### Timeout
+### Repeat timeout
 
-You can specify the timeout for `f`, `F`, `t` and `T` mappings. If the interval of these mappings
-is greater than the one you specified, clever-f.vim resets its state to make you input a new character.
-This feature is disabled by default. If you want to use this feature, set `g:clever_f_timeout_ms`
-to proper value.
+You can specify the timeout for repeating the previous target character on `f`, `F`, `t` and `T` mappings.
+If the interval of these mappings is greater than the one you specified, clever-f.vim resets its state to make you
+input a new character.  This feature is disabled by default. If you want to use this feature, set timeout value in
+milliseconds to `g:clever_f_timeout_ms`.
+
+### Highlight timeout
+
+When target character highlighting is enabled, the highlight can be cleared after specific timeout.
+
+By default, this feature is not enabled. Highlight won't be cleared until the cursor moves. To enable this feature,
+set milliseconds value to `g:clever_f_highlight_timeout_ms`.
+
+This feature requires timer feature added at Vim8. Confirm `:echo has('timers')` returns `1` to check if this feature
+is available.
 
 ### Repeat last input
 

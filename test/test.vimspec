@@ -326,6 +326,14 @@ Describe f, F, t and T mappings
             Assert Equals(getline(l), 'poge')
         endfor
     End
+
+    It should not repeat previous character while running in macro (#59)
+        call AddLine('1a 2a 3a 4a 5a')
+        normal! gg0
+        let @a = 'fax'
+        normal 5@a
+        Assert Equals(getline('.'), '1 2 3 4 5')
+    End
 End
 
 Describe f and F mappings' contexts

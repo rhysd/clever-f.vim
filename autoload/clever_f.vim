@@ -228,7 +228,7 @@ function! clever_f#find_with(map) abort
     let current_pos = getpos('.')[1 : 2]
     let mode = s:mode()
 
-    " While 'f' is run while executing a macro, do not repeat previous
+    " When 'f' is run while executing a macro, do not repeat previous
     " character. See #59 for more details
     if current_pos != get(s:previous_pos, mode, [0, 0]) || s:reg_executing() !=# ''
         let should_redraw = s:should_redraw()

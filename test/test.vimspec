@@ -12,6 +12,22 @@ function! CursorPos()
     return [line('.'), col('.'), getline('.')[col('.')-1]]
 endfunction
 
+function! Highlights() abort
+    return filter(getmatches(), 'v:val.group==#"CleverFChar"')
+endfunction
+
+function! WaitUntil(ms, pred) abort
+    let remaining = a:ms
+    while remaining > 0
+        sleep 10m
+        let remaining -= 10
+        if a:pred()
+            return 1
+        endif
+    endwhile
+    return 0
+endfunction
+
 Describe default config
     It should load plugin
         Assert g:loaded_clever_f
@@ -978,9 +994,9 @@ Describe g:clever_f_mark_char
     It should highlight the target characters automatically
         normal! gg0
         normal fh
-        Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+        Assert NotEquals(Highlights(), [])
         normal f
-        Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+        Assert NotEquals(Highlights(), [])
     End
 
     It should update the highlight if the cursor moves to another line
@@ -988,15 +1004,15 @@ Describe g:clever_f_mark_char
         normal! gg0
         let l = line('.')
         normal fhff
-        Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+        Assert NotEquals(Highlights(), [])
         Assert NotEquals(stridx(getmatches()[0].pattern, l), -1)
         Assert Equals(len(getmatches()), 1)
         normal f
-        Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+        Assert NotEquals(Highlights(), [])
         Assert NotEquals(stridx(getmatches()[0].pattern, l+1), -1)
         Assert Equals(len(getmatches()), 1)
         normal f
-        Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+        Assert NotEquals(Highlights(), [])
         Assert NotEquals(stridx(getmatches()[0].pattern, l+1), -1)
         Assert Equals(len(getmatches()), 1)
     End
@@ -1010,7 +1026,7 @@ Describe g:clever_f_mark_char
         " XXX: Hack! While running test, CursorMoved is not fired
         " automatically. To test the event, we need to cause it manually.
         doautocmd CursorMoved
-        Assert Equals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+        Assert Equals(Highlights(), [])
     End
 
     It should remove highlights when entering insert mode
@@ -1021,7 +1037,7 @@ Describe g:clever_f_mark_char
         " XXX: Hack! While running test, InsertEnter is not fired
         " automatically. To test the event, we need to cause it manually.
         doautocmd InsertEnter
-        Assert Equals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+        Assert Equals(Highlights(), [])
     End
 
     Describe clever_f#reset()
@@ -1030,9 +1046,9 @@ Describe g:clever_f_mark_char
             normal! gg0
             let l = line('.')
             normal fhff
-            Assert NotEquals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+            Assert NotEquals(Highlights(), [])
             call clever_f#reset()
-            Assert Equals(filter(getmatches(), 'v:val.group==#"CleverFChar"'), [])
+            Assert Equals(Highlights(), [])
         End
     End
 End
@@ -1326,4 +1342,45 @@ Describe g:clever_f_mark_direct
         Assert Equals(len(filter(getmatches(), 'v:val.group ==# "CleverFDirect"')), 0)
     End
 End
+
+Describe g:clever_f_highlight_timeout_ms
+    Before
+        new
+        let g:clever_f_mark_char = 1
+        let g:clever_f_highlight_timeout_ms = 100
+        call clever_f#reset()
+        call AddLine('pOge huga Hiyo poyooooooooooooooooooooooooooooooooooooooooooooooooooo')
+        normal! gg0
+    End
+
+    After
+        close!
+        let g:clever_f_highlight_timeout_ms = 0
+    End
+
+    It should remove highlights after specified timeout
+        let start = reltime()
+        normal fo
+        Assert NotEquals(Highlights(), [])
+        sleep 10m
+        Assert NotEquals(Highlights(), [])
+        Assert WaitUntil(100, { -> Highlights() == [] })
+        let duration = reltimefloat(reltime(start))
+        Assert Truthy(duration > 0.1, string(duration) . ' should be greater than 0.1')
+    End
+
+    It should not remove highlights while repeating search
+        let start = reltime()
+        normal fo
+        " After 500ms highlights are not removed since 'f' resets timer
+        for _ in range(10)
+            sleep 50m
+            Assert NotEquals(Highlights(), [])
+            normal f
+        endfor
+        " Spending 100ms without 'f' expires the timer
+        Assert WaitUntil(120, { -> Highlights() == [] })
+    End
+End
+
 " vim:foldmethod=marker

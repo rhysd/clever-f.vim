@@ -311,7 +311,8 @@ function! clever_f#find_with(map) abort
             endif
         endtry
     else
-        " when repeated
+        " When repeated
+
         let back = a:map =~# '\u'
         if g:clever_f_fix_key_direction && s:previous_map[mode] =~# '\u'
             let back = !back
@@ -321,6 +322,15 @@ function! clever_f#find_with(map) abort
         if g:clever_f_timeout_ms > 0 && s:is_timedout()
             call clever_f#reset()
             return clever_f#find_with(a:map)
+        endif
+
+        " Restore highlights which were removed by timeout
+        if g:clever_f_mark_char && g:clever_f_highlight_timeout_ms > 0 && s:HAS_TIMER && s:highlight_timer < 0
+            call s:remove_highlight()
+            if mode ==# 'n' || mode ==? 'v' || mode ==# "\<C-v>" ||
+             \ mode ==# 'ce' || mode ==? 's' || mode ==# "\<C-s>"
+                call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
+            endif
         endif
     endif
 

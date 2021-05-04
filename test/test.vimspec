@@ -1400,4 +1400,4 @@ Describe g:clever_f_highlight_timeout_ms
     End
 End
 
-" vim:foldmethod=marker
+" vim: set ft=vim foldmethod=marker:

@@ -1381,6 +1381,23 @@ Describe g:clever_f_highlight_timeout_ms
         " Spending 100ms without 'f' expires the timer
         Assert WaitUntil(120, { -> Highlights() == [] })
     End
+
+    It should restore highlights after timeout removed it
+        normal fo
+        Assert NotEquals(Highlights(), [])
+
+        " Wait until highlights are removed due to timeout
+        Assert WaitUntil(200, { -> Highlights() == [] })
+
+        " repeat f
+        normal f
+
+        " Highlights are restored
+        Assert NotEquals(Highlights(), [])
+
+        " Finally highlights are removed again
+        Assert WaitUntil(200, { -> Highlights() == [] })
+    End
 End
 
 " vim:foldmethod=marker

@@ -350,20 +350,8 @@ Describe f, F, t and T mappings
         normal 5@a
         Assert Equals(getline('.'), '1 2 3 4 5')
     End
-End
 
-Describe f and F mappings' contexts
-    Before
-        new
-        call clever_f#reset()
-        call AddLine('poge huga hiyo poyo')
-    End
-
-    After
-        close!
-    End
-
-    It should be shared
+    It should share its state among mappings
         normal! 0
         let l = line('.')
 
@@ -375,6 +363,46 @@ Describe f and F mappings' contexts
         Assert Equals(CursorPos(), [l,6,'h'])
         normal f
         Assert Equals(CursorPos(), [l,11,'h'])
+    End
+End
+
+Describe clever_f#reset()
+    Before
+        new
+        call clever_f#reset()
+        call AddLine('poge huga hiyo poyo')
+    End
+
+    After
+        close!
+    End
+
+    It should reset current target character
+        normal! 0
+        let l = line('.')
+        normal fh
+        Assert Equals(CursorPos(), [l,6,'h'])
+        call clever_f#reset()
+        normal to
+        Assert Equals(CursorPos(), [l,13,'y'])
+    End
+
+    It should be called on <Plug>(clever-f-reset)
+        normal! 0
+        let l = line('.')
+        normal fh
+        Assert Equals(CursorPos(), [l,6,'h'])
+        execute 'normal' "\<Plug>(clever-f-reset)"
+        normal to
+        Assert Equals(CursorPos(), [l,13,'y'])
+    End
+
+    It should remove target highlights
+        normal! 0
+        normal fhff
+        Assert NotEquals(Highlights(), [])
+        call clever_f#reset()
+        Assert Equals(Highlights(), [])
     End
 End
 
@@ -1038,18 +1066,6 @@ Describe g:clever_f_mark_char
         " automatically. To test the event, we need to cause it manually.
         doautocmd InsertEnter
         Assert Equals(Highlights(), [])
-    End
-
-    Describe clever_f#reset()
-        It should remove target highlights
-            call AddLine('oh huh')
-            normal! gg0
-            let l = line('.')
-            normal fhff
-            Assert NotEquals(Highlights(), [])
-            call clever_f#reset()
-            Assert Equals(Highlights(), [])
-        End
     End
 End
 

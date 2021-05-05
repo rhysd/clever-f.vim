@@ -193,21 +193,6 @@ function! s:include_multibyte_char(str) abort
     return strlen(a:str) != clever_f#compat#strchars(a:str)
 endfunction
 
-if exists('*reg_executing')
-    function! s:reg_executing() abort
-        return reg_executing()
-    endfunction
-else
-    " reg_executing() was introduced at Vim 8.2.0020 and Neovim 0.4.0
-    function! s:reg_executing() abort
-        return ''
-    endfunction
-endif
-
-function! s:should_redraw() abort
-    return s:reg_executing() ==# ''
-endfunction
-
 function! clever_f#find_with(map) abort
     if a:map !~# '^[fFtT]$'
         throw "Error: Invalid mapping '" . a:map . "'"
@@ -222,11 +207,12 @@ function! clever_f#find_with(map) abort
     let current_pos = getpos('.')[1 : 2]
     let mode = s:mode()
     let highlight_timer_enabled = g:clever_f_mark_char && g:clever_f_highlight_timeout_ms > 0 && s:HAS_TIMER
+    let in_macro = clever_f#compat#reg_executing() !=# ''
 
     " When 'f' is run while executing a macro, do not repeat previous
     " character. See #59 for more details
-    if current_pos != get(s:previous_pos, mode, [0, 0]) || s:reg_executing() !=# ''
-        let should_redraw = s:should_redraw()
+    if current_pos != get(s:previous_pos, mode, [0, 0]) || in_macro
+        let should_redraw = !in_macro
         let back = 0
         if g:clever_f_mark_cursor
             let cursor_marker = matchadd('CleverFCursor', '\%#', 999)

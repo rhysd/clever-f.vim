@@ -221,6 +221,7 @@ function! clever_f#find_with(map) abort
 
     let current_pos = getpos('.')[1 : 2]
     let mode = s:mode()
+    let highlight_timer_enabled = g:clever_f_mark_char && g:clever_f_highlight_timeout_ms > 0 && s:HAS_TIMER
 
     " When 'f' is run while executing a macro, do not repeat previous
     " character. See #59 for more details
@@ -319,7 +320,7 @@ function! clever_f#find_with(map) abort
         endif
 
         " Restore highlights which were removed by timeout
-        if g:clever_f_mark_char && g:clever_f_highlight_timeout_ms > 0 && s:HAS_TIMER && s:highlight_timer < 0
+        if highlight_timer_enabled && s:highlight_timer < 0
             call s:remove_highlight()
             if mode ==# 'n' || mode ==? 'v' || mode ==# "\<C-v>" ||
              \ mode ==# 'ce' || mode ==? 's' || mode ==# "\<C-s>"
@@ -328,7 +329,7 @@ function! clever_f#find_with(map) abort
         endif
     endif
 
-    if g:clever_f_highlight_timeout_ms > 0 && s:HAS_TIMER
+    if highlight_timer_enabled
         if s:highlight_timer >= 0
             call timer_stop(s:highlight_timer)
         endif

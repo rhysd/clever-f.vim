@@ -195,7 +195,7 @@ endfunction
 
 function! clever_f#find_with(map) abort
     if a:map !~# '^[fFtT]$'
-        throw "Error: Invalid mapping '" . a:map . "'"
+        throw "clever-f: Invalid mapping '" . a:map . "'"
     endif
 
     if &foldopen =~# '\<\%(all\|hor\)\>'
@@ -450,7 +450,7 @@ function! s:load_migemo_dict() abort
         return clever_f#migemo#eucjp#load_dict()
     else
         let g:clever_f_use_migemo = 0
-        throw 'Error: ' . enc . ' is not supported. Migemo is disabled.'
+        throw "clever-f: Encoding '" . enc . "' is not supported. Migemo is disabled"
     endif
 endfunction
 

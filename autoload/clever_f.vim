@@ -103,8 +103,6 @@ function! clever_f#_reset_all() abort
     let s:previous_char_num = {}
     autocmd! plugin-clever-f-finalizer
     unlet! s:moved_forward
-
-    return ''
 endfunction
 
 function! s:remove_highlight() abort
@@ -134,7 +132,8 @@ function! s:on_highlight_timer_expired(timer) abort
 endfunction
 
 " highlight characters to which the cursor can be moved directly
-function! s:mark_direct(forward, count) abort
+" Note: public function for test
+function! clever_f#_mark_direct(forward, count) abort
     let line = getline('.')
     let [_, l, c, _] = getpos('.')
 
@@ -171,11 +170,6 @@ function! s:mark_direct(forward, count) abort
         endif
     endfor
     return matches
-endfunction
-
-" introduce public function for test
-function! clever_f#_mark_direct(forward, count) abort
-    return s:mark_direct(a:forward, a:count)
 endfunction
 
 function! s:mark_char_in_current_line(map, char) abort
@@ -248,7 +242,7 @@ function! clever_f#find_with(map) abort
         endif
         try
             if g:clever_f_mark_direct && should_redraw
-                let direct_markers = s:mark_direct(a:map =~# '\l', v:count1)
+                let direct_markers = clever_f#_mark_direct(a:map =~# '\l', v:count1)
                 redraw
             endif
             if g:clever_f_show_prompt

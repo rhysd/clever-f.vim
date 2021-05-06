@@ -1007,6 +1007,7 @@ End
 Describe g:clever_f_mark_char
     Before
         new
+        let saved_mark_char = g:clever_f_mark_char
         let g:clever_f_mark_char = 1
         call clever_f#reset()
         call AddLine('poge huga hiyo poyo')
@@ -1017,6 +1018,7 @@ Describe g:clever_f_mark_char
     After
         close!
         let g:clever_f_across_no_line = old_across_no_line
+        let g:clever_f_mark_char = saved_mark_char
     End
 
     It should highlight the target characters automatically
@@ -1027,7 +1029,7 @@ Describe g:clever_f_mark_char
         Assert NotEquals(Highlights(), [])
     End
 
-    It should update the highlight if the cursor moves to another line
+    It should update the highlight when the cursor moves to another line
         call AddLine('oh huh')
         normal! gg0
         let l = line('.')
@@ -1065,6 +1067,15 @@ Describe g:clever_f_mark_char
         " XXX: Hack! While running test, InsertEnter is not fired
         " automatically. To test the event, we need to cause it manually.
         doautocmd InsertEnter
+        Assert Equals(Highlights(), [])
+    End
+
+    It should not highlight target character when set to 0
+        let g:clever_f_mark_char = 0
+        normal! gg0
+        normal fh
+        Assert Equals(Highlights(), [])
+        normal f
         Assert Equals(Highlights(), [])
     End
 End

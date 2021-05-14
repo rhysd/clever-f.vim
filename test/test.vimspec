@@ -1431,4 +1431,30 @@ Describe g:clever_f_highlight_timeout_ms
     End
 End
 
+Describe .
+    Before each
+        new
+        call AddLine('hoge fuge piye poye')
+        normal! gg0
+    End
+
+    After each
+        close!
+    End
+
+    It repeats 'f' mapping
+        normal dfe
+        Assert Equals(getline('.'), ' fuge piye poye')
+
+        normal .
+        Assert Equals(getline('.'), ' piye poye')
+
+        normal .
+        Assert Equals(getline('.'), ' poye')
+
+        normal .
+        Assert Equals(getline('.'), '')
+    End
+End
+
 " vim: set ft=vim foldmethod=marker:

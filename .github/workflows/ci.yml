@@ -36,6 +36,8 @@ jobs:
       - name: Install covimerage
         if: matrix.os != 'windows-latest'
         run: |
+          # https://github.com/Vimjas/covimerage/issues/95
+          pip install 'click<8.0.0'
           pip install covimerage
           covimerage --version
       - name: Run covimerage

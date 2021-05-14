@@ -1442,18 +1442,58 @@ Describe .
         close!
     End
 
-    It repeats 'f' mapping
+    It should repeat 'f' mapping
         normal dfe
         Assert Equals(getline('.'), ' fuge piye poye')
 
-        normal .
+        normal! .
         Assert Equals(getline('.'), ' piye poye')
 
-        normal .
+        normal! .
         Assert Equals(getline('.'), ' poye')
 
-        normal .
+        normal! .
         Assert Equals(getline('.'), '')
+    End
+
+    It should repeat 't' mapping
+        normal dte
+        Assert Equals(getline('.'), 'e fuge piye poye')
+
+        normal! .
+        Assert Equals(getline('.'), 'e piye poye')
+
+        normal! .
+        Assert Equals(getline('.'), 'e poye')
+
+        normal! .
+        Assert Equals(getline('.'), 'e')
+    End
+
+    It should repeat 'F' mapping
+        normal! $
+
+        normal dFe
+        Assert Equals(getline('.'), 'hoge fuge piye')
+
+        normal .
+        Assert Equals(getline('.'), 'hoge fuge')
+
+        normal .
+        Assert Equals(getline('.'), 'hoge')
+    End
+
+    It should repeat 'T' mapping
+        normal! $
+
+        normal dTe
+        Assert Equals(getline('.'), 'hoge fuge piyee')
+
+        normal .
+        Assert Equals(getline('.'), 'hoge fugee')
+
+        normal .
+        Assert Equals(getline('.'), 'hogee')
     End
 End
 

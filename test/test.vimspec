@@ -354,15 +354,19 @@ Describe f, F, t and T mappings
     It should share its state among mappings
         normal! 0
         let l = line('.')
+        let left = [l, 6, 'h']
+        let right = [l, 11, 'h']
 
         normal fh
-        Assert Equals(CursorPos(), [l,6,'h'])
+        Assert Equals(CursorPos(), left)
         normal f
-        Assert Equals(CursorPos(), [l,11,'h'])
+        Assert Equals(CursorPos(), right)
         normal F
-        Assert Equals(CursorPos(), [l,6,'h'])
-        normal f
-        Assert Equals(CursorPos(), [l,11,'h'])
+        Assert Equals(CursorPos(), left)
+        normal t
+        Assert Equals(CursorPos(), right)
+        normal T
+        Assert Equals(CursorPos(), left)
     End
 End
 
@@ -566,7 +570,7 @@ Context Multibyte characters
     End
 End
 
-describe g:clever_f_ignore_case
+Describe g:clever_f_ignore_case
     Before
         new
         let g:clever_f_ignore_case = 1

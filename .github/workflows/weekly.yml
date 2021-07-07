@@ -29,5 +29,5 @@ jobs:
           PROFILE_LOG: profile.txt
         run: |
           cd ./test
-          echo $THEMIS_VIM
+          echo "$THEMIS_VIM"
           ../vim-themis/bin/themis .

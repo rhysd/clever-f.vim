@@ -58,11 +58,17 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./test/coverage.xml
 
-  vint:
-    name: Run vint
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
       - run: pip install vim-vint
       - run: vint --warning --verbose --enable-neovim ./autoload ./plugin
+      - run: sudo apt install shellcheck
+      - name: Run actionlint
+        run: |
+          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          ./actionlint -color
+        shell: bash

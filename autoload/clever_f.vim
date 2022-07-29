@@ -38,27 +38,35 @@ highlight default CleverFDefaultLabel ctermfg=red ctermbg=NONE cterm=bold,underl
 "   Low:    Default highlights
 " When the variable is defined, it should be linked with :hi! since :hi does
 " not overwrite existing highlight group. (#50)
-if g:clever_f_mark_cursor
-    if exists('g:clever_f_mark_cursor_color')
-        execute 'highlight! link CleverFCursor' g:clever_f_mark_cursor_color
-    else
-        highlight link CleverFCursor Cursor
+function! s:link_highlights() abort
+    if g:clever_f_mark_cursor
+        if exists('g:clever_f_mark_cursor_color')
+            execute 'highlight! link CleverFCursor' g:clever_f_mark_cursor_color
+        else
+            highlight link CleverFCursor Cursor
+        endif
     endif
-endif
-if g:clever_f_mark_char
-    if exists('g:clever_f_mark_char_color')
-        execute 'highlight! link CleverFChar' g:clever_f_mark_char_color
-    else
-        highlight link CleverFChar CleverFDefaultLabel
+    if g:clever_f_mark_char
+        if exists('g:clever_f_mark_char_color')
+            execute 'highlight! link CleverFChar' g:clever_f_mark_char_color
+        else
+            highlight link CleverFChar CleverFDefaultLabel
+        endif
     endif
-endif
-if g:clever_f_mark_direct
-    if exists('g:clever_f_mark_direct_color')
-        execute 'highlight! link CleverFDirect' g:clever_f_mark_direct_color
-    else
-        highlight link CleverFDirect CleverFDefaultLabel
+    if g:clever_f_mark_direct
+        if exists('g:clever_f_mark_direct_color')
+            execute 'highlight! link CleverFDirect' g:clever_f_mark_direct_color
+        else
+            highlight link CleverFDirect CleverFDefaultLabel
+        endif
     endif
-endif
+endfunction
+
+call s:link_highlights()
+augroup plugin-clever-f-link-highlight
+    autocmd!
+    autocmd ColorScheme * call s:link_highlights()
+augroup END
 
 if g:clever_f_clean_labels_eagerly
     augroup plugin-clever-f-permanent-finalizer

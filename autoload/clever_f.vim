@@ -264,6 +264,7 @@ function! clever_f#find_with(map) abort
                     augroup plugin-clever-f-finalizer
                         autocmd CursorMoved <buffer> call s:maybe_finalize()
                         autocmd InsertEnter <buffer> call s:finalize()
+                        autocmd TextChanged <buffer> call s:finalize()
                     augroup END
                     call s:mark_char_in_current_line(s:previous_map[mode], s:previous_char_num[mode])
                 endif

@@ -33,8 +33,6 @@ jobs:
       - name: Install Python
         if: ${{ matrix.os != 'windows-latest' }}
         uses: actions/setup-python@v4
-        with:
-          cache: 'pip'
       - name: Install covimerage
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
@@ -65,8 +63,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        with:
-          cache: 'pip'
       - run: pip install vim-vint
       - run: vint --warning --verbose --enable-neovim ./autoload ./plugin
       - run: sudo apt install shellcheck

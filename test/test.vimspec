@@ -968,7 +968,7 @@ Describe Hiding cursor on command line
         close!
     End
 
-    it should ensure to restore highlight properly
+    It should ensure to restore highlight properly
         let guicursor = &guicursor
         let t_ve = &t_ve
         normal fh
@@ -1082,6 +1082,18 @@ Describe g:clever_f_mark_char
         normal f
         Assert Equals(Highlights(), [])
     End
+
+    It should remove highlights when modifying the text
+        call AddLine('oh huh')
+        call AddLine('oh huh')
+        normal! gg0
+        normal fh
+        " XXX: Hack! While running test, TextChanged is not fired
+        " automatically. To test the event, we need to cause it manually.
+        doautocmd TextChanged
+        Assert Equals(Highlights(), [])
+    End
+
 End
 
 Describe g:clever_f_repeat_last_char_inputs

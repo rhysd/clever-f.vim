@@ -10,9 +10,9 @@ jobs:
         neovim: [false, true]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Checkout themis.vim
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: thinca/vim-themis
           path: vim-themis
@@ -32,7 +32,9 @@ jobs:
       # covimerage seems not maintained for Windows. Skip taking code coverage on Windows
       - name: Install Python
         if: ${{ matrix.os != 'windows-latest' }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
+        with:
+          cache: 'pip'
       - name: Install covimerage
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
@@ -53,17 +55,18 @@ jobs:
           coverage xml
       - name: Upload coverage to codecov
         if: ${{ matrix.os != 'windows-latest' }}
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./test/coverage.xml
 
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          cache: 'pip'
       - run: pip install vim-vint
       - run: vint --warning --verbose --enable-neovim ./autoload ./plugin
       - run: sudo apt install shellcheck

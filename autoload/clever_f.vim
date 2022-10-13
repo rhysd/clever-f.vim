@@ -156,11 +156,18 @@ function! clever_f#_mark_direct(forward, count) abort
 
     let char_count = {}
     let matches = []
-    let indices = a:forward ? range(c, len(line) - 1, 1) : range(c - 2, 0, -1)
-    for i in indices
-        let ch = line[i]
-        " only matches to ASCII
-        if ch !~# '^[\x00-\x7F]$' | continue | endif
+    if a:forward 
+        let line=split(line[c:], '\zs')
+        let i=c
+    else
+        let line=reverse(split(line[0:c-1], '\zs'))
+        let i=c-len(line[0]) " skip utf8 char under cursor
+        let line=line[1:]
+    endif
+    for ch in line
+        if !a:forward 
+            let i = i - len(ch)
+        endif
         let ch_lower = tolower(ch)
 
         let char_count[ch] = get(char_count, ch, 0) + 1
@@ -175,6 +182,9 @@ function! clever_f#_mark_direct(forward, count) abort
             " because the maximum number of position is 8
             let m = matchaddpos('CleverFDirect', [[l, i + 1]])
             call add(matches, m)
+        endif
+        if a:forward 
+            let i = i + len(ch)
         endif
     endfor
     return matches

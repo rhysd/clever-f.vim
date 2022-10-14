@@ -184,7 +184,7 @@ function! clever_f#_mark_direct(forward, count) abort
             call add(matches, m)
         endif
         if a:forward 
-            let i = i + len(ch)
+            let i += len(ch)
         endif
     endfor
     return matches

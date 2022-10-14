@@ -166,7 +166,7 @@ function! clever_f#_mark_direct(forward, count) abort
     endif
     for ch in line
         if !a:forward 
-            let i = i - len(ch)
+            let i -= len(ch)
         endif
         let ch_lower = tolower(ch)
 

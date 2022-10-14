@@ -1278,12 +1278,12 @@ Describe clever_f#_mark_direct()
         Assert Equals(GetHighlightedPositions(), s)
     End
 
-    It should not highlight multibyte characters
+    It should correctly highlight first of each multibyte characters
         normal! 2gg0
-        " ＃ムかわいいよzビムx
-        "               _    _
+        "        ＃ムかわいいよzビムx
+        let s = 'ビ＃＃＃＃い＃_＃ム_'
         call clever_f#_mark_direct(1, 1)
-        let cols = [22, 29]
+        let cols = filter(range(0,len(s)),'s[v:val]=="_"||s[v:val]=="＃"[0]')
         Assert Equals(sort(map(getmatches(), 'v:val.pos1[1]'), 'n'), cols)
     End
 

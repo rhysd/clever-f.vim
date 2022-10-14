@@ -1278,7 +1278,7 @@ Describe clever_f#_mark_direct()
         Assert Equals(GetHighlightedPositions(), s)
     End
 
-    It should correctly highlight first of each multibyte characters
+    It should highlight multibyte characters to which the cursor can be moved directly
         normal! 2gg0
         "        ＃ムかわいいよzビムx
         let s = 'ビ＃＃＃＃い＃_＃ム_'

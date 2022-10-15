@@ -1253,6 +1253,7 @@ Describe clever_f#_mark_direct()
         new
         call clever_f#reset()
         highlight link CleverFDirect CleverFDefaultLabel
+        call AddLine('')
         call AddLine('ビムかわいいよzビムx')
         call AddLine('pOge huga Hiyo pOyo')
         let old_across_no_line = g:clever_f_across_no_line
@@ -1307,6 +1308,14 @@ Describe clever_f#_mark_direct()
         call clever_f#_mark_direct(0, 1)
         let cols = s:find_cols(s, ['_', '＃'])
         Assert Equals(sort(map(getmatches(), 'v:val.pos1[1]'), 'n'), cols)
+    End
+
+    It should highlight nothing on empty line
+        normal! 3gg0
+        call clever_f#_mark_direct(0, 1)
+        Assert Empty(getmatches())
+        call clever_f#_mark_direct(1, 1)
+        Assert Empty(getmatches())
     End
 
     Context with g:clever_f_smart_case

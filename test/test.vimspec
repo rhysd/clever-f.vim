@@ -1278,12 +1278,21 @@ Describe clever_f#_mark_direct()
         Assert Equals(GetHighlightedPositions(), s)
     End
 
-    It should not highlight multibyte characters
+    It should highlight multibyte characters to which the cursor can be moved directly
         normal! 2gg0
-        " ＃ムかわいいよzビムx
-        "               _    _
+        "        ＃ムかわいいよzビムx
+        let s = 'ビ＃＃＃＃い＃_＃ム_'
         call clever_f#_mark_direct(1, 1)
-        let cols = [22, 29]
+        let cols = filter(range(1,len(s)),'s[v:val-1]=="_"||s[v:val-1]=="＃"[0]')
+        Assert Equals(sort(map(getmatches(), 'v:val.pos1[1]'), 'n'), cols)
+    End
+
+    It should highlight multibyte characters to which the cursor can be moved backwards
+        normal! 2gg$h
+        "        ビムかわいいよzビ＃x
+        let s = 'ビ＃＃＃い＃＃_＃ムx'
+        call clever_f#_mark_direct(0, 1)
+        let cols = filter(range(1,len(s)),'s[v:val-1]=="_"||s[v:val-1]=="＃"[0]')
         Assert Equals(sort(map(getmatches(), 'v:val.pos1[1]'), 'n'), cols)
     End
 

@@ -157,13 +157,13 @@ function! clever_f#_mark_direct(forward, count) abort
     let char_count = {}
     let matches = []
     if a:forward 
-        let line = split(line[c - 1 : ], '\zs')
+        let line = split(line[c - 1 : ], '\zs') " adding a limit like maxcol*maxlines just after `:` is a free gift in a very long line.
         let i = c - 1 + len(line[0])
+        let line = line[1:] " skip char under cursor
     else
-        let line = reverse(split(line[0 : c-1], '\zs'))
-        let i = c - len(line[0])
+        let line = reverse(split(line[0 : c - 2], '\zs')) " split() is slow on very long lines, adding option to seek arbitrarily at c-maxcol*maxlines would help on a very long line
+        let i = c - 1
     endif
-    let line = line[1:] " skip char under cursor
     for ch in line
         if !a:forward 
             let i -= len(ch)

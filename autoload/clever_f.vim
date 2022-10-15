@@ -161,7 +161,7 @@ function! clever_f#_mark_direct(forward, count) abort
         let i = c - 1 + len(line[0])
         let line = line[1:] " skip char under cursor
     else
-        let line = reverse(split(line[0 : c - 2], '\zs')) " split() is slow on very long lines, need new option to add `max(0,c-4*termcol*termlines-1000)` instead of 0 would help on a very long line, with the drawback of seeking at an arbitrarily byte possibly in the middle of a multibyte char off screen
+        let line = reverse(split(line[0 : c - 2], '\zs')) " split() is slow on very long lines, new option to use `max(0,c-4*termcol*termlines-1000)` instead of `0` would help on a very long line, with the drawback of seeking at an arbitrarily byte possibly in the middle of a multibyte char (which would be off screen)
         let i = c - 1
     endif
     for ch in line

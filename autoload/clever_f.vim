@@ -156,16 +156,21 @@ function! clever_f#_mark_direct(forward, count) abort
 
     let char_count = {}
     let matches = []
-    if a:forward 
-        let line = split(line[c - 1 : ], '\zs') " adding a limit like c+4*termcol*termlines just after `:` is a free gift in a very long line, assuming all char are less than 4 bytes.
+    if a:forward
+        " adding a limit like c+4*termcol*termlines just after `:` is a free gift in a very long line, assuming all
+        " chars are less than 4 bytes. (#74)
+        let line = split(line[c - 1 : ], '\zs')
         let i = c - 1 + len(line[0])
         let line = line[1:] " skip char under cursor
     else
-        let line = reverse(split(line[0 : c - 2], '\zs')) " split() is slow on very long lines, new option to use `max(0,c-4*termcol*termlines-1000)` instead of `0` would help on a very long line, with the drawback of seeking at an arbitrarily byte possibly in the middle of a multibyte char (which would be off screen)
+        " split() is slow on very long lines, new option to use `max(0,c-4*termcol*termlines-1000)` instead of `0` would
+        " help on a very long line, with the drawback of seeking at an arbitrarily byte possibly in the middle of a
+        " multibyte char (which would be off screen). (#74)
+        let line = reverse(split(line[0 : c - 2], '\zs'))
         let i = c - 1
     endif
     for ch in line
-        if !a:forward 
+        if !a:forward
             let i -= len(ch)
         endif
         let ch_lower = tolower(ch)
@@ -180,10 +185,10 @@ function! clever_f#_mark_direct(forward, count) abort
             \ (g:clever_f_smart_case && char_count[ch_lower] == a:count)
             " NOTE: should not use `matchaddpos(group, [...position])`,
             " because the maximum number of position is 8
-            let m = matchaddpos('CleverFDirect', [[l, i + 1]])
+            let m = matchaddpos('CleverFDirect', [[l, i + 1]]) " `+ 1` since column is 1-based
             call add(matches, m)
         endif
-        if a:forward 
+        if a:forward
             let i += len(ch)
         endif
     endfor

@@ -28,6 +28,19 @@ function! WaitUntil(ms, pred) abort
     return 0
 endfunction
 
+function! s:find_cols(heystack, needles) abort
+    let offsets = []
+    let current = 0
+    for c in split(a:heystack, '\zs')
+        if index(a:needles, c) >= 0
+            " Columns start from 1, not 0
+            let offsets += [current + 1]
+        endif
+        let current += len(c)
+    endfor
+    return offsets
+endfunction
+
 Describe default config
     It should load plugin
         Assert g:loaded_clever_f
@@ -1283,7 +1296,7 @@ Describe clever_f#_mark_direct()
         "        ＃ムかわいいよzビムx
         let s = 'ビ＃＃＃＃い＃_＃ム_'
         call clever_f#_mark_direct(1, 1)
-        let cols = filter(range(1,len(s)),'s[v:val-1]=="_"||s[v:val-1]=="＃"[0]')
+        let cols = s:find_cols(s, ['_', '＃'])
         Assert Equals(sort(map(getmatches(), 'v:val.pos1[1]'), 'n'), cols)
     End
 
@@ -1292,7 +1305,7 @@ Describe clever_f#_mark_direct()
         "        ビムかわいいよzビ＃x
         let s = 'ビ＃＃＃い＃＃_＃ムx'
         call clever_f#_mark_direct(0, 1)
-        let cols = filter(range(1,len(s)),'s[v:val-1]=="_"||s[v:val-1]=="＃"[0]')
+        let cols = s:find_cols(s, ['_', '＃'])
         Assert Equals(sort(map(getmatches(), 'v:val.pos1[1]'), 'n'), cols)
     End
 
